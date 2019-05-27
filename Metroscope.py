@@ -11,7 +11,7 @@ def clean_word(word):
     return clean_word
 
 
-def stress_word(word):
+def get_stress_word(word):
     """Retrieve the stresses for the given word."""
     custom_dict = {"phidian": "20"}
     word = clean_word(word)
@@ -30,7 +30,7 @@ def show_stress_line(line, stress_pattern):
     say = ""
     clean_line = line.replace("-", " ")
     for word in clean_line.split():
-        word_stresses = stress_word(word)
+        word_stresses = get_stress_word(word)
         for char in word:
             if char in "aeiouyAEIOUY" and len(word_stresses):
                 say += stress_pattern[0]
