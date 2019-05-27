@@ -24,6 +24,7 @@ def get_stress_word(word):
             word_stresses = ""
     return word_stresses
 
+
 def clean_line(line):
     """Prepare a line of text for show_stress_line."""
     return line.replace("-", " ")
