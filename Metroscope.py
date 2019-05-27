@@ -5,19 +5,19 @@ import pronouncing as prn
 
 def stress_line(line, stress_pattern):
     """Mark stresses over vowels in a line of text."""
-    custom_dict = {"Phidian": "20"}
+    custom_dict = {"phidian": "20"}
     say = ""
     stresses = stress_pattern
     clean_line = line.replace("-", " ")
     for word in clean_line.split():
-        clean_word = word.replace("è", "e")
+        clean_word = word.replace("è", "e").lower()
         for punct in ".,;!?":
             clean_word = clean_word.replace(punct, "")
         try:
-            word_stresses = prn.stresses_for_word(clean_word)[0]
-        except IndexError:
+            word_stresses = custom_dict[clean_word]
+        except KeyError:
             try:
-                word_stresses = custom_dict[clean_word]
+                word_stresses = prn.stresses_for_word(clean_word)[0]
             except IndexError:
                 word_stresses = ""
         for char in word:
