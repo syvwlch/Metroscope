@@ -25,7 +25,7 @@ def stress_word(word):
     return word_stresses
 
 
-def stress_line(line, stress_pattern):
+def show_stress_line(line, stress_pattern):
     """Mark stresses over vowels in a line of text."""
     say = ""
     clean_line = line.replace("-", " ")
@@ -60,5 +60,5 @@ With vases, to one deep in Phidian lore."""
 TESTMETER = 'x/x/x/x/x/'
 
 for line in TESTTEXT.splitlines():
-    print(stress_line(line, TESTMETER))
+    print(show_stress_line(line, TESTMETER))
     print(line)
