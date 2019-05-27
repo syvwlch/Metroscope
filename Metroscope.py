@@ -3,31 +3,42 @@
 import pronouncing as prn
 
 
+def clean_word(word):
+    """Prepare a word for CMU lookup."""
+    clean_word = word.replace("è", "e").lower()
+    for punct in ".,;!?":
+        clean_word = clean_word.replace(punct, "")
+    return clean_word
+
+
+def stress_word(word):
+    """Retrieve the stresses for the given word."""
+    custom_dict = {"phidian": "20"}
+    word = clean_word(word)
+    try:
+        word_stresses = custom_dict[word]
+    except KeyError:
+        try:
+            word_stresses = prn.stresses_for_word(word)[0]
+        except IndexError:
+            word_stresses = ""
+    return word_stresses
+
+
 def stress_line(line, stress_pattern):
     """Mark stresses over vowels in a line of text."""
-    custom_dict = {"phidian": "20"}
     say = ""
-    stresses = stress_pattern
     clean_line = line.replace("-", " ")
     for word in clean_line.split():
-        clean_word = word.replace("è", "e").lower()
-        for punct in ".,;!?":
-            clean_word = clean_word.replace(punct, "")
-        try:
-            word_stresses = custom_dict[clean_word]
-        except KeyError:
-            try:
-                word_stresses = prn.stresses_for_word(clean_word)[0]
-            except IndexError:
-                word_stresses = ""
+        word_stresses = stress_word(word)
         for char in word:
             if char in "aeiouyAEIOUY" and len(word_stresses):
-                say += stresses[0]
-                stresses = stresses[1:]
+                say += stress_pattern[0]
+                stress_pattern = stress_pattern[1:]
                 word_stresses = word_stresses[1:]
             elif char in "è":
-                say += stresses[0]
-                stresses = stresses[1:]
+                say += stress_pattern[0]
+                stress_pattern = stress_pattern[1:]
             else:
                 say += " "
         say += " "
