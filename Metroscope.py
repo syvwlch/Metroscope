@@ -24,12 +24,16 @@ def get_stress_word(word):
             word_stresses = ""
     return word_stresses
 
+def clean_line(line):
+    """Prepare a line of text for show_stress_line."""
+    return line.replace("-", " ")
+
 
 def show_stress_line(line, stress_pattern):
     """Mark stresses over vowels in a line of text."""
     say = ""
-    clean_line = line.replace("-", " ")
-    for word in clean_line.split():
+    line = clean_line(line)
+    for word in line.split():
         word_stresses = get_stress_word(word)
         for char in word:
             if char in "aeiouyAEIOUY" and len(word_stresses):
