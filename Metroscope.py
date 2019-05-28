@@ -50,20 +50,5 @@ def show_stress_line(line, stress_pattern):
     return say
 
 
-TESTTEXT = """
-One morn before me were three figures seen,
-With bowèd necks, and joinèd hands, side-faced;
-And one behind the other stepped serene,
-In placid sandals, and in white robes graced;
-They passed, like figures on a marble urn,
-When shifted round to see the other side;
-They came again; as when the urn once more
-Is shifted round, the first seen shades return;
-And they were strange to me, as may betide
-With vases, to one deep in Phidian lore."""
-
-TESTMETER = 'x/x/x/x/x/'
-
-for line in TESTTEXT.splitlines():
-    print(show_stress_line(line, TESTMETER))
-    print(line)
+if __name__ == "__main__":
+    print("This is a module, import it into a script to use.")
