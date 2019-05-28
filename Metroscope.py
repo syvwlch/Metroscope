@@ -13,7 +13,10 @@ def clean_word(word):
 
 def get_stress_word(word):
     """Retrieve the stresses for the given word."""
-    custom_dict = {"phidian": "20"}
+    custom_dict = {
+                    "phidian": "20",
+                    "indolence": "200"
+                  }
     word = clean_word(word)
     try:
         word_stresses = custom_dict[word]
