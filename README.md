@@ -5,6 +5,8 @@ This summer I want to play with scansion, meter, and rhyme, rather than a specif
 
 This started out as a rough little script, but it shows enough promise that I decided to make a repository and apply some discipline.
 
+Metroscope.py is the module, which is imported into the actual analysis scripts.
+
 Currently the only dependency is on Allison Parrish's excellent interface to CMU's dictionary of pronunciations, but that is likely to change.
 
 https://github.com/aparrish/pronouncingpy
