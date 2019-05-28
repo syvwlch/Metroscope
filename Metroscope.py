@@ -5,17 +5,42 @@ import pronouncing as prn
 
 def clean_word(word):
     """Prepare a word for CMU lookup."""
-    clean_word = word.replace("è", "e").lower()
-    for punct in ".,;!?":
-        clean_word = clean_word.replace(punct, "")
-    return clean_word
+    clean = word
+    # Many poets mark added stress on a silent e with an è
+    clean = clean.replace("è", "e")
+    # Many poets mark elided vowels with a '
+    clean = clean.replace("’s", "")
+    clean = clean.replace("’d", "ed")
+    clean = clean.replace("’r", "er")
+    # Lastly, force lowercase and strip punctuation
+    clean = clean.lower()
+    for punct in ".,;:!?—":
+        clean = clean.replace(punct, "")
+    return clean
 
 
 def get_stress_word(word):
     """Retrieve the stresses for the given word."""
     custom_dict = {
                     "phidian": "20",
-                    "indolence": "200"
+                    "indolence": "200",
+                    "benumbed": "02",
+                    "unhaunted": "020",
+                    "nothingness": "202",
+                    "embroidered": "020",
+                    "besprinkled": "020",
+                    "o’er": "0",
+                    "unmeek": "02",
+                    "poesy": "202",
+                    "forsooth": "02",
+                    "honeyed": "20",
+                    "casement": "20",
+                    "leaved": "2",
+                    "throstle": "20",
+                    "’twas": "2",
+                    "dieted": "202",
+                    "masque": "2",
+                    "spright": "2",
                   }
     word = clean_word(word)
     try:
@@ -30,7 +55,10 @@ def get_stress_word(word):
 
 def clean_line(line):
     """Prepare a line of text for show_stress_line."""
-    return line.replace("-", " ")
+    clean = line
+    for sep in "—-":
+        clean = clean.replace(sep, " ")
+    return clean
 
 
 def show_stress_line(line, stress_pattern):
