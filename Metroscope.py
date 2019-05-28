@@ -33,11 +33,12 @@ def clean_line(line):
 def show_stress_line(line, stress_pattern):
     """Mark stresses over vowels in a line of text."""
     say = ""
+    VOWELS = "aeiouyAEIOUY"
     line = clean_line(line)
     for word in line.split():
         word_stresses = get_stress_word(word)
         for char in word:
-            if char in "aeiouyAEIOUY" and len(word_stresses) and len(stress_pattern):
+            if char in VOWELS and len(word_stresses) and len(stress_pattern):
                 say += stress_pattern[0]
                 stress_pattern = stress_pattern[1:]
                 word_stresses = word_stresses[1:]
