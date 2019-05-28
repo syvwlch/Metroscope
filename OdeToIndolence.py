@@ -2,7 +2,7 @@
 
 from Metroscope import show_stress_line
 
-POEM_PATH = "Texts/FreeTexts/OdeToIndolence.txt"
+POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
 POEM_METER = "x/x/x/x/x/"
 
 if __name__ == "__main__":
