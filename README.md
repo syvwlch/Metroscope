@@ -7,8 +7,9 @@ This started out as a rough little script, but it shows enough promise that I de
 
 Metroscope.py is the module, which is imported into the actual analysis scripts.
 
-Currently the only dependency is on Allison Parrish's excellent interface to CMU's dictionary of pronunciations, but that is likely to change.
+Currently the only dependencies are on Allison Parrish's excellent interface to CMU's dictionary of pronunciations, and Christopher Henc's handy syllabification algorithm.
 
 https://github.com/aparrish/pronouncingpy
+https://github.com/henchc/syllabipy
 
 The public repository only has text that is in the public domain, of course, but you can put other text in /Texts/NonFreeTexts/ as well. The gitignore file has been set to ignore anything you place there.

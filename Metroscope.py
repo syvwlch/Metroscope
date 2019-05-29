@@ -1,6 +1,7 @@
 """Experiments with scanning meter."""
 
-import pronouncing as prn
+from pronouncing import stresses_for_word
+from syllabipy.sonoripy import SonoriPy
 
 
 def clean_word(word):
@@ -42,14 +43,16 @@ def get_stress_word(word):
                     "masque": "2",
                     "spright": "2",
                   }
-    word = clean_word(word)
+    cleaned_word = clean_word(word)
     try:
-        word_stresses = custom_dict[word]
+        word_stresses = custom_dict[cleaned_word]
     except KeyError:
         try:
-            word_stresses = prn.stresses_for_word(word)[0]
+            word_stresses = stresses_for_word(cleaned_word)[0]
         except IndexError:
             word_stresses = ""
+    if "è" in word:
+        word_stresses += "1"
     return word_stresses
 
 
@@ -64,7 +67,7 @@ def clean_line(line):
 def show_stress_line(line, stress_pattern):
     """Mark stresses over vowels in a line of text."""
     say = ""
-    VOWELS = "aeiouyAEIOUY"
+    VOWELS = "aeèiouyAEIOUY"
     line = clean_line(line)
     for word in line.split():
         word_stresses = get_stress_word(word)
@@ -73,9 +76,30 @@ def show_stress_line(line, stress_pattern):
                 say += stress_pattern[0]
                 stress_pattern = stress_pattern[1:]
                 word_stresses = word_stresses[1:]
-            elif char in "è":
-                say += stress_pattern[0]
-                stress_pattern = stress_pattern[1:]
+            else:
+                say += " "
+        say += " "
+    return say
+
+
+def uppercase_stress_line(line, stress_pattern):
+    """Force stressed syllables to uppercase."""
+    say = ""
+    line = clean_line(line)
+    for word in line.split():
+        number_stresses = len(get_stress_word(word))
+        word_stresses = stress_pattern[0:number_stresses]
+        stress_pattern = stress_pattern[number_stresses:]
+        word_syllables = SonoriPy(word.lower())
+        for syllable in word_syllables:
+            if len(word_syllables) and len(word_stresses):
+                if word_stresses[0] == "/":
+                    say += syllable.upper()
+                else:
+                    say += syllable
+                word_stresses = word_stresses[1:]
+            elif len(word_syllables) and not len(word_stresses):
+                say += syllable
             else:
                 say += " "
         say += " "
