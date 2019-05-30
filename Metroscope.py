@@ -64,27 +64,17 @@ def clean_line(line):
     return clean
 
 
-def show_stress_line(line, stress_pattern):
-    """Mark stresses over vowels in a line of text."""
-    say = ""
+def stress_line(line, stress_pattern):
+    """
+    Mark up a line of verse based on the stress pattern provided.
+
+    Return a tuple with:
+    - the stresses aligned with the first vowel of each syllable, and
+    - the line with the stressed syllables forced to uppercase.
+    """
     VOWELS = "aeèiouyAEIOUY"
-    line = clean_line(line)
-    for word in line.split():
-        word_stresses = get_stress_word(word)
-        for char in word:
-            if char in VOWELS and len(word_stresses) and len(stress_pattern):
-                say += stress_pattern[0]
-                stress_pattern = stress_pattern[1:]
-                word_stresses = word_stresses[1:]
-            else:
-                say += " "
-        say += " "
-    return say
-
-
-def uppercase_stress_line(line, stress_pattern):
-    """Force stressed syllables to uppercase."""
-    say = ""
+    aligned_stresses = ""
+    stressed_line = ""
     line = clean_line(line)
     for word in line.split():
         number_stresses = len(get_stress_word(word))
@@ -93,17 +83,28 @@ def uppercase_stress_line(line, stress_pattern):
         word_syllables = SonoriPy(word.lower())
         for syllable in word_syllables:
             if len(word_syllables) and len(word_stresses):
-                if word_stresses[0] == "/":
-                    say += syllable.upper()
-                else:
-                    say += syllable
+                syllable_stress = word_stresses[0]
                 word_stresses = word_stresses[1:]
+                if syllable_stress == "/":
+                    stressed_line += syllable.upper()
+                else:
+                    stressed_line += syllable
+                for char in syllable:
+                    if char in VOWELS:
+                        aligned_stresses += syllable_stress
+                        syllable_stress = " "
+                    else:
+                        aligned_stresses += " "
             elif len(word_syllables) and not len(word_stresses):
-                say += syllable
+                stressed_line += syllable
+                for char in syllable:
+                    aligned_stresses += " "
             else:
-                say += " "
-        say += " "
-    return say
+                stressed_line += " "
+                aligned_stresses += " "
+        stressed_line += " "
+        aligned_stresses += " "
+    return aligned_stresses, stressed_line
 
 
 if __name__ == "__main__":
