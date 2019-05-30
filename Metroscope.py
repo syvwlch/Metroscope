@@ -9,7 +9,7 @@ def clean_word(word):
     clean = word
     # Many poets mark added stress on a silent e with an è
     clean = clean.replace("è", "e")
-    # Many poets mark elided vowels with a '
+    # Many poets mark elided vowels with a ’
     clean = clean.replace("’s", "")
     clean = clean.replace("’d", "ed")
     clean = clean.replace("’r", "er")
