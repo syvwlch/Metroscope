@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8c077f5f501864e50fab7d14f2e915e74002b10f5391254056dfdc2fb4d21a7c"
+            "sha256": "2460977b5a61121c4f62357a1811997ec62312d01866d87332c377db157d88aa"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -29,14 +29,6 @@
             ],
             "index": "pypi",
             "version": "==0.2.0"
-        },
-        "pyphen": {
-            "hashes": [
-                "sha256:3b633a50873156d777e1f1075ba4d8e96a6ad0a3ca42aa3ea9a6259f93f18921",
-                "sha256:e172faf10992c8c9d369bdc83e36dbcf1121f4ed0d881f1a0b521935aee583b5"
-            ],
-            "index": "pypi",
-            "version": "==0.9.5"
         },
         "syllabipy": {
             "hashes": [
