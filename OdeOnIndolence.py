@@ -9,6 +9,17 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     """Define the home route."""
+    return render_template("home.html")
+
+
+@app.route("/poem")
+def poems():
+    """Define the poem route."""
+    POEM_TITLE = "Ode on Indolence"
+    POET_NAME = "John Keats"
+    POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
+    METER_NAME = "strict iambic pentameter"
+    METER_PATTERN = "x/x/x/x/x/"
     return render_template("poem.html",
                            title=POEM_TITLE,
                            poet=POET_NAME,
