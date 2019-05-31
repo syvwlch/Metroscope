@@ -58,7 +58,12 @@ def get_stress_word(word):
 
 def get_syllables_word(word):
     """Retrieve the syllables for a given word."""
-    return SonoriPy(word.lower())
+    syllables = SonoriPy(word.lower())
+    result = []
+    for syllable in syllables:
+        result.append(word[0:len(syllable)])
+        word = word[len(syllable):]
+    return result
 
 
 def clean_line(line):
