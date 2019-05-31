@@ -1,17 +1,25 @@
 """Analysis of Keat's Ode on Indolence."""
 
-from flask import Flask
+from flask import Flask, render_template
 from Metroscope import stress_line
 
 app = Flask(__name__)
+POEM_TITLE = "Ode on Indolence"
+POET_NAME = "John Keats"
 POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
-POEM_METER = "x/x/x/x/x/"
+METER_NAME = "strict iambic pentameter"
+METER_PATTERN = "x/x/x/x/x/"
 
 
 @app.route("/")
 def home():
     """Define the home route."""
-    return scanned_poem(POEM_PATH, POEM_METER)
+    return render_template("poem.html",
+                           title=POEM_TITLE,
+                           poet=POET_NAME,
+                           meter=METER_NAME,
+                           poem=scanned_poem(POEM_PATH, METER_PATTERN),
+                           )
 
 
 def scanned_poem(path, meter):
@@ -24,7 +32,6 @@ def scanned_poem(path, meter):
             # result += "<br>\n"
             result += stressed_line
             result += "<br>\n"
-            # print(line, end="")
     return result
 
 
