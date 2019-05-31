@@ -86,7 +86,9 @@ def stress_line(line, stress_pattern):
                 syllable_stress = word_stresses[0]
                 word_stresses = word_stresses[1:]
                 if syllable_stress == "/":
-                    stressed_line += syllable.upper()
+                    stressed_line += "<strong>"
+                    stressed_line += syllable
+                    stressed_line += "</strong>"
                 else:
                     stressed_line += syllable
                 for char in syllable:
