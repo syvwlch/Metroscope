@@ -119,5 +119,20 @@ def stress_line(line, stress_pattern):
     return aligned_stresses, stressed_line
 
 
+def scanned_poem(path, meter):
+    """Create HTML div with the scanned poem."""
+    result = "<div>\n<p>\n"
+    with open(path, "r") as poem:
+        for line in poem:
+            if line == "\n":
+                result += "</p>\n<p>"
+            else:
+                _, stressed_line = stress_line(line, meter)
+                result += stressed_line
+                result += "<br>\n"
+    result += "</p>\n</div>"
+    return result
+
+
 if __name__ == "__main__":
     print("This is a module, import it into a script to use.")
