@@ -29,4 +29,4 @@ def scanned_poem(path, meter):
 
 
 if __name__ == "__main__":
-    print(scanned_poem(POEM_PATH, POEM_METER))
+    app.run()
