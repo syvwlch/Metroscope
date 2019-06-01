@@ -18,3 +18,5 @@ https://github.com/aparrish/pronouncingpy
 https://github.com/henchc/syllabipy
 
 The public repository only has text that is in the public domain, of course, but you can put other text in /Texts/NonFreeTexts/ as well. The gitignore file has been set to ignore anything you place there.
+
+The lyre favicon design is by Andrejs Kirma from the Noun Project.
