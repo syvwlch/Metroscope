@@ -13,11 +13,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Metroscope</a>
+            <a class="navbar-brand" href="{{ url_for('home') }}">Metroscope</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('poem') }}">Ode on Indolence</a></li>
             </ul>
         </div>
     </div>
