@@ -5,14 +5,15 @@ This summer I want to play with scansion, meter, and rhyme, rather than a specif
 
 This started out as a rough little script, but it shows enough promise that I decided to make a repository and apply some discipline.
 
-Metroscope.py is the module, which is imported into the actual analysis scripts.
+This started out at the command line but since a big part of this is showing patterns in the text, I switched to HTML output and made this into a little website.
 
-Currently the only dependencies are:
-Allison Parrish's excellent interface to CMU's dictionary of pronunciations
+Currently the main dependencies are on Flask and Bootstrap, plus:
+
+1. Allison Parrish's excellent interface to CMU's dictionary of pronunciations:
 
 https://github.com/aparrish/pronouncingpy
 
-and Christopher Henc's handy syllabification algorithm.
+2. and Christopher Henc's handy syllabification algorithm:
 
 https://github.com/henchc/syllabipy
 

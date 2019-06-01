@@ -1,9 +1,11 @@
 """Analysis of Keat's Ode on Indolence."""
 
 from flask import Flask, render_template
+from flask_bootstrap import Bootstrap
 from Metroscope import scanned_poem
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 
 
 @app.route("/")

@@ -9,6 +9,7 @@ verify_ssl = true
 pronouncing = "*"
 syllabipy = "*"
 flask = "*"
+flask-bootstrap = "*"
 
 [requires]
 python_version = "3.6"

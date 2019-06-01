@@ -1,9 +1,11 @@
 {% extends "base.html" %}
-    {% block title %}
-        Index
-    {% endblock title %}
-    {% block body %}
-        <h1>Metroscope</h1>
-        <p>Choose a poem from the list below:</p>
-        <a href="/poem">Ode on Indolence</a>
-    {% endblock body %}
+
+{% block title %}
+    Index
+{% endblock title %}
+
+{% block page_content %}
+    <h1>Metroscope</h1>
+    <p>Choose a poem from the list below:</p>
+    <a href="/poem">Ode on Indolence</a>
+{% endblock page_content %}
