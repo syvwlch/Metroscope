@@ -1,4 +1,4 @@
-"""Analysis of Keat's Ode on Indolence."""
+"""Run script for the website."""
 
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
@@ -12,6 +12,12 @@ bootstrap = Bootstrap(app)
 def home():
     """Define the home route."""
     return render_template("home.html")
+
+
+@app.route("/about")
+def about():
+    """Define the about route."""
+    return render_template("about.html")
 
 
 @app.route("/poem")
