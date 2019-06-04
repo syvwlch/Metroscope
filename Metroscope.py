@@ -74,6 +74,13 @@ def clean_line(line):
     return clean
 
 
+def tag_string(snippet, tag):
+    """Wrap a text snippet with an html tag."""
+    opening_tag = "<" + tag + ">"
+    closing_tag = "</" + tag + ">"
+    return opening_tag + snippet + closing_tag
+
+
 def stress_line(line, stress_pattern):
     """
     Mark up a line of verse based on the stress pattern provided.
@@ -89,12 +96,9 @@ def stress_line(line, stress_pattern):
         word_syllables = get_syllables_word(word)
         for syllable in word_syllables:
             if len(word_syllables) and len(word_stresses):
-                syllable_stress = word_stresses[0]
-                word_stresses = word_stresses[1:]
-                if syllable_stress == "/":
-                    stressed_line += "<strong>"
-                    stressed_line += syllable
-                    stressed_line += "</strong>"
+                syllable_stress = word_stresses.pop(0)
+                if syllable_stress:
+                    stressed_line += tag_string(syllable, "strong")
                 else:
                     stressed_line += syllable
             elif len(word_syllables) and not len(word_stresses):

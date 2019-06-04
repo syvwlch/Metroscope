@@ -27,7 +27,7 @@ def poem():
     POET_NAME = "John Keats"
     POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
     METER_NAME = "strict iambic pentameter"
-    METER_PATTERN = "x/x/x/x/x/"
+    METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
     return render_template("poem.html",
                            title=POEM_TITLE,
                            poet=POET_NAME,
