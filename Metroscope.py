@@ -85,7 +85,7 @@ def stress_line(line, stress_pattern):
     """
     Mark up a line of verse based on the stress pattern provided.
 
-    Return the line with the stressed syllables forced to uppercase.
+    Return the line with the stressed syllables wrapped with a <strong> tag.
     """
     stressed_line = ""
     line = clean_line(line)
