@@ -78,12 +78,8 @@ def stress_line(line, stress_pattern):
     """
     Mark up a line of verse based on the stress pattern provided.
 
-    Return a tuple with:
-    - the stresses aligned with the first vowel of each syllable, and
-    - the line with the stressed syllables forced to uppercase.
+    Return the line with the stressed syllables forced to uppercase.
     """
-    VOWELS = "aeèiouyAEIOUY"
-    aligned_stresses = ""
     stressed_line = ""
     line = clean_line(line)
     for word in line.split():
@@ -101,22 +97,12 @@ def stress_line(line, stress_pattern):
                     stressed_line += "</strong>"
                 else:
                     stressed_line += syllable
-                for char in syllable:
-                    if char in VOWELS:
-                        aligned_stresses += syllable_stress
-                        syllable_stress = " "
-                    else:
-                        aligned_stresses += " "
             elif len(word_syllables) and not len(word_stresses):
                 stressed_line += syllable
-                for char in syllable:
-                    aligned_stresses += " "
             else:
                 stressed_line += " "
-                aligned_stresses += " "
         stressed_line += " "
-        aligned_stresses += " "
-    return aligned_stresses, stressed_line
+    return stressed_line
 
 
 def scanned_poem(path, meter):
@@ -127,7 +113,7 @@ def scanned_poem(path, meter):
             if line == "\n":
                 result += "</p>\n<p>"
             else:
-                _, stressed_line = stress_line(line, meter)
+                stressed_line = stress_line(line, meter)
                 result += stressed_line
                 result += "<br>\n"
     result += "</p>\n</div>"
