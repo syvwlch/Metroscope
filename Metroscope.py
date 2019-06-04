@@ -21,7 +21,7 @@ def clean_word(word):
 
 
 def get_stress_word(word):
-    """Retrieve the stresses for the given word."""
+    """Return a list of the stresses for the given word."""
     custom_dict = {
                     "phidian": "20",
                     "indolence": "200",
@@ -53,7 +53,7 @@ def get_stress_word(word):
             word_stresses = ""
     if "è" in word:
         word_stresses += "1"
-    return word_stresses
+    return list(word_stresses)
 
 
 def get_syllables_word(word):
@@ -89,12 +89,18 @@ def stress_line(line, stress_pattern):
     """
     stressed_line = ""
     line = clean_line(line)
+
     for word in line.split():
         stressed_word = ""
-        number_stresses = len(get_stress_word(word))
+        word_syllables = get_syllables_word(word)
+        word_stresses = get_stress_word(word)
+
+        # use the stress pattern directly for the word stresses
+        number_stresses = len(word_stresses)
         word_stresses = stress_pattern[0:number_stresses]
         stress_pattern = stress_pattern[number_stresses:]
-        word_syllables = get_syllables_word(word)
+        # -----------------------------------------------------
+
         for syllable in word_syllables:
             if word_syllables and word_stresses:
                 syllable_stress = word_stresses.pop(0)
@@ -107,6 +113,7 @@ def stress_line(line, stress_pattern):
             else:
                 stressed_word += " "
         stressed_line += tag_string(stressed_word, "span") + " "
+
     return stressed_line
 
 
