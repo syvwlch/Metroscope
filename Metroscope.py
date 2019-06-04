@@ -118,8 +118,7 @@ def scanned_poem(path, meter):
             if line == "\n":
                 result += "</p>\n<p>"
             else:
-                stressed_line = stress_line(line, meter)
-                result += stressed_line
+                result += stress_line(line, meter)
                 result += "<br>\n"
     result += "</p>\n</div>"
     return result
