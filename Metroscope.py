@@ -81,43 +81,52 @@ def tag_string(snippet, tag):
     return opening_tag + snippet + closing_tag
 
 
+def stress_word(word, stresses):
+    """
+    Mark up a word based on the stress pattern provided.
+
+    Return the word with the stresses syllables wrapped with a <strong> tag,
+    and a <span> tag around the entire word.
+    """
+    syllables = get_syllables_word(word)
+    result = ""
+    for syllable in syllables:
+        if stresses:
+            syllable_stress = stresses.pop(0)
+            if syllable_stress:
+                result += tag_string(syllable, "strong")
+            else:
+                result += syllable
+        else:
+            result += syllable
+    return tag_string(result, "span")
+
+
 def stress_line(line, stress_pattern):
     """
     Mark up a line of verse based on the stress pattern provided.
-
-    Return the line with the stressed syllables wrapped with a <strong> tag.
     """
     stressed_line = ""
     line = clean_line(line)
-
     for word in line.split():
-        stressed_word = ""
-        word_syllables = get_syllables_word(word)
         word_stresses = get_stress_word(word)
         number_stresses = len(word_stresses)
         word_meter = stress_pattern[0:number_stresses]
         stress_pattern = stress_pattern[number_stresses:]
-
         # use the stress pattern directly for the word stresses
         word_stresses = word_meter
         # -----------------------------------------------------
-
-        for syllable in word_syllables:
-            if word_stresses:
-                syllable_stress = word_stresses.pop(0)
-                if syllable_stress:
-                    stressed_word += tag_string(syllable, "strong")
-                else:
-                    stressed_word += syllable
-            else:
-                stressed_word += syllable
-        stressed_line += tag_string(stressed_word, "span") + " "
-
+        stressed_line += stress_word(word, word_stresses) + " "
     return stressed_line
 
 
 def scanned_poem(path, meter):
-    """Create HTML div with the scanned poem."""
+    """
+    Create HTML with the scanned poem.
+
+    Wrap the poem in a <div> tag, each stanza in a <p> tag,
+    and end each line with a <br> tag.
+    """
     result = "<div>\n<p>\n"
     with open(path, "r") as poem:
         for line in poem:
