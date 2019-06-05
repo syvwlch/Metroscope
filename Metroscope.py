@@ -94,24 +94,23 @@ def stress_line(line, stress_pattern):
         stressed_word = ""
         word_syllables = get_syllables_word(word)
         word_stresses = get_stress_word(word)
+        number_stresses = len(word_stresses)
+        word_meter = stress_pattern[0:number_stresses]
+        stress_pattern = stress_pattern[number_stresses:]
 
         # use the stress pattern directly for the word stresses
-        number_stresses = len(word_stresses)
-        word_stresses = stress_pattern[0:number_stresses]
-        stress_pattern = stress_pattern[number_stresses:]
+        word_stresses = word_meter
         # -----------------------------------------------------
 
         for syllable in word_syllables:
-            if word_syllables and word_stresses:
+            if word_stresses:
                 syllable_stress = word_stresses.pop(0)
                 if syllable_stress:
                     stressed_word += tag_string(syllable, "strong")
                 else:
                     stressed_word += syllable
-            elif word_syllables and not word_stresses:
-                stressed_word += syllable
             else:
-                stressed_word += " "
+                stressed_word += syllable
         stressed_line += tag_string(stressed_word, "span") + " "
 
     return stressed_line
