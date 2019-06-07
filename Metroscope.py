@@ -12,7 +12,6 @@ def clean_word(word):
     # Many poets mark elided vowels with a ’
     clean = clean.replace("’s", "")
     clean = clean.replace("’d", "ed")
-    clean = clean.replace("’r", "er")
     # Lastly, force lowercase and strip punctuation
     clean = clean.lower()
     for punct in ".,;:!?—":
@@ -42,6 +41,7 @@ def get_stress_word(word):
                     "dieted": "202",
                     "masque": "2",
                     "spright": "2",
+                    "flow’rs": "2",
                   }
     cleaned_word = clean_word(word)
     try:
@@ -57,12 +57,20 @@ def get_stress_word(word):
 
 
 def get_syllables_word(word):
-    """Retrieve the syllables for a given word."""
+    """
+    Retrieve the syllables for a given word.
+
+    Returns a list of [syllable text, syllable stress].
+    """
     syllables = SonoriPy(word.lower())
+    stresses = get_stress_word(word)
     result = []
     for syllable in syllables:
-        result.append(word[0:len(syllable)])
-        word = word[len(syllable):]
+        if len(stresses) > 1:
+            result.append([word[0:len(syllable)], stresses.pop(0)])
+            word = word[len(syllable):]
+        else:
+            result.append([word, stresses])
     return result
 
 
@@ -74,9 +82,9 @@ def clean_line(line):
     return clean
 
 
-def tag_string(snippet, tag):
+def tag_string(snippet, tag, style=""):
     """Wrap a text snippet with an html tag."""
-    opening_tag = "<" + tag + ">"
+    opening_tag = "<" + tag + " style='" + style + "'>"
     closing_tag = "</" + tag + ">"
     return opening_tag + snippet + closing_tag
 
@@ -87,25 +95,30 @@ def stress_word(word, stresses):
 
     Return the word with the stresses syllables wrapped with a <strong> tag,
     and a <span> tag around the entire word.
+    Adds a style attribute based on whether the syllable's normal stress
+    aligns with the expected meter.
     """
+    MATCH = "color:black"
+    NOT_MATCH = "color:red"
     syllables = get_syllables_word(word)
     result = ""
-    for syllable in syllables:
+    for syllable, pronunciation_stress in syllables:
         if stresses:
-            syllable_stress = stresses.pop(0)
-            if syllable_stress:
-                result += tag_string(syllable, "strong")
+            if stresses.pop(0):
+                if pronunciation_stress == '0':
+                    result += tag_string(syllable, "strong", NOT_MATCH)
+                else:
+                    result += tag_string(syllable, "strong", MATCH)
             else:
-                result += syllable
-        else:
-            result += syllable
+                if pronunciation_stress == '2':
+                    result += tag_string(syllable, "small", NOT_MATCH)
+                else:
+                    result += tag_string(syllable, "small", MATCH)
     return tag_string(result, "span")
 
 
 def stress_line(line, stress_pattern):
-    """
-    Mark up a line of verse based on the stress pattern provided.
-    """
+    """Mark up a line of verse based on the stress pattern provided."""
     stressed_line = ""
     line = clean_line(line)
     for word in line.split():
@@ -117,6 +130,8 @@ def stress_line(line, stress_pattern):
         word_stresses = word_meter
         # -----------------------------------------------------
         stressed_line += stress_word(word, word_stresses) + " "
+    if stress_pattern:
+        stressed_line += "<b style='color:red'>         Incomplete meter!</b>"
     return stressed_line
 
 
