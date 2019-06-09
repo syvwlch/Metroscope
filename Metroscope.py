@@ -4,6 +4,45 @@ from pronouncing import stresses_for_word
 from syllabipy.sonoripy import SonoriPy
 
 
+class WordBuilder(object):
+    """
+    Prepare a given word for analysis.
+
+    Word is given as it is in the original, and the class provides a lowercase
+    version ready for CMU lookup and syllable separation, as well as a list of
+    syllable objects with various properties.
+    """
+
+    def __init__(self, word):
+        """Initialize from original word."""
+        self.word = word
+
+    def __str__(self):
+        """Create the informal string representation of the class."""
+        return self.word
+
+    def __repr__(self):
+        """Create the formal string representation of the class."""
+        return "WordBuilder('" + self.word + "')"
+
+    @property
+    def syllables(self):
+        """Return a read-only list of the original word's syllables."""
+        word = self.word
+        syllables = SonoriPy(word.lower())
+        stresses = get_stress_word(word)
+        result = []
+        for syllable in syllables:
+            if len(stresses) > 1:
+                result.append([word[0:len(syllable)], stresses.pop(0)])
+                word = word[len(syllable):]
+            elif len(stresses) == 1:
+                result.append([word, stresses.pop(0)])
+            else:
+                pass
+        return result
+
+
 def clean_word(word):
     """Prepare a word for CMU lookup."""
     clean = word
