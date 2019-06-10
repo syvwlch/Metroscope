@@ -4,23 +4,23 @@ from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from Metroscope import scanned_poem
 
-app = Flask(__name__)
-bootstrap = Bootstrap(app)
+application = Flask(__name__)
+bootstrap = Bootstrap(application)
 
 
-@app.route("/")
+@application.route("/")
 def home():
     """Define the home route."""
     return render_template("home.html")
 
 
-@app.route("/about")
+@application.route("/about")
 def about():
     """Define the about route."""
     return render_template("about.html")
 
 
-@app.route("/poem")
+@application.route("/poem")
 def poem():
     """Define the poem route."""
     POEM_TITLE = "Ode on Indolence"
@@ -36,17 +36,17 @@ def poem():
                            )
 
 
-@app.errorhandler(404)
+@application.errorhandler(404)
 def page_not_found(e):
     """Define the route for the 404 error page."""
     return render_template('404.html'), 404
 
 
-@app.errorhandler(500)
+@application.errorhandler(500)
 def internal_server_error(e):
     """Define the route for the 500 error page."""
     return render_template('500.html'), 500
 
 
 if __name__ == "__main__":
-    app.run()
+    application.run()
