@@ -7,5 +7,6 @@
 {% block page_content %}
     <h1>Metroscope</h1>
     <p>Choose a poem from the list below:</p>
-    <a href="{{ url_for('poem') }}">Ode on Indolence</a>
+    <li><a href="{{ url_for('poem', filename='OdeOnIndolence') }}">Ode on Indolence</a></li>
+    <li><a href="{{ url_for('poem', filename='OldManWithBeard') }}">There Was an Old Man with a Beard</a></li>
 {% endblock page_content %}
