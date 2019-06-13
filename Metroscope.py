@@ -53,7 +53,7 @@ def clean_word(word):
     clean = clean.replace("’d", "ed")
     # Lastly, force lowercase and strip punctuation
     clean = clean.lower()
-    for punct in ".,;:!?—":
+    for punct in ".,;:!?—'":
         clean = clean.replace(punct, "")
     return clean
 
@@ -170,7 +170,7 @@ def stress_line(line, stress_pattern):
         # -----------------------------------------------------
         stressed_line += stress_word(word, word_stresses) + " "
     if stress_pattern:
-        stressed_line += "<b style='color:red'> Line is missing some feet!</b>"
+        stressed_line += "<b style='color:red'> !</b>"
     return stressed_line
 
 

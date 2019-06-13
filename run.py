@@ -29,6 +29,12 @@ def poem(filename):
         POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
         METER_NAME = "strict iambic pentameter"
         METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    elif filename == "OldManWithBeard":
+        POEM_TITLE = "There Was an Old Man with a Beard"
+        POET_NAME = "Edward Lear"
+        POEM_PATH = "Texts/FreeTexts/OldManWithBeard.txt"
+        METER_NAME = "limerick"
+        METER_PATTERN = [0, 1, 0, 0, 1, 0, 0, 1, ]
     else:
         return render_template('404.html'), 404
     return render_template("poem.html",
