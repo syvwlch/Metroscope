@@ -46,15 +46,16 @@ class WordBuilder(object):
 def clean_word(word):
     """Prepare a word for CMU lookup."""
     clean = word
+    # First, force lowercase and strip punctuation
+    clean = clean.lower()
+    for punct in ".,;:!?—'\"":
+        clean = clean.replace(punct, "")
     # Many poets mark added stress on a silent e with an è
     clean = clean.replace("è", "e")
-    # Many poets mark elided vowels with a ’
-    clean = clean.replace("’s", "")
+    # Many poets mark elided vowels with a ’ at the end of a wor
+    if clean[-2:] == "’s":
+        clean = clean.replace("’s", "")
     clean = clean.replace("’d", "ed")
-    # Lastly, force lowercase and strip punctuation
-    clean = clean.lower()
-    for punct in ".,;:!?—'":
-        clean = clean.replace(punct, "")
     return clean
 
 
@@ -81,6 +82,18 @@ def get_stress_word(word):
                     "masque": "2",
                     "spright": "2",
                     "flow’rs": "2",
+                    "deniest": "20",
+                    "know’st": "2",
+                    "triumph’st": "20",
+                    "say’st": "2",
+                    "find’st": "2",
+                    "yield’st": "2",
+                    "’tis": "2",
+                    "purpled": "20",
+                    "maidenhead": "202",
+                    "orisons": "200",
+                    "mockeries": "200",
+                    "pallor": "20",
                   }
     cleaned_word = clean_word(word)
     try:
@@ -108,8 +121,10 @@ def get_syllables_word(word):
         if len(stresses) > 1:
             result.append([word[0:len(syllable)], stresses.pop(0)])
             word = word[len(syllable):]
+        elif len(stresses) == 1:
+            result.append([word, stresses.pop(0)])
         else:
-            result.append([word, stresses])
+            pass
     return result
 
 
@@ -150,9 +165,11 @@ def stress_word(word, stresses):
                     result += tag_string(syllable, "strong", MATCH)
             else:
                 if pronunciation_stress == '2':
-                    result += tag_string(syllable, "small", NOT_MATCH)
+                    result += tag_string(syllable, "span", NOT_MATCH)
                 else:
-                    result += tag_string(syllable, "small", MATCH)
+                    result += tag_string(syllable, "span", MATCH)
+        else:
+            result += tag_string(syllable, "small", NOT_MATCH)
     return tag_string(result, "span")
 
 
@@ -169,8 +186,8 @@ def stress_line(line, stress_pattern):
         word_stresses = word_meter
         # -----------------------------------------------------
         stressed_line += stress_word(word, word_stresses) + " "
-    if stress_pattern:
-        stressed_line += "<b style='color:red'> !</b>"
+    for stress in stress_pattern:
+        stressed_line += "<b style='color:red'> _ </b>"
     return stressed_line
 
 

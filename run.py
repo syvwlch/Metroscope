@@ -33,8 +33,20 @@ def poem(filename):
         POEM_TITLE = "There Was an Old Man with a Beard"
         POET_NAME = "Edward Lear"
         POEM_PATH = "Texts/FreeTexts/OldManWithBeard.txt"
-        METER_NAME = "limerick"
+        METER_NAME = "anapestic trimeter"
         METER_PATTERN = [0, 1, 0, 0, 1, 0, 0, 1, ]
+    elif filename == "Flea":
+        POEM_TITLE = "The Flea"
+        POET_NAME = "John Donne"
+        POEM_PATH = "Texts/FreeTexts/Flea.txt"
+        METER_NAME = "strict iambic pentameter"
+        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    elif filename == "AnthemForDoomedYouth":
+        POEM_TITLE = "Anthem for Doomed Youth"
+        POET_NAME = "Wilfred Owen"
+        POEM_PATH = "Texts/FreeTexts/AnthemForDoomedYouth.txt"
+        METER_NAME = "strict iambic pentameter"
+        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
     else:
         return render_template('404.html'), 404
     return render_template("poem.html",
