@@ -93,10 +93,10 @@ class Test_clean_word(unittest.TestCase):
                 self.assertEqual(cleaned_word, clean_word(word))
 
     def test_word_has_possessive(self):
-        """Should strip ’s in a word."""
+        """Should strip final ’s without touching longer strings."""
         WORDS = (("pleasure’s", "pleasure"),
                  ("man’s", "man"),
-                 ("heart’s", "heart"),
+                 ("know’st", "know’st"),
                  )
         for word, cleaned_word in WORDS:
             with self.subTest('Tried to clean: ' + word):
