@@ -47,6 +47,12 @@ def poem(filename):
         POEM_PATH = "Texts/FreeTexts/AnthemForDoomedYouth.txt"
         METER_NAME = "strict iambic pentameter"
         METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    elif filename == "NearingForty":
+        POEM_TITLE = "Nearing Forty"
+        POET_NAME = "Derek Walcott"
+        POEM_PATH = "Texts/FreeTexts/NearingForty.txt"
+        METER_NAME = "strict iambic pentameter"
+        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
     else:
         return render_template('404.html'), 404
     return render_template("poem.html",
