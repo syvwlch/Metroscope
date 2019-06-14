@@ -20,14 +20,41 @@ def about():
     return render_template("about.html")
 
 
-@application.route("/poem")
-def poem():
+@application.route("/poem/<filename>")
+def poem(filename):
     """Define the poem route."""
-    POEM_TITLE = "Ode on Indolence"
-    POET_NAME = "John Keats"
-    POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
-    METER_NAME = "strict iambic pentameter"
-    METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    if filename == "OdeOnIndolence":
+        POEM_TITLE = "Ode on Indolence"
+        POET_NAME = "John Keats"
+        POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
+        METER_NAME = "strict iambic pentameter"
+        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    elif filename == "OldManWithBeard":
+        POEM_TITLE = "There Was an Old Man with a Beard"
+        POET_NAME = "Edward Lear"
+        POEM_PATH = "Texts/FreeTexts/OldManWithBeard.txt"
+        METER_NAME = "anapestic trimeter"
+        METER_PATTERN = [0, 1, 0, 0, 1, 0, 0, 1, ]
+    elif filename == "Flea":
+        POEM_TITLE = "The Flea"
+        POET_NAME = "John Donne"
+        POEM_PATH = "Texts/FreeTexts/Flea.txt"
+        METER_NAME = "strict iambic pentameter"
+        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    elif filename == "AnthemForDoomedYouth":
+        POEM_TITLE = "Anthem for Doomed Youth"
+        POET_NAME = "Wilfred Owen"
+        POEM_PATH = "Texts/FreeTexts/AnthemForDoomedYouth.txt"
+        METER_NAME = "strict iambic pentameter"
+        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    elif filename == "NearingForty":
+        POEM_TITLE = "Nearing Forty"
+        POET_NAME = "Derek Walcott"
+        POEM_PATH = "Texts/FreeTexts/NearingForty.txt"
+        METER_NAME = "strict iambic pentameter"
+        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
+    else:
+        return render_template('404.html'), 404
     return render_template("poem.html",
                            title=POEM_TITLE,
                            poet=POET_NAME,
