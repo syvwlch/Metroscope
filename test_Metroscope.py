@@ -116,7 +116,7 @@ class Test_clean_word(unittest.TestCase):
         """Should strip punctuation."""
         WORDS = (("seen,", "seen"),
                  ("faced;", "faced"),
-                 (".,;:!?—", ""),
+                 (".,;:!?—'\"", ""),
                  )
         for word, cleaned_word in WORDS:
             with self.subTest('Tried to clean: ' + word):
