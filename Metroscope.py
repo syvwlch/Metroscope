@@ -3,6 +3,41 @@
 from pronouncing import stresses_for_word
 from syllabipy.sonoripy import SonoriPy
 
+CUSTOM_DICT = {
+                "phidian": "20",
+                "indolence": "200",
+                "benumbed": "02",
+                "unhaunted": "020",
+                "nothingness": "202",
+                "embroidered": "020",
+                "besprinkled": "020",
+                "o’er": "0",
+                "unmeek": "02",
+                "poesy": "202",
+                "forsooth": "02",
+                "honeyed": "20",
+                "casement": "20",
+                "leaved": "2",
+                "throstle": "20",
+                "’twas": "2",
+                "dieted": "202",
+                "masque": "2",
+                "spright": "2",
+                "flow’rs": "2",
+                "deniest": "20",
+                "know’st": "2",
+                "triumph’st": "20",
+                "say’st": "2",
+                "find’st": "2",
+                "yield’st": "2",
+                "’tis": "2",
+                "purpled": "20",
+                "maidenhead": "202",
+                "orisons": "200",
+                "mockeries": "200",
+                "pallor": "20",
+              }
+
 
 class WordBuilder(object):
     """
@@ -13,11 +48,11 @@ class WordBuilder(object):
     syllable objects with various properties.
     """
 
-    def __init__(self, word):
+    def __init__(self, word, custom_dict={}):
         """Initialize from original word."""
         self.word = word
         self.syllables = SonoriPy(word.lower())
-        self.stresses = get_stress_word(word)
+        self.custom_dict = custom_dict
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -43,6 +78,45 @@ class WordBuilder(object):
             else:
                 pass
         return result
+
+    @property
+    def clean_word(self):
+        """Prepare a word for CMU lookup."""
+        clean = self.word
+        # First, force lowercase and strip punctuation
+        clean = clean.lower()
+        for punct in ".,;:!?—'\"":
+            clean = clean.replace(punct, "")
+        # Many poets mark added stress on a silent e with an è
+        clean = clean.replace("è", "e")
+        # Many poets mark elided vowels with a ’ at the end of a wor
+        if clean[-2:] == "’s":
+            clean = clean.replace("’s", "")
+        clean = clean.replace("’d", "ed")
+        return clean
+
+    @property
+    def stresses(self):
+        """Return a list of the stresses for the given word."""
+        cleaned_word = self.clean_word
+        try:
+            word_stresses = self.custom_dict[cleaned_word]
+        except (KeyError, TypeError):
+            try:
+                word_stresses = stresses_for_word(str(cleaned_word))[0]
+            except IndexError:
+                word_stresses = ""
+        if "è" in self.word:
+            word_stresses += "1"
+        return list(word_stresses)
+
+
+"""
+Everything below this point is pre-refactoring code.
+
+The site runs on the code below right now, while unit tests
+run on the code above.
+"""
 
 
 def clean_word(word):

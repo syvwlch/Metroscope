@@ -26,6 +26,30 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(WordBuilder(word).word,
                                  word)
 
+    def test_str_magic_method(self):
+        """Should return the original word."""
+        WORDS = ("One",
+                 "morn",
+                 "belovèd",
+                 "pass’d",
+                 )
+        for word in WORDS:
+            with self.subTest('Original word: ' + word):
+                self.assertEqual(str(WordBuilder(word)),
+                                 word)
+
+    def test_repr_magic_method(self):
+        """Should evaluate to itself."""
+        WORDS = ("One",
+                 "morn",
+                 "belovèd",
+                 "pass’d",
+                 )
+        for word in WORDS:
+            with self.subTest('Original word: ' + word):
+                self.assertEqual(repr(WordBuilder(word)),
+                                 "WordBuilder('" + word + "')")
+
     def test_syllables(self):
         """Should set the syllables from the original word."""
         WORDS = (
@@ -65,47 +89,15 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(WordBuilder(word).stressed_syllables,
                                  stressed_syllables)
 
-    def test_str_magic_method(self):
-        """Should return the original word."""
-        WORDS = ("One",
-                 "morn",
-                 "belovèd",
-                 "pass’d",
-                 )
-        for word in WORDS:
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(str(WordBuilder(word)),
-                                 word)
-
-    def test_repr_magic_method(self):
-        """Should evaluate to itself."""
-        WORDS = ("One",
-                 "morn",
-                 "belovèd",
-                 "pass’d",
-                 )
-        for word in WORDS:
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(repr(WordBuilder(word)),
-                                 "WordBuilder('" + word + "')")
-
-
-class Test_clean_word(unittest.TestCase):
-    """
-    Test the clean_word function.
-
-    Coverage complete.
-    """
-
     def test_word_already_clean(self):
         """Should return an already clean word unchanged."""
-        WORDS = ("morn",
-                 "three",
-                 "figures",
+        WORDS = ("automatic",
+                 "serene",
                  )
         for word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(word, clean_word(word))
+                self.assertEqual(WordBuilder(word).clean_word,
+                                 word)
 
     def test_word_has_grave_over_e(self):
         """Should change an 'è' to an 'e'."""
@@ -115,7 +107,8 @@ class Test_clean_word(unittest.TestCase):
                  )
         for word, cleaned_word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(cleaned_word, clean_word(word))
+                self.assertEqual(WordBuilder(word).clean_word,
+                                 cleaned_word)
 
     def test_word_has_elision(self):
         """Should replace ’d with ed."""
@@ -124,7 +117,8 @@ class Test_clean_word(unittest.TestCase):
                  )
         for word, cleaned_word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(cleaned_word, clean_word(word))
+                self.assertEqual(WordBuilder(word).clean_word,
+                                 cleaned_word)
 
     def test_word_has_possessive(self):
         """Should strip final ’s without touching longer strings."""
@@ -134,7 +128,8 @@ class Test_clean_word(unittest.TestCase):
                  )
         for word, cleaned_word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(cleaned_word, clean_word(word))
+                self.assertEqual(WordBuilder(word).clean_word,
+                                 cleaned_word)
 
     def test_word_has_uppercase(self):
         """Should force lowercase."""
@@ -144,7 +139,8 @@ class Test_clean_word(unittest.TestCase):
                  )
         for word, cleaned_word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(cleaned_word, clean_word(word))
+                self.assertEqual(WordBuilder(word).clean_word,
+                                 cleaned_word)
 
     def test_word_has_punctuation(self):
         """Should strip punctuation."""
@@ -154,7 +150,21 @@ class Test_clean_word(unittest.TestCase):
                  )
         for word, cleaned_word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(cleaned_word, clean_word(word))
+                self.assertEqual(WordBuilder(word).clean_word,
+                                 cleaned_word)
+
+    def test_custom_dict(self):
+        """Should retrieve stresses from custom dict if provided."""
+        WORDS = {
+                "phidian": "20",
+                "indolence": "200",
+                 }
+        for word, stresses in WORDS.items():
+            with self.subTest('Original word: ' + word):
+                self.assertNotEqual(WordBuilder(word).stresses,
+                                    list(stresses))
+                self.assertEqual(WordBuilder(word, custom_dict=WORDS).stresses,
+                                 list(stresses))
 
 
 if __name__ == '__main__':
