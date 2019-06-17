@@ -12,8 +12,47 @@ class Test_WordBuilder(unittest.TestCase):
     """
     Test the WordBuilder class.
 
-    Using TDD so coverage should be complete.
+    Using TDD so coverage needs to be complete.
     """
+
+    def test_init(self):
+        """Should initialize from the original word."""
+        WORDS = (
+                 "automatic",
+                 "serene",
+                 )
+        for word in WORDS:
+            with self.subTest('Original word: ' + word):
+                self.assertEqual(WordBuilder(word).word,
+                                 word)
+
+    def test_syllables(self):
+        """Should set the syllables from the original word."""
+        WORDS = (
+                 ("automatic",
+                  ['au', 'to', 'ma', 'tic']),
+                 ("serene",
+                  ['se', 're', 'ne']),
+                 )
+        for word, syllables in WORDS:
+            with self.subTest('Original word: ' + word):
+                self.assertEqual(WordBuilder(word).syllables,
+                                 syllables)
+
+    def test_stresses(self):
+        """Should set the stresses from the original word."""
+        WORDS = (
+                 ("automatic",
+                  ['2', '0', '1', '0']),
+                 ("serene",
+                  ['0', '1']),
+                 )
+        for word, stresses in WORDS:
+            with self.subTest('Original word: ' + word):
+                actual = WordBuilder(word).stresses
+                expected = stresses
+                self.assertEqual(WordBuilder(word).stresses,
+                                 stresses)
 
     def test_stressed_syllables(self):
         """Should be a list of the original word's syllables with stress."""

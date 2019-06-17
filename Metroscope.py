@@ -16,6 +16,8 @@ class WordBuilder(object):
     def __init__(self, word):
         """Initialize from original word."""
         self.word = word
+        self.syllables = SonoriPy(word.lower())
+        self.stresses = get_stress_word(word)
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -29,8 +31,8 @@ class WordBuilder(object):
     def stressed_syllables(self):
         """Return a read-only list of the original word's syllables."""
         word = self.word
-        syllables = SonoriPy(word.lower())
-        stresses = get_stress_word(word)
+        syllables = self.syllables
+        stresses = self.stresses
         result = []
         for syllable in syllables:
             if len(stresses) > 1:
