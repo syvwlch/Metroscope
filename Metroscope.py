@@ -26,7 +26,7 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
-    def syllables(self):
+    def stressed_syllables(self):
         """Return a read-only list of the original word's syllables."""
         word = self.word
         syllables = SonoriPy(word.lower())

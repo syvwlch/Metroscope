@@ -15,8 +15,8 @@ class Test_WordBuilder(unittest.TestCase):
     Using TDD so coverage should be complete.
     """
 
-    def test_syllables(self):
-        """Should be a list of the original word's syllables."""
+    def test_stressed_syllables(self):
+        """Should be a list of the original word's syllables with stress."""
         WORDS = (
                  ("automatic",
                   [['au', '2'], ['to', '0'], ['ma', '1'], ['tic', '0']]),
@@ -25,7 +25,7 @@ class Test_WordBuilder(unittest.TestCase):
                  )
         for word, syllables in WORDS:
             with self.subTest('Original word: ' + word):
-                actual_str = WordBuilder(word).syllables
+                actual_str = WordBuilder(word).stressed_syllables
                 expected_str = syllables
                 self.assertEqual(actual_str, expected_str)
 
