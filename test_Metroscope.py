@@ -49,8 +49,6 @@ class Test_WordBuilder(unittest.TestCase):
                  )
         for word, stresses in WORDS:
             with self.subTest('Original word: ' + word):
-                actual = WordBuilder(word).stresses
-                expected = stresses
                 self.assertEqual(WordBuilder(word).stresses,
                                  stresses)
 
@@ -62,11 +60,10 @@ class Test_WordBuilder(unittest.TestCase):
                  ("serene",
                   [['se', '0'], ['rene', '1']]),
                  )
-        for word, syllables in WORDS:
+        for word, stressed_syllables in WORDS:
             with self.subTest('Original word: ' + word):
-                actual_str = WordBuilder(word).stressed_syllables
-                expected_str = syllables
-                self.assertEqual(actual_str, expected_str)
+                self.assertEqual(WordBuilder(word).stressed_syllables,
+                                 stressed_syllables)
 
     def test_str_magic_method(self):
         """Should return the original word."""
@@ -77,9 +74,8 @@ class Test_WordBuilder(unittest.TestCase):
                  )
         for word in WORDS:
             with self.subTest('Original word: ' + word):
-                actual_str = str(WordBuilder(word))
-                expected_str = word
-                self.assertEqual(actual_str, expected_str)
+                self.assertEqual(str(WordBuilder(word)),
+                                 word)
 
     def test_repr_magic_method(self):
         """Should evaluate to itself."""
@@ -90,9 +86,8 @@ class Test_WordBuilder(unittest.TestCase):
                  )
         for word in WORDS:
             with self.subTest('Original word: ' + word):
-                actual_str = repr(WordBuilder(word))
-                expected_str = "WordBuilder('" + word + "')"
-                self.assertEqual(actual_str, expected_str)
+                self.assertEqual(repr(WordBuilder(word)),
+                                 "WordBuilder('" + word + "')")
 
 
 class Test_clean_word(unittest.TestCase):
