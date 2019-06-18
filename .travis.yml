@@ -5,4 +5,6 @@ python:
 install:
   - pip install pipenv
   - pipenv install
-script: python test_Metroscope.py
+script:
+  - flake8
+  - python test_Metroscope.py
