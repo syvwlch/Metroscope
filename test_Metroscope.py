@@ -76,6 +76,19 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(WordBuilder(word).stresses,
                                  stresses)
 
+    def test_custom_dict(self):
+        """Should retrieve stresses from custom dict if provided."""
+        WORDS = {
+                "phidian": "20",
+                "indolence": "200",
+                 }
+        for word, stresses in WORDS.items():
+            with self.subTest('Original word: ' + word):
+                self.assertNotEqual(WordBuilder(word).stresses,
+                                    list(stresses))
+                self.assertEqual(WordBuilder(word, custom_dict=WORDS).stresses,
+                                 list(stresses))
+
     def test_stressed_syllables(self):
         """Should be a list of the original word's syllables with stress."""
         WORDS = (
@@ -152,19 +165,6 @@ class Test_WordBuilder(unittest.TestCase):
             with self.subTest('Tried to clean: ' + word):
                 self.assertEqual(WordBuilder(word).clean_word,
                                  cleaned_word)
-
-    def test_custom_dict(self):
-        """Should retrieve stresses from custom dict if provided."""
-        WORDS = {
-                "phidian": "20",
-                "indolence": "200",
-                 }
-        for word, stresses in WORDS.items():
-            with self.subTest('Original word: ' + word):
-                self.assertNotEqual(WordBuilder(word).stresses,
-                                    list(stresses))
-                self.assertEqual(WordBuilder(word, custom_dict=WORDS).stresses,
-                                 list(stresses))
 
 
 if __name__ == '__main__':
