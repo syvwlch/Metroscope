@@ -10,10 +10,10 @@ autopep8 = "*"
 
 [packages]
 pronouncing = "*"
-syllabipy = "*"
 flask = "*"
 flask-bootstrap = "*"
 gunicorn = "*"
+nltk = "*"
 
 [requires]
 python_version = "3.7"
