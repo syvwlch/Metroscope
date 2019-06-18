@@ -5,20 +5,7 @@
 {% endblock title %}
 
 {% block page_content %}
-    <h1>What is Metroscope about?</h1>
-        <h3>Experiments in shareable scansions of poetry and lyrics</h3>
-            <p>This summer I wanted to play with scansion, meter, and rhyme, rather than a specific text. I'm using John Lennard's '<a href="https://books.google.com/books/about/The_Poetry_Handbook.html?id=0eRtOqjNMxEC" target="_blank">The Poetry Handbook</a>' as a guide and source of example/exercises.</p>
-            <p>It started out at the command line with a rough little script, but since the goal is showing patterns in the text and sharing with friends without forcing them to install anything, I switched to HTML output and made a little website.<p>
-        <h3>Implementation details</h3>
-            <p>This site is coded in Python, which is my go-to language for fooling around. I'm using this project as an opportunity to learn the Flask web framework and some of its major extensions.</p>
-            <p>What's left of the original command line script is the module that processes a line of verse based on the pronunciation of the words it contains.</p>
-            <p>The code lives on github at <a href="https://github.com/syvwlch/Metroscope" target="_blank">/syvwlch/Metroscope</a>, under the MIT license.
-            <p>The public repository only has text that is in the public domain, of course, but you can put other text in /Texts/NonFreeTexts/ as well. The gitignore file has been set to ignore anything you place there.</p>
-        <h3>Attributions and dependencies</h3>
-            <p>Currently the main dependencies are on Flask and Bootstrap, plus:</p>
-            <p>Allison Parrish's excellent interface to CMU's dictionary of pronunciations: <a href="https://github.com/aparrish/pronouncingpy" target="_blank">pronouncing</a></p>
-            <p>Christopher Henc's handy syllabification algorithm, which has been merged into NLTK: <a href="https://github.com/henchc/syllabipy" target="_blank">syllabipy</a></p>
-            <p>The lyre favicon design is by Andrejs Kirma from the Noun Project.</p>
+        {{ contents|safe }}
     <!--
     This about page was first created on June 1st 2019 in the Philz coffee in the Mission district while my buddy Allen Tsai was buying us a couple cups of coffee.
     He told me references to Philz were a running joke in some coding circles, and I couldn't resist coding, testing, and committing a new feature from there while he stood in line.
