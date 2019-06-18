@@ -11,7 +11,7 @@ Currently the main dependencies are on Flask and Bootstrap, plus:
 
 https://github.com/aparrish/pronouncingpy
 
-2. and Christopher Henc's handy syllabification algorithm:
+2. and Christopher Henc's handy syllabification algorithm, which has been merged into NLTK:
 
 https://github.com/henchc/syllabipy
 
