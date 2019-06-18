@@ -1,7 +1,9 @@
 """Experiments with scanning meter."""
 
 from pronouncing import stresses_for_word
-from syllabipy.sonoripy import SonoriPy
+from nltk import SyllableTokenizer
+
+SSP = SyllableTokenizer()
 
 CUSTOM_DICT = {
                 "phidian": "20",
@@ -51,7 +53,6 @@ class WordBuilder(object):
     def __init__(self, word, custom_dict={}):
         """Initialize from original word."""
         self.word = word
-        self.syllables = SonoriPy(word.lower())
         self.custom_dict = custom_dict
 
     def __str__(self):
@@ -63,8 +64,13 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
+    def syllables(self):
+        """Return the syllables of the original word."""
+        return SSP.tokenize(self.word)
+
+    @property
     def stressed_syllables(self):
-        """Return a read-only list of the original word's syllables."""
+        """Combine the syllables and stresses of the original word."""
         word = self.word
         syllables = self.syllables
         stresses = self.stresses
