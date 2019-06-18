@@ -3,6 +3,7 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from Metroscope import scanned_poem
+import markdown
 
 application = Flask(__name__)
 bootstrap = Bootstrap(application)
@@ -17,7 +18,14 @@ def home():
 @application.route("/about")
 def about():
     """Define the about route."""
-    return render_template("about.html")
+    try:
+        with open("README.md", "r") as readme:
+            ABOUT_CONTENTS = markdown.markdown(readme.read())
+    except IOError:
+        ABOUT_CONTENTS = "Failed to load the contents of the about page."
+    return render_template("about.html",
+                           contents=ABOUT_CONTENTS,
+                           )
 
 
 @application.route("/poem/<filename>")
