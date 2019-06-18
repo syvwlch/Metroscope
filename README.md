@@ -13,7 +13,7 @@ https://github.com/aparrish/pronouncingpy
 
 2. and Christopher Henc's handy syllabification algorithm, which has been merged into NLTK:
 
-https://github.com/henchc/syllabipy
+https://www.nltk.org/api/nltk.tokenize.html#nltk.tokenize.sonority_sequencing.SyllableTokenizer
 
 The public repository only has text that is in the public domain, of course, but you can put other text in /Texts/NonFreeTexts/ as well. The gitignore file has been set to ignore anything you place there.
 
