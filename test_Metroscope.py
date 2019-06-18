@@ -5,7 +5,7 @@ Work in progress, coverage not complete.
 """
 
 import unittest
-from Metroscope import clean_word, WordBuilder
+from Metroscope import WordBuilder
 
 
 class Test_WordBuilder(unittest.TestCase):
