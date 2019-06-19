@@ -117,6 +117,35 @@ class WordBuilder(object):
         return list(word_stresses)
 
 
+class LineBuilder(object):
+    """
+    Prepare a given line of verse for analysis.
+
+    Line is stored as a list of instances of the WordBuilder class.
+    Various representations as strings are provided, including the HTML used
+    on the website.
+    """
+
+    def __init__(self, line):
+        """Initialize from original line."""
+        self.line = line
+
+    def __str__(self):
+        """Create the informal string representation of the class."""
+        return self.line
+
+    def __repr__(self):
+        """Create the formal string representation of the class."""
+        return "LineBuilder('" + self.line + "')"
+
+    def clean_line(self):
+        """Prepare a line for splitting on spaces."""
+        clean = self.line
+        for sep in "—-":
+            clean = clean.replace(sep, " ")
+        return clean
+
+
 """
 Everything below this point is pre-refactoring code.
 

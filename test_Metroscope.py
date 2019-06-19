@@ -5,7 +5,7 @@ Work in progress, coverage not complete.
 """
 
 import unittest
-from Metroscope import WordBuilder
+from Metroscope import WordBuilder, LineBuilder
 
 
 class Test_WordBuilder(unittest.TestCase):
@@ -165,6 +165,60 @@ class Test_WordBuilder(unittest.TestCase):
             with self.subTest('Tried to clean: ' + word):
                 self.assertEqual(WordBuilder(word).clean_word,
                                  cleaned_word)
+
+
+class Test_LineBuilder(unittest.TestCase):
+    """
+    Test the LineBuilder class.
+
+    Using TDD so coverage needs to be complete.
+    """
+
+    def test_init(self):
+        """Should initialize from the original line."""
+        LINES = (
+                 "One morn before me were three figures seen,",
+                 "And once more came they by:-alas! wherefore?",
+                 )
+        for line in LINES:
+            with self.subTest('Original line: ' + line):
+                self.assertEqual(LineBuilder(line).line,
+                                 line)
+
+    def test_str_magic_method(self):
+        """Should return the original word."""
+        LINES = (
+                 "One morn before me were three figures seen,",
+                 "And once more came they by:-alas! wherefore?",
+                 )
+        for line in LINES:
+            with self.subTest('Original line: ' + line):
+                self.assertEqual(str(LineBuilder(line)),
+                                 line)
+
+    def test_repr_magic_method(self):
+        """Should evaluate to itself."""
+        LINES = (
+                 "One morn before me were three figures seen,",
+                 "And once more came they by:-alas! wherefore?",
+                 )
+        for line in LINES:
+            with self.subTest('Original line: ' + line):
+                self.assertEqual(repr(LineBuilder(line)),
+                                 "LineBuilder('" + line + "')")
+
+    def test_clean_line(self):
+        """Should replace hyphens and emlines with spaces."""
+        LINES = {
+                 "One morn before me were three figures seen,":
+                 "One morn before me were three figures seen,",
+                 "And once—more came they by:-alas! wherefore?":
+                 "And once more came they by: alas! wherefore?",
+                 }
+        for line, clean_line in LINES.items():
+            with self.subTest('Original line: ' + line):
+                self.assertEqual(LineBuilder(line).clean_line(),
+                                 clean_line)
 
 
 if __name__ == '__main__':
