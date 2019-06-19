@@ -220,6 +220,14 @@ class Test_LineBuilder(unittest.TestCase):
                 self.assertEqual(LineBuilder(line).clean_line(),
                                  clean_line)
 
+    def test_word_list(self):
+        """Should create a list of WordBuilder instances."""
+        LINE = "Two Owls and a Hen,"
+        for word in LineBuilder(LINE).word_list():
+            with self.subTest('Original word: ' + str(word)):
+                self.assertEqual(repr(word),
+                                 "WordBuilder('" + str(word) + "')")
+
 
 if __name__ == '__main__':
     unittest.main()

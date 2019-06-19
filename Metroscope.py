@@ -145,6 +145,13 @@ class LineBuilder(object):
             clean = clean.replace(sep, " ")
         return clean
 
+    def word_list(self):
+        """Create the list of WordBuilder instances."""
+        word_list = []
+        for word in self.clean_line().split():
+            word_list.append(WordBuilder(word))
+        return word_list
+
 
 """
 Everything below this point is pre-refactoring code.
