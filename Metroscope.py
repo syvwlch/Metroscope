@@ -125,46 +125,52 @@ class WordBuilder(object):
         closing_tag = "</" + tag + ">"
         return opening_tag + snippet + closing_tag
 
-    def stressed_HTML(self, stresses):
+    def _matched_syllables(self, pattern):
+        """
+        Match the pronounced stresses against the given pattern.
+
+        Private method in service of stressed_HTML().
+        Returns a list of lists:
+            - syllable string,
+            - Boolean for pattern stress,
+            - Boolean for match between pattern & pronunciation
+        """
+        result = []
+        for syllable, pronunciation_stress in self.stressed_syllables:
+            if pattern:
+                if pattern.pop(0):
+                    result.append([syllable,
+                                   True,
+                                   pronunciation_stress != '0'])
+                else:
+                    result.append([syllable,
+                                   False,
+                                   pronunciation_stress != '2'])
+            else:
+                result.append([syllable,
+                               None,
+                               False])
+        return result
+
+    def stressed_HTML(self, pattern):
         """
         Mark up the original word based on the stress pattern provided.
 
-        Return the word with the syllables wrapped with HTML tags based on
-        their stress in the pattern, with a style attribute based on whether
-        it aligns with the expected meter.
+        Return the word with the syllables wrapped with HTML tags and style
+        attributes based on stress, provided meter, and whether they match.
         Finally, wrap a <span> tag around the entire word.
         """
-        MATCH = "color:black"
-        NOT_MATCH = "color:red"
-        STRESSED = "strong"
-        UNSTRESSED = "span"
-        UNKNOWN = "small"
+        STYLES = {True: "color:black",
+                  False: "color:red"}
+        TAGS = {True: "strong",
+                False: "span",
+                None: "small"}
 
         result = ""
-        for syllable, pronunciation_stress in self.stressed_syllables:
-            if stresses:
-                if stresses.pop(0):
-                    if pronunciation_stress == '0':
-                        result += self.tag_string(syllable,
-                                                  STRESSED,
-                                                  NOT_MATCH)
-                    else:
-                        result += self.tag_string(syllable,
-                                                  STRESSED,
-                                                  MATCH)
-                else:
-                    if pronunciation_stress == '2':
-                        result += self.tag_string(syllable,
-                                                  UNSTRESSED,
-                                                  NOT_MATCH)
-                    else:
-                        result += self.tag_string(syllable,
-                                                  UNSTRESSED,
-                                                  MATCH)
-            else:
-                result += self.tag_string(syllable,
-                                          UNKNOWN,
-                                          NOT_MATCH)
+        for syllable, stress, match in self._matched_syllables(pattern):
+            result += self.tag_string(syllable,
+                                      TAGS[stress],
+                                      STYLES[match])
         return self.tag_string(result, "span")
 
 
