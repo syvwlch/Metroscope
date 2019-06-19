@@ -125,6 +125,48 @@ class WordBuilder(object):
         closing_tag = "</" + tag + ">"
         return opening_tag + snippet + closing_tag
 
+    def stressed_HTML(self, stresses):
+        """
+        Mark up the original word based on the stress pattern provided.
+
+        Return the word with the syllables wrapped with HTML tags based on
+        their stress in the pattern, with a style attribute based on whether
+        it aligns with the expected meter.
+        Finally, wrap a <span> tag around the entire word.
+        """
+        MATCH = "color:black"
+        NOT_MATCH = "color:red"
+        STRESSED = "strong"
+        UNSTRESSED = "span"
+        UNKNOWN = "small"
+
+        result = ""
+        for syllable, pronunciation_stress in self.stressed_syllables:
+            if stresses:
+                if stresses.pop(0):
+                    if pronunciation_stress == '0':
+                        result += self.tag_string(syllable,
+                                                  STRESSED,
+                                                  NOT_MATCH)
+                    else:
+                        result += self.tag_string(syllable,
+                                                  STRESSED,
+                                                  MATCH)
+                else:
+                    if pronunciation_stress == '2':
+                        result += self.tag_string(syllable,
+                                                  UNSTRESSED,
+                                                  NOT_MATCH)
+                    else:
+                        result += self.tag_string(syllable,
+                                                  UNSTRESSED,
+                                                  MATCH)
+            else:
+                result += self.tag_string(syllable,
+                                          UNKNOWN,
+                                          NOT_MATCH)
+        return self.tag_string(result, "span")
+
 
 class LineBuilder(object):
     """

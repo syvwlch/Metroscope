@@ -168,13 +168,38 @@ class Test_WordBuilder(unittest.TestCase):
 
     def test_tag_string(self):
         """Should wrap a string with an HTML tag and optional style attr."""
-        lb = WordBuilder("Test")
+        wb = WordBuilder("Test")
         with self.subTest('Without a style'):
-            self.assertEqual(lb.tag_string("copy", "span"),
+            self.assertEqual(wb.tag_string("copy", "span"),
                              "<span>copy</span>")
         with self.subTest('With a style'):
-            self.assertEqual(lb.tag_string("text", "strong", "color:red"),
+            self.assertEqual(wb.tag_string("text", "strong", "color:red"),
                              "<strong style='color:red'>text</strong>")
+
+    def test_stressed_HTML(self):
+        """Should give an HTML representation of the word's fit to meter."""
+        WORDS = {
+                 "automatic":
+                 "<span>\
+<span style='color:red'>au</span>\
+<strong style='color:red'>to</strong>\
+<span style='color:black'>ma</span>\
+<small style='color:red'>tic</small>\
+</span>",
+                 "Shadows":
+                 "<span>\
+<span style='color:black'>Sha</span>\
+<strong style='color:black'>dows</strong>\
+</span>",
+                 "One":
+                 "<span>\
+<span style='color:black'>One</span>\
+</span>",
+                 }
+        for word, HTML in WORDS.items():
+            with self.subTest('Original word: ' + word):
+                self.assertEqual(WordBuilder(word).stressed_HTML([0, 1, 0]),
+                                 HTML)
 
 
 class Test_LineBuilder(unittest.TestCase):
