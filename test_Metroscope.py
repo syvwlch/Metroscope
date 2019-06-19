@@ -176,7 +176,7 @@ class Test_WordBuilder(unittest.TestCase):
             self.assertEqual(wb.tag_string("text", "strong", "color:red"),
                              "<strong style='color:red'>text</strong>")
 
-    def test_matched_syllables(self):
+    def test__matched_syllables(self):
         """Should give a list of list with the word's fit to meter."""
         WORDS = {
                  "automatic":
@@ -193,7 +193,7 @@ class Test_WordBuilder(unittest.TestCase):
         for word, matches in WORDS.items():
             with self.subTest('Original word: ' + word):
                 METER = [0, 1, 0]
-                self.assertEqual(WordBuilder(word).matched_syllables(METER),
+                self.assertEqual(WordBuilder(word)._matched_syllables(METER),
                                  matches)
 
     def test_stressed_HTML(self):
