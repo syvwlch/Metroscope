@@ -220,47 +220,6 @@ def clean_line(line):
     return clean
 
 
-def tag_string(snippet, tag, style=""):
-    """Wrap a text snippet with an html tag."""
-    opening_tag = "<" + tag + " style='" + style + "'>"
-    closing_tag = "</" + tag + ">"
-    return opening_tag + snippet + closing_tag
-
-
-def stress_word(word, stresses):
-    """
-    Mark up a word based on the stress pattern provided.
-
-    Return the word with the stresses syllables wrapped with a <strong> tag,
-    and a <span> tag around the entire word.
-    Adds a style attribute based on whether the syllable's normal stress
-    aligns with the expected meter.
-    """
-    MATCH = "color:black"
-    NOT_MATCH = "color:red"
-    STRESSED = "strong"
-    UNSTRESSED = "span"
-    UNKNOWN = "small"
-
-    syllables = WordBuilder(word, custom_dict=CUSTOM_DICT).stressed_syllables
-    result = ""
-    for syllable, pronunciation_stress in syllables:
-        if stresses:
-            if stresses.pop(0):
-                if pronunciation_stress == '0':
-                    result += tag_string(syllable, STRESSED, NOT_MATCH)
-                else:
-                    result += tag_string(syllable, STRESSED, MATCH)
-            else:
-                if pronunciation_stress == '2':
-                    result += tag_string(syllable, UNSTRESSED, NOT_MATCH)
-                else:
-                    result += tag_string(syllable, UNSTRESSED, MATCH)
-        else:
-            result += tag_string(syllable, UNKNOWN, NOT_MATCH)
-    return tag_string(result, "span")
-
-
 def stress_line(line, stress_pattern):
     """Mark up a line of verse based on the stress pattern provided."""
     MISSING = "<b style='color:red'> _ </b>"
@@ -268,14 +227,12 @@ def stress_line(line, stress_pattern):
     line = clean_line(line)
     stressed_line = ""
     for word in line.split():
-        word_stresses = WordBuilder(word, custom_dict=CUSTOM_DICT).stresses
-        number_stresses = len(word_stresses)
+        word = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        number_stresses = len(word.stresses)
         word_meter = stress_pattern[0:number_stresses]
         stress_pattern = stress_pattern[number_stresses:]
         # use the stress pattern directly for the word stresses
-        word_stresses = word_meter
-        # -----------------------------------------------------
-        stressed_line += stress_word(word, word_stresses) + " "
+        stressed_line += word.stressed_HTML(word_meter) + " "
     for stress in stress_pattern:
         stressed_line += MISSING
     return stressed_line
