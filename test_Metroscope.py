@@ -220,6 +220,16 @@ class Test_LineBuilder(unittest.TestCase):
                 self.assertEqual(LineBuilder(line).clean_line(),
                                  clean_line)
 
+    def test_tag_string(self):
+        """Should wrap a string with an HTML tag and optional style attr."""
+        lb = LineBuilder("Shouldn't matter.")
+        with self.subTest('Without a style'):
+            self.assertEqual(lb.tag_string("copy", "span"),
+                             "<span>copy</span>")
+        with self.subTest('With a style'):
+            self.assertEqual(lb.tag_string("text", "strong", "color:red"),
+                             "<strong style='color:red'>text</strong>")
+
     def test_word_list(self):
         """Should create a list of WordBuilder instances."""
         LINE = "Two Owls and a Hen,"

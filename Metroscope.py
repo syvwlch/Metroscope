@@ -145,6 +145,15 @@ class LineBuilder(object):
             clean = clean.replace(sep, " ")
         return clean
 
+    def tag_string(self, snippet, tag, style=""):
+        """Wrap a text snippet with an html tag."""
+        if style == "":
+            opening_tag = "<" + tag + ">"
+        else:
+            opening_tag = "<" + tag + " style='" + style + "'>"
+        closing_tag = "</" + tag + ">"
+        return opening_tag + snippet + closing_tag
+
     def word_list(self):
         """Create the list of WordBuilder instances."""
         word_list = []
