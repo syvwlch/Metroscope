@@ -200,8 +200,23 @@ class LineBuilder(object):
         """Create the list of WordBuilder instances."""
         word_list = []
         for word in self.clean_line().split():
-            word_list.append(WordBuilder(word))
+            word_list.append(WordBuilder(word, custom_dict=CUSTOM_DICT))
         return word_list
+
+    def stressed_HTML(self, stress_pattern):
+        """Mark up the line based on the stress pattern provided."""
+        MISSING = "<b style='color:red'> _ </b>"
+
+        stressed_line = ""
+        for word in self.word_list():
+            number_stresses = len(word.stresses)
+            word_meter = stress_pattern[0:number_stresses]
+            stress_pattern = stress_pattern[number_stresses:]
+            # use the stress pattern directly for the word stresses
+            stressed_line += word.stressed_HTML(word_meter) + " "
+        for stress in stress_pattern:
+            stressed_line += MISSING
+        return stressed_line
 
 
 """
@@ -210,32 +225,6 @@ Everything below this point is pre-refactoring code.
 The site runs on the code below right now, while unit tests
 run on the code above.
 """
-
-
-def clean_line(line):
-    """Prepare a line of text for show_stress_line."""
-    clean = line
-    for sep in "—-":
-        clean = clean.replace(sep, " ")
-    return clean
-
-
-def stress_line(line, stress_pattern):
-    """Mark up a line of verse based on the stress pattern provided."""
-    MISSING = "<b style='color:red'> _ </b>"
-
-    line = clean_line(line)
-    stressed_line = ""
-    for word in line.split():
-        word = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        number_stresses = len(word.stresses)
-        word_meter = stress_pattern[0:number_stresses]
-        stress_pattern = stress_pattern[number_stresses:]
-        # use the stress pattern directly for the word stresses
-        stressed_line += word.stressed_HTML(word_meter) + " "
-    for stress in stress_pattern:
-        stressed_line += MISSING
-    return stressed_line
 
 
 def scanned_poem(path, meter):
@@ -251,7 +240,8 @@ def scanned_poem(path, meter):
             if line == "\n":
                 result += "</p>\n<p>"
             else:
-                result += stress_line(line, meter)
+                # result += stress_line(line, meter)
+                result += LineBuilder(line).stressed_HTML(meter)
                 result += "<br>\n"
     result += "</p>\n</div>"
     return result

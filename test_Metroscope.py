@@ -198,7 +198,8 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, HTML in WORDS.items():
             with self.subTest('Original word: ' + word):
-                self.assertEqual(WordBuilder(word).stressed_HTML([0, 1, 0]),
+                METER = [0, 1, 0]
+                self.assertEqual(WordBuilder(word).stressed_HTML(METER),
                                  HTML)
 
 
@@ -262,6 +263,24 @@ class Test_LineBuilder(unittest.TestCase):
             with self.subTest('Original word: ' + str(word)):
                 self.assertEqual(repr(word),
                                  "WordBuilder('" + str(word) + "')")
+
+    def test_stressed_HTML(self):
+        """Should give an HTML representation of the line's fit to meter."""
+        LINES = {
+                 "Two Owls and a Hen,":
+                 "<span>\
+<span style='color:black'>Two</span></span> \
+<span><strong style='color:black'>Owls</strong></span> \
+<span><span style='color:black'>and</span></span> \
+<span><span style='color:black'>a</span></span> \
+<span><strong style='color:black'>Hen,</strong>\
+</span> ",
+                 }
+        for line, HTML in LINES.items():
+            with self.subTest('Original line: ' + line):
+                METER = [0, 1, 0, 0, 1]
+                self.assertEqual(LineBuilder(line).stressed_HTML(METER),
+                                 HTML)
 
 
 if __name__ == '__main__':
