@@ -125,6 +125,32 @@ class WordBuilder(object):
         closing_tag = "</" + tag + ">"
         return opening_tag + snippet + closing_tag
 
+    def matched_syllables(self, pattern):
+        """
+        Match the pronounced stresses against the given pattern.
+
+        Returns a list of lists:
+            - syllable string,
+            - Boolean for pattern stress,
+            - Boolean for match between pattern & pronunciation
+        """
+        result = []
+        for syllable, pronunciation_stress in self.stressed_syllables:
+            if pattern:
+                if pattern.pop(0):
+                    result.append([syllable,
+                                   True,
+                                   pronunciation_stress != '0'])
+                else:
+                    result.append([syllable,
+                                   False,
+                                   pronunciation_stress != '2'])
+            else:
+                result.append([syllable,
+                               None,
+                               False])
+        return result
+
     def stressed_HTML(self, pattern):
         """
         Mark up the original word based on the stress pattern provided.
