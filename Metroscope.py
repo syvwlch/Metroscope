@@ -69,6 +69,21 @@ class WordBuilder(object):
         return SSP.tokenize(self.word)
 
     @property
+    def stresses(self):
+        """Return a list of the stresses for the given word."""
+        cleaned_word = self.clean_word
+        try:
+            word_stresses = self.custom_dict[cleaned_word]
+        except (KeyError, TypeError):
+            try:
+                word_stresses = stresses_for_word(str(cleaned_word))[0]
+            except IndexError:
+                word_stresses = ""
+        if "è" in self.word:
+            word_stresses += "1"
+        return list(word_stresses)
+
+    @property
     def stressed_syllables(self):
         """Combine the syllables and stresses of the original word."""
         word = self.word
@@ -101,20 +116,14 @@ class WordBuilder(object):
         clean = clean.replace("’d", "ed")
         return clean
 
-    @property
-    def stresses(self):
-        """Return a list of the stresses for the given word."""
-        cleaned_word = self.clean_word
-        try:
-            word_stresses = self.custom_dict[cleaned_word]
-        except (KeyError, TypeError):
-            try:
-                word_stresses = stresses_for_word(str(cleaned_word))[0]
-            except IndexError:
-                word_stresses = ""
-        if "è" in self.word:
-            word_stresses += "1"
-        return list(word_stresses)
+    def tag_string(self, snippet, tag, style=""):
+        """Wrap a text snippet with an html tag."""
+        if style == "":
+            opening_tag = "<" + tag + ">"
+        else:
+            opening_tag = "<" + tag + " style='" + style + "'>"
+        closing_tag = "</" + tag + ">"
+        return opening_tag + snippet + closing_tag
 
 
 class LineBuilder(object):
@@ -144,15 +153,6 @@ class LineBuilder(object):
         for sep in "—-":
             clean = clean.replace(sep, " ")
         return clean
-
-    def tag_string(self, snippet, tag, style=""):
-        """Wrap a text snippet with an html tag."""
-        if style == "":
-            opening_tag = "<" + tag + ">"
-        else:
-            opening_tag = "<" + tag + " style='" + style + "'>"
-        closing_tag = "</" + tag + ">"
-        return opening_tag + snippet + closing_tag
 
     def word_list(self):
         """Create the list of WordBuilder instances."""

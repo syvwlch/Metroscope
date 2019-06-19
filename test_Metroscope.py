@@ -166,6 +166,16 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(WordBuilder(word).clean_word,
                                  cleaned_word)
 
+    def test_tag_string(self):
+        """Should wrap a string with an HTML tag and optional style attr."""
+        lb = WordBuilder("Test")
+        with self.subTest('Without a style'):
+            self.assertEqual(lb.tag_string("copy", "span"),
+                             "<span>copy</span>")
+        with self.subTest('With a style'):
+            self.assertEqual(lb.tag_string("text", "strong", "color:red"),
+                             "<strong style='color:red'>text</strong>")
+
 
 class Test_LineBuilder(unittest.TestCase):
     """
@@ -219,16 +229,6 @@ class Test_LineBuilder(unittest.TestCase):
             with self.subTest('Original line: ' + line):
                 self.assertEqual(LineBuilder(line).clean_line(),
                                  clean_line)
-
-    def test_tag_string(self):
-        """Should wrap a string with an HTML tag and optional style attr."""
-        lb = LineBuilder("Shouldn't matter.")
-        with self.subTest('Without a style'):
-            self.assertEqual(lb.tag_string("copy", "span"),
-                             "<span>copy</span>")
-        with self.subTest('With a style'):
-            self.assertEqual(lb.tag_string("text", "strong", "color:red"),
-                             "<strong style='color:red'>text</strong>")
 
     def test_word_list(self):
         """Should create a list of WordBuilder instances."""
