@@ -125,7 +125,7 @@ class WordBuilder(object):
         closing_tag = "</" + tag + ">"
         return opening_tag + snippet + closing_tag
 
-    def stressed_HTML(self, stresses):
+    def stressed_HTML(self, pattern):
         """
         Mark up the original word based on the stress pattern provided.
 
@@ -142,8 +142,8 @@ class WordBuilder(object):
 
         result = ""
         for syllable, pronunciation_stress in self.stressed_syllables:
-            if stresses:
-                if stresses.pop(0):
+            if pattern:
+                if pattern.pop(0):
                     if pronunciation_stress == '0':
                         result += self.tag_string(syllable,
                                                   STRESSED,
