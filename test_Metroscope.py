@@ -278,7 +278,7 @@ class Test_LineBuilder(unittest.TestCase):
                 self.assertEqual(repr(LineBuilder(line)),
                                  "LineBuilder('" + line + "')")
 
-    def test_clean_line(self):
+    def test__clean_line(self):
         """Should replace hyphens and emlines with spaces."""
         LINES = {
                  "One morn before me were three figures seen,":
@@ -288,13 +288,13 @@ class Test_LineBuilder(unittest.TestCase):
                  }
         for line, clean_line in LINES.items():
             with self.subTest('Original line: ' + line):
-                self.assertEqual(LineBuilder(line).clean_line(),
+                self.assertEqual(LineBuilder(line)._clean_line(),
                                  clean_line)
 
-    def test_word_list(self):
+    def test__word_list(self):
         """Should create a list of WordBuilder instances."""
         LINE = "Two Owls and a Hen,"
-        for word in LineBuilder(LINE).word_list():
+        for word in LineBuilder(LINE)._word_list():
             with self.subTest('Original word: ' + str(word)):
                 self.assertEqual(repr(word),
                                  "WordBuilder('" + str(word) + "')")

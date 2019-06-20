@@ -239,17 +239,17 @@ class LineBuilder(object):
         """Create the formal string representation of the class."""
         return "LineBuilder('" + self.line + "')"
 
-    def clean_line(self):
+    def _clean_line(self):
         """Prepare a line for splitting on spaces."""
         clean = self.line
         for sep in "—-":
             clean = clean.replace(sep, " ")
         return clean
 
-    def word_list(self):
+    def _word_list(self):
         """Create the list of WordBuilder instances."""
         word_list = []
-        for word in self.clean_line().split():
+        for word in self._clean_line().split():
             word_list.append(WordBuilder(word, custom_dict=CUSTOM_DICT))
         return word_list
 
@@ -258,7 +258,7 @@ class LineBuilder(object):
         MISSING = "<b style='color:red'> _ </b>"
 
         stressed_line = ""
-        for word in self.word_list():
+        for word in self._word_list():
             number_stresses = len(word.stresses)
             word_meter = stress_pattern[0:number_stresses]
             stress_pattern = stress_pattern[number_stresses:]
