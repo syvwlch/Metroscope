@@ -54,6 +54,7 @@ class WordBuilder(object):
         """Initialize from original word."""
         self.word = word
         self.custom_dict = custom_dict
+        self._is_in_custom_dict = self.clean_word in self.custom_dict
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -62,16 +63,6 @@ class WordBuilder(object):
     def __repr__(self):
         """Create the formal string representation of the class."""
         return "WordBuilder('" + self.word + "')"
-
-    @property
-    def _is_in_custom_dict(self):
-        """Check if the original word is in the custom_dict."""
-        result = True
-        try:
-            self.custom_dict[self.clean_word]
-        except (KeyError, TypeError):
-            result = False
-        return result
 
     @property
     def syllables(self):
