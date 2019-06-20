@@ -64,6 +64,16 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
+    def _is_in_custom_dict(self):
+        """Check if the original word is in the custom_dict."""
+        result = True
+        try:
+            self.custom_dict[self.clean_word]
+        except (KeyError, TypeError):
+            result = False
+        return result
+
+    @property
     def syllables(self):
         """Return the syllables of the original word."""
         return SSP.tokenize(self.word)

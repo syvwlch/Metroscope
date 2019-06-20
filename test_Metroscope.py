@@ -50,6 +50,18 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(repr(WordBuilder(word)),
                                  "WordBuilder('" + word + "')")
 
+    def test__is_in_custom_dict(self):
+        """Should return True if the word is in the provided custom_dict."""
+        CUSTOM_DICT = {"indolence": "200"}
+        WORDS = {
+                 "indolence": True,
+                 "batman": False,
+                 }
+        for word, bool in WORDS.items():
+            with self.subTest('Word is in custom_dict: ' + str(bool)):
+                wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+                self.assertEqual(wb._is_in_custom_dict, bool)
+
     def test_syllables(self):
         """Should set the syllables from the original word."""
         WORDS = {
