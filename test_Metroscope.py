@@ -52,7 +52,8 @@ class Test_WordBuilder(unittest.TestCase):
 
     def test__is_in_custom_dict(self):
         """Should return True if the word is in the provided custom_dict."""
-        CUSTOM_DICT = {"indolence": "200"}
+        CUSTOM_DICT = {"indolence": {"syllable": ["in", "do", "lence"],
+                                     "stresses": "200"}}
         WORDS = {
                  "indolence": True,
                  "batman": False,
@@ -87,15 +88,17 @@ class Test_WordBuilder(unittest.TestCase):
     def test_custom_dict(self):
         """Should retrieve stresses from custom dict if provided."""
         WORDS = {
-                "phidian": "20",
-                "indolence": "200",
+                "phidian": {"syllable": ["phi", "dian"],
+                            "stresses": "20"},
+                "indolence": {"syllable": ["in", "do", "lence"],
+                              "stresses": "200"}
                  }
-        for word, stresses in WORDS.items():
+        for word, entry in WORDS.items():
             with self.subTest('Original word: ' + word):
                 self.assertNotEqual(WordBuilder(word).stresses,
-                                    list(stresses))
+                                    list(entry["stresses"]))
                 self.assertEqual(WordBuilder(word, custom_dict=WORDS).stresses,
-                                 list(stresses))
+                                 list(entry["stresses"]))
 
     def test_stressed_syllables(self):
         """Should be a list of the original word's syllables with stress."""
