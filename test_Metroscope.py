@@ -100,7 +100,7 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(WordBuilder(word, custom_dict=WORDS).stresses,
                                  list(entry["stresses"]))
 
-    def test_stressed_syllables(self):
+    def test__stressed_syllables(self):
         """Should be a list of the original word's syllables with stress."""
         WORDS = {
                  "automatic":
@@ -109,7 +109,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, stressed_syllables in WORDS.items():
             with self.subTest('Original word: ' + word):
-                self.assertEqual(WordBuilder(word).stressed_syllables,
+                self.assertEqual(WordBuilder(word)._stressed_syllables,
                                  stressed_syllables)
 
     def test_word_already_clean(self):
@@ -119,7 +119,7 @@ class Test_WordBuilder(unittest.TestCase):
                  )
         for word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  word)
 
     def test_word_has_grave_over_e(self):
@@ -131,7 +131,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_elision(self):
@@ -142,7 +142,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_possessive(self):
@@ -154,7 +154,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_uppercase(self):
@@ -166,7 +166,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_punctuation(self):
@@ -178,17 +178,17 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
-    def test_tag_string(self):
+    def test__tag_string(self):
         """Should wrap a string with an HTML tag and optional style attr."""
         wb = WordBuilder("Test")
         with self.subTest('Without a style'):
-            self.assertEqual(wb.tag_string("copy", "span"),
+            self.assertEqual(wb._tag_string("copy", "span"),
                              "<span>copy</span>")
         with self.subTest('With a style'):
-            self.assertEqual(wb.tag_string("text", "strong", "color:red"),
+            self.assertEqual(wb._tag_string("text", "strong", "color:red"),
                              "<strong style='color:red'>text</strong>")
 
     def test__matched_syllables(self):

@@ -94,7 +94,7 @@ class WordBuilder(object):
         """Initialize from original word."""
         self.word = word
         self.custom_dict = custom_dict
-        self._is_in_custom_dict = self.clean_word in self.custom_dict
+        self._is_in_custom_dict = self._clean_word in self.custom_dict
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -108,7 +108,7 @@ class WordBuilder(object):
     def syllables(self):
         """Return the syllables of the original word."""
         if self._is_in_custom_dict:
-            word_syllables = self.custom_dict[self.clean_word]["syllables"]
+            word_syllables = self.custom_dict[self._clean_word]["syllables"]
         else:
             word_syllables = SSP.tokenize(self.word)
         return word_syllables
@@ -117,10 +117,10 @@ class WordBuilder(object):
     def stresses(self):
         """Return a list of the stresses for the given word."""
         if self._is_in_custom_dict:
-            word_stresses = self.custom_dict[self.clean_word]["stresses"]
+            word_stresses = self.custom_dict[self._clean_word]["stresses"]
         else:
             try:
-                word_stresses = stresses_for_word(str(self.clean_word))[0]
+                word_stresses = stresses_for_word(str(self._clean_word))[0]
             except IndexError:
                 word_stresses = ""
         if "è" in self.word:
@@ -128,7 +128,7 @@ class WordBuilder(object):
         return list(word_stresses)
 
     @property
-    def stressed_syllables(self):
+    def _stressed_syllables(self):
         """Combine the syllables and stresses of the original word."""
         word = self.word
         syllables = self.syllables
@@ -145,7 +145,7 @@ class WordBuilder(object):
         return result
 
     @property
-    def clean_word(self):
+    def _clean_word(self):
         """Prepare a word for CMU lookup."""
         clean = self.word
         # First, force lowercase and strip punctuation
@@ -160,7 +160,7 @@ class WordBuilder(object):
         clean = clean.replace("’d", "ed")
         return clean
 
-    def tag_string(self, snippet, tag, style=""):
+    def _tag_string(self, snippet, tag, style=""):
         """Wrap a text snippet with an html tag."""
         if style == "":
             opening_tag = "<" + tag + ">"
@@ -180,7 +180,7 @@ class WordBuilder(object):
             - Boolean for match between pattern & pronunciation
         """
         result = []
-        for syllable, pronunciation_stress in self.stressed_syllables:
+        for syllable, pronunciation_stress in self._stressed_syllables:
             if pattern:
                 if pattern.pop(0):
                     result.append([syllable,
@@ -212,10 +212,10 @@ class WordBuilder(object):
 
         result = ""
         for syllable, stress, match in self._matched_syllables(pattern):
-            result += self.tag_string(syllable,
-                                      TAGS[stress],
-                                      STYLES[match])
-        return self.tag_string(result, "span")
+            result += self._tag_string(syllable,
+                                       TAGS[stress],
+                                       STYLES[match])
+        return self._tag_string(result, "span")
 
 
 class LineBuilder(object):
