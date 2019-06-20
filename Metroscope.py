@@ -44,6 +44,8 @@ CUSTOM_DICT = {
                            "stresses": "202"},
                 "masque": {"syllables": ["masque"],
                            "stresses": "2"},
+                "fall’n": {"syllables": ["fall’n"],
+                           "stresses": "2"},
                 "spright": {"syllables": ["spright"],
                             "stresses": "2"},
                 "flowers": {"syllables": ["flowers"],
