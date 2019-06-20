@@ -8,67 +8,67 @@ SSP = SyllableTokenizer()
 CUSTOM_DICT = {
                 "phidian": {"syllables": ["phi", "dian"],
                             "stresses": "20"},
-                "indolence": {"syllable": ["in", "do", "lence"],
+                "indolence": {"syllables": ["in", "do", "lence"],
                               "stresses": "200"},
-                "benumbed": {"syllable": ["be", "numbed"],
+                "benumbed": {"syllables": ["be", "numbed"],
                              "stresses": "02"},
-                "unhaunted": {"syllable": ["un", "haun", "ted"],
+                "unhaunted": {"syllables": ["un", "haun", "ted"],
                               "stresses": "020"},
-                "nothingness": {"syllable": ["no", "thing", "ness"],
+                "nothingness": {"syllables": ["no", "thing", "ness"],
                                 "stresses": "202"},
-                "embroidered": {"syllable": ["em", "broi", "dered"],
+                "embroidered": {"syllables": ["em", "broi", "dered"],
                                 "stresses": "020"},
-                "besprinkled": {"syllable": ["be", "sprin", "kled"],
+                "besprinkled": {"syllables": ["be", "sprin", "kled"],
                                 "stresses": "020"},
-                "o’er": {"syllable": ["o’er"],
+                "o’er": {"syllables": ["o’er"],
                          "stresses": "0"},
-                "unmeek": {"syllable": ["un", "meek"],
+                "unmeek": {"syllables": ["un", "meek"],
                            "stresses": "01"},
-                "poesy": {"syllable": ["po", "e", "sy"],
+                "poesy": {"syllables": ["po", "e", "sy"],
                           "stresses": "202"},
-                "forsooth": {"syllable": ["for", "sooth"],
+                "forsooth": {"syllables": ["for", "sooth"],
                              "stresses": "02"},
-                "honeyed": {"syllable": ["ho", "neyed"],
+                "honeyed": {"syllables": ["ho", "neyed"],
                             "stresses": "20"},
-                "casement": {"syllable": ["case", "ment"],
+                "casement": {"syllables": ["case", "ment"],
                              "stresses": "20"},
-                "leaved": {"syllable": ["leaved"],
+                "leaved": {"syllables": ["leaved"],
                            "stresses": "2"},
-                "throstle": {"syllable": ["thro", "stle"],
+                "throstle": {"syllables": ["thro", "stle"],
                              "stresses": "20"},
-                "’twas": {"syllable": ["’twas"],
+                "’twas": {"syllables": ["’twas"],
                           "stresses": "2"},
-                "dieted": {"syllable": ["di", "e", "ted"],
+                "dieted": {"syllables": ["di", "e", "ted"],
                            "stresses": "202"},
-                "masque": {"syllable": ["masque"],
+                "masque": {"syllables": ["masque"],
                            "stresses": "2"},
-                "spright": {"syllable": ["spright"],
+                "spright": {"syllables": ["spright"],
                             "stresses": "2"},
-                "flow’rs": {"syllable": ["flow’rs"],
+                "flow’rs": {"syllables": ["flow’rs"],
                             "stresses": "2"},
-                "deniest": {"syllable": ["de", "niest"],
+                "deniest": {"syllables": ["de", "niest"],
                             "stresses": "20"},
-                "know’st": {"syllable": ["know’st"],
+                "know’st": {"syllables": ["know’st"],
                             "stresses": "2"},
-                "triumph’st": {"syllable": ["tri", "umph’st"],
+                "triumph’st": {"syllables": ["tri", "umph’st"],
                                "stresses": "20"},
-                "say’st": {"syllable": ["say’st"],
+                "say’st": {"syllables": ["say’st"],
                            "stresses": "2"},
-                "find’st": {"syllable": ["find’st"],
+                "find’st": {"syllables": ["find’st"],
                             "stresses": "2"},
-                "yield’st": {"syllable": ["yield’st"],
+                "yield’st": {"syllables": ["yield’st"],
                              "stresses": "2"},
-                "’tis": {"syllable": ["’tis"],
+                "’tis": {"syllables": ["’tis"],
                          "stresses": "2"},
-                "purpled": {"syllable": ["pur", "pled"],
+                "purpled": {"syllables": ["pur", "pled"],
                             "stresses": "20"},
-                "maidenhead": {"syllable": ["mai", "den", "head"],
+                "maidenhead": {"syllables": ["mai", "den", "head"],
                                "stresses": "202"},
-                "orisons": {"syllable": ["o", "ri", "son"],
+                "orisons": {"syllables": ["o", "ri", "son"],
                             "stresses": "200"},
-                "mockeries": {"syllable": ["mo", "ke", "ries"],
+                "mockeries": {"syllables": ["mo", "ke", "ries"],
                               "stresses": "200"},
-                "pallor": {"syllable": ["pa", "llor"],
+                "pallor": {"syllables": ["pa", "llor"],
                            "stresses": "20"},
               }
 
@@ -99,17 +99,20 @@ class WordBuilder(object):
     @property
     def syllables(self):
         """Return the syllables of the original word."""
-        return SSP.tokenize(self.word)
+        if self._is_in_custom_dict:
+            word_syllables = self.custom_dict[self.clean_word]["syllables"]
+        else:
+            word_syllables = SSP.tokenize(self.word)
+        return word_syllables
 
     @property
     def stresses(self):
         """Return a list of the stresses for the given word."""
-        cleaned_word = self.clean_word
         if self._is_in_custom_dict:
-            word_stresses = self.custom_dict[cleaned_word]["stresses"]
+            word_stresses = self.custom_dict[self.clean_word]["stresses"]
         else:
             try:
-                word_stresses = stresses_for_word(str(cleaned_word))[0]
+                word_stresses = stresses_for_word(str(self.clean_word))[0]
             except IndexError:
                 word_stresses = ""
         if "è" in self.word:
