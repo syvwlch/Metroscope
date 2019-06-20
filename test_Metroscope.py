@@ -50,6 +50,19 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(repr(WordBuilder(word)),
                                  "WordBuilder('" + word + "')")
 
+    def test__is_in_custom_dict(self):
+        """Should return True if the word is in the provided custom_dict."""
+        CUSTOM_DICT = {"indolence": {"syllable": ["in", "do", "lence"],
+                                     "stresses": "200"}}
+        WORDS = {
+                 "indolence": True,
+                 "batman": False,
+                 }
+        for word, bool in WORDS.items():
+            with self.subTest('Word is in custom_dict: ' + str(bool)):
+                wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+                self.assertEqual(wb._is_in_custom_dict, bool)
+
     def test_syllables(self):
         """Should set the syllables from the original word."""
         WORDS = {
@@ -75,17 +88,19 @@ class Test_WordBuilder(unittest.TestCase):
     def test_custom_dict(self):
         """Should retrieve stresses from custom dict if provided."""
         WORDS = {
-                "phidian": "20",
-                "indolence": "200",
+                "phidian": {"syllable": ["phi", "dian"],
+                            "stresses": "20"},
+                "indolence": {"syllable": ["in", "do", "lence"],
+                              "stresses": "200"}
                  }
-        for word, stresses in WORDS.items():
+        for word, entry in WORDS.items():
             with self.subTest('Original word: ' + word):
                 self.assertNotEqual(WordBuilder(word).stresses,
-                                    list(stresses))
+                                    list(entry["stresses"]))
                 self.assertEqual(WordBuilder(word, custom_dict=WORDS).stresses,
-                                 list(stresses))
+                                 list(entry["stresses"]))
 
-    def test_stressed_syllables(self):
+    def test__stressed_syllables(self):
         """Should be a list of the original word's syllables with stress."""
         WORDS = {
                  "automatic":
@@ -94,7 +109,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, stressed_syllables in WORDS.items():
             with self.subTest('Original word: ' + word):
-                self.assertEqual(WordBuilder(word).stressed_syllables,
+                self.assertEqual(WordBuilder(word)._stressed_syllables,
                                  stressed_syllables)
 
     def test_word_already_clean(self):
@@ -104,7 +119,7 @@ class Test_WordBuilder(unittest.TestCase):
                  )
         for word in WORDS:
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  word)
 
     def test_word_has_grave_over_e(self):
@@ -116,7 +131,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_elision(self):
@@ -127,7 +142,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_possessive(self):
@@ -139,7 +154,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_uppercase(self):
@@ -151,7 +166,7 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
     def test_word_has_punctuation(self):
@@ -163,17 +178,17 @@ class Test_WordBuilder(unittest.TestCase):
                  }
         for word, cleaned_word in WORDS.items():
             with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word).clean_word,
+                self.assertEqual(WordBuilder(word)._clean_word,
                                  cleaned_word)
 
-    def test_tag_string(self):
+    def test__tag_string(self):
         """Should wrap a string with an HTML tag and optional style attr."""
         wb = WordBuilder("Test")
         with self.subTest('Without a style'):
-            self.assertEqual(wb.tag_string("copy", "span"),
+            self.assertEqual(wb._tag_string("copy", "span"),
                              "<span>copy</span>")
         with self.subTest('With a style'):
-            self.assertEqual(wb.tag_string("text", "strong", "color:red"),
+            self.assertEqual(wb._tag_string("text", "strong", "color:red"),
                              "<strong style='color:red'>text</strong>")
 
     def test__matched_syllables(self):
@@ -263,7 +278,7 @@ class Test_LineBuilder(unittest.TestCase):
                 self.assertEqual(repr(LineBuilder(line)),
                                  "LineBuilder('" + line + "')")
 
-    def test_clean_line(self):
+    def test__clean_line(self):
         """Should replace hyphens and emlines with spaces."""
         LINES = {
                  "One morn before me were three figures seen,":
@@ -273,13 +288,13 @@ class Test_LineBuilder(unittest.TestCase):
                  }
         for line, clean_line in LINES.items():
             with self.subTest('Original line: ' + line):
-                self.assertEqual(LineBuilder(line).clean_line(),
+                self.assertEqual(LineBuilder(line)._clean_line(),
                                  clean_line)
 
-    def test_word_list(self):
+    def test__word_list(self):
         """Should create a list of WordBuilder instances."""
         LINE = "Two Owls and a Hen,"
-        for word in LineBuilder(LINE).word_list():
+        for word in LineBuilder(LINE)._word_list():
             with self.subTest('Original word: ' + str(word)):
                 self.assertEqual(repr(word),
                                  "WordBuilder('" + str(word) + "')")

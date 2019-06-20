@@ -6,38 +6,78 @@ from nltk import SyllableTokenizer
 SSP = SyllableTokenizer()
 
 CUSTOM_DICT = {
-                "phidian": "20",
-                "indolence": "200",
-                "benumbed": "02",
-                "unhaunted": "020",
-                "nothingness": "202",
-                "embroidered": "020",
-                "besprinkled": "020",
-                "o’er": "0",
-                "unmeek": "02",
-                "poesy": "202",
-                "forsooth": "02",
-                "honeyed": "20",
-                "casement": "20",
-                "leaved": "2",
-                "throstle": "20",
-                "’twas": "2",
-                "dieted": "202",
-                "masque": "2",
-                "spright": "2",
-                "flow’rs": "2",
-                "deniest": "20",
-                "know’st": "2",
-                "triumph’st": "20",
-                "say’st": "2",
-                "find’st": "2",
-                "yield’st": "2",
-                "’tis": "2",
-                "purpled": "20",
-                "maidenhead": "202",
-                "orisons": "200",
-                "mockeries": "200",
-                "pallor": "20",
+                "phidian": {"syllables": ["phi", "dian"],
+                            "stresses": "20"},
+                "indolence": {"syllables": ["in", "do", "lence"],
+                              "stresses": "201"},
+                "benumbed": {"syllables": ["be", "numbed"],
+                             "stresses": "02"},
+                "unhaunted": {"syllables": ["un", "haun", "ted"],
+                              "stresses": "020"},
+                "nothingness": {"syllables": ["no", "thing", "ness"],
+                                "stresses": "202"},
+                "embroidered": {"syllables": ["em", "broi", "dered"],
+                                "stresses": "020"},
+                "besprinkled": {"syllables": ["be", "sprin", "kled"],
+                                "stresses": "020"},
+                "o’er": {"syllables": ["o’er"],
+                         "stresses": "1"},
+                "unmeek": {"syllables": ["un", "meek"],
+                           "stresses": "01"},
+                "poesy": {"syllables": ["po", "e", "sy"],
+                          "stresses": "202"},
+                "forsooth": {"syllables": ["for", "sooth"],
+                             "stresses": "02"},
+                "honeyed": {"syllables": ["ho", "neyed"],
+                            "stresses": "20"},
+                "casement": {"syllables": ["case", "ment"],
+                             "stresses": "20"},
+                "leaved": {"syllables": ["leaved"],
+                           "stresses": "1"},
+                "throstle": {"syllables": ["thro", "stle"],
+                             "stresses": "20"},
+                "farewell": {"syllables": ["fare", "well"],
+                             "stresses": "12"},
+                "’twas": {"syllables": ["’twas"],
+                          "stresses": "2"},
+                "dieted": {"syllables": ["di", "e", "ted"],
+                           "stresses": "202"},
+                "masque": {"syllables": ["masque"],
+                           "stresses": "2"},
+                "fall’n": {"syllables": ["fall’n"],
+                           "stresses": "2"},
+                "spright": {"syllables": ["spright"],
+                            "stresses": "2"},
+                "flowers": {"syllables": ["flowers"],
+                            "stresses": "2"},
+                "flower": {"syllables": ["flower"],
+                           "stresses": "2"},
+                "flowery": {"syllables": ["flow", "ery"],
+                            "stresses": "21"},
+                "deniest": {"syllables": ["de", "niest"],
+                            "stresses": "20"},
+                "know’st": {"syllables": ["know’st"],
+                            "stresses": "2"},
+                "triumph’st": {"syllables": ["tri", "umph’st"],
+                               "stresses": "20"},
+                "say’st": {"syllables": ["say’st"],
+                           "stresses": "2"},
+                "find’st": {"syllables": ["find’st"],
+                            "stresses": "2"},
+                "yield’st": {"syllables": ["yield’st"],
+                             "stresses": "2"},
+                "’tis": {"syllables": ["’tis"],
+                         "stresses": "2"},
+                "purpled": {"syllables": ["pur", "pled"],
+                            "stresses": "20"},
+                "maidenhead": {"syllables": ["mai", "den", "head"],
+                               "stresses": "202"},
+                "orisons": {"syllables": ["o", "ri", "son"],
+                            "stresses": "201"},
+                "mockeries": {"syllables": ["mocke", "ries"],
+                              "stresses": "20"},
+                "pallor": {"syllables": ["pa", "llor"],
+                           "stresses": "20"},
               }
 
 
@@ -54,6 +94,7 @@ class WordBuilder(object):
         """Initialize from original word."""
         self.word = word
         self.custom_dict = custom_dict
+        self._is_in_custom_dict = self._clean_word in self.custom_dict
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -66,17 +107,20 @@ class WordBuilder(object):
     @property
     def syllables(self):
         """Return the syllables of the original word."""
-        return SSP.tokenize(self.word)
+        if self._is_in_custom_dict:
+            word_syllables = self.custom_dict[self._clean_word]["syllables"]
+        else:
+            word_syllables = SSP.tokenize(self.word)
+        return word_syllables
 
     @property
     def stresses(self):
         """Return a list of the stresses for the given word."""
-        cleaned_word = self.clean_word
-        try:
-            word_stresses = self.custom_dict[cleaned_word]
-        except (KeyError, TypeError):
+        if self._is_in_custom_dict:
+            word_stresses = self.custom_dict[self._clean_word]["stresses"]
+        else:
             try:
-                word_stresses = stresses_for_word(str(cleaned_word))[0]
+                word_stresses = stresses_for_word(str(self._clean_word))[0]
             except IndexError:
                 word_stresses = ""
         if "è" in self.word:
@@ -84,7 +128,7 @@ class WordBuilder(object):
         return list(word_stresses)
 
     @property
-    def stressed_syllables(self):
+    def _stressed_syllables(self):
         """Combine the syllables and stresses of the original word."""
         word = self.word
         syllables = self.syllables
@@ -101,7 +145,7 @@ class WordBuilder(object):
         return result
 
     @property
-    def clean_word(self):
+    def _clean_word(self):
         """Prepare a word for CMU lookup."""
         clean = self.word
         # First, force lowercase and strip punctuation
@@ -116,7 +160,7 @@ class WordBuilder(object):
         clean = clean.replace("’d", "ed")
         return clean
 
-    def tag_string(self, snippet, tag, style=""):
+    def _tag_string(self, snippet, tag, style=""):
         """Wrap a text snippet with an html tag."""
         if style == "":
             opening_tag = "<" + tag + ">"
@@ -136,7 +180,7 @@ class WordBuilder(object):
             - Boolean for match between pattern & pronunciation
         """
         result = []
-        for syllable, pronunciation_stress in self.stressed_syllables:
+        for syllable, pronunciation_stress in self._stressed_syllables:
             if pattern:
                 if pattern.pop(0):
                     result.append([syllable,
@@ -168,10 +212,10 @@ class WordBuilder(object):
 
         result = ""
         for syllable, stress, match in self._matched_syllables(pattern):
-            result += self.tag_string(syllable,
-                                      TAGS[stress],
-                                      STYLES[match])
-        return self.tag_string(result, "span")
+            result += self._tag_string(syllable,
+                                       TAGS[stress],
+                                       STYLES[match])
+        return self._tag_string(result, "span")
 
 
 class LineBuilder(object):
@@ -195,17 +239,17 @@ class LineBuilder(object):
         """Create the formal string representation of the class."""
         return "LineBuilder('" + self.line + "')"
 
-    def clean_line(self):
+    def _clean_line(self):
         """Prepare a line for splitting on spaces."""
         clean = self.line
         for sep in "—-":
             clean = clean.replace(sep, " ")
         return clean
 
-    def word_list(self):
+    def _word_list(self):
         """Create the list of WordBuilder instances."""
         word_list = []
-        for word in self.clean_line().split():
+        for word in self._clean_line().split():
             word_list.append(WordBuilder(word, custom_dict=CUSTOM_DICT))
         return word_list
 
@@ -214,7 +258,7 @@ class LineBuilder(object):
         MISSING = "<b style='color:red'> _ </b>"
 
         stressed_line = ""
-        for word in self.word_list():
+        for word in self._word_list():
             number_stresses = len(word.stresses)
             word_meter = stress_pattern[0:number_stresses]
             stress_pattern = stress_pattern[number_stresses:]
