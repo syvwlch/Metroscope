@@ -73,9 +73,9 @@ class WordBuilder(object):
     def stresses(self):
         """Return a list of the stresses for the given word."""
         cleaned_word = self.clean_word
-        try:
+        if self._is_in_custom_dict:
             word_stresses = self.custom_dict[cleaned_word]
-        except (KeyError, TypeError):
+        else:
             try:
                 word_stresses = stresses_for_word(str(cleaned_word))[0]
             except IndexError:
