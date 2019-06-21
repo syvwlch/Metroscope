@@ -299,15 +299,23 @@ def scanned_poem(path, meter):
     Wrap the poem in a <div> tag, each stanza in a <p> tag,
     and end each line with a <br> tag.
     """
-    result = "<div>\n<p>\n"
+    lines = []
     with open(path, "r") as poem:
         for line in poem:
-            if line == "\n":
-                result += "</p>\n<p>"
+            if line != "\n":
+                lines.append(LineBuilder(line))
             else:
-                # result += stress_line(line, meter)
-                result += LineBuilder(line).stressed_HTML(meter)
-                result += "<br>\n"
+                lines.append(None)
+
+    result = "<div>\n<p>\n"
+    for line in lines:
+        if line is None:
+            result += "</p>\n<p>"
+        else:
+            result += line.stressed_HTML(meter)
+            if line._rhyming_part is not None:
+                result += " ______ " + line._rhyming_part
+            result += "<br>\n"
     result += "</p>\n</div>"
     return result
 
