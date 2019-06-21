@@ -1,7 +1,8 @@
 """Experiments with scanning meter."""
 
-from pronouncing import stresses_for_word
+from pronouncing import stresses_for_word, phones_for_word, rhyming_part
 from nltk import SyllableTokenizer
+from string import ascii_uppercase
 
 SSP = SyllableTokenizer()
 
@@ -196,6 +197,15 @@ class WordBuilder(object):
                                False])
         return result
 
+    @property
+    def _rhyming_part(self):
+        """Return the rhyming part of the original word."""
+        if not self._is_in_custom_dict:
+            phones = phones_for_word(self._clean_word)
+            if phones != []:
+                return rhyming_part(phones[0])
+        return None
+
     def stressed_HTML(self, pattern):
         """
         Mark up the original word based on the stress pattern provided.
@@ -246,6 +256,7 @@ class LineBuilder(object):
             clean = clean.replace(sep, " ")
         return clean
 
+    @property
     def _word_list(self):
         """Create the list of WordBuilder instances."""
         word_list = []
@@ -253,12 +264,17 @@ class LineBuilder(object):
             word_list.append(WordBuilder(word, custom_dict=CUSTOM_DICT))
         return word_list
 
+    @property
+    def _rhyming_part(self):
+        """Return the rhyming part of the line's last word."""
+        return self._word_list[-1]._rhyming_part
+
     def stressed_HTML(self, stress_pattern):
         """Mark up the line based on the stress pattern provided."""
         MISSING = "<b style='color:red'> _ </b>"
 
         stressed_line = ""
-        for word in self._word_list():
+        for word in self._word_list:
             number_stresses = len(word.stresses)
             word_meter = stress_pattern[0:number_stresses]
             stress_pattern = stress_pattern[number_stresses:]
@@ -284,16 +300,32 @@ def scanned_poem(path, meter):
     Wrap the poem in a <div> tag, each stanza in a <p> tag,
     and end each line with a <br> tag.
     """
-    result = "<div>\n<p>\n"
+    lines = []
     with open(path, "r") as poem:
         for line in poem:
-            if line == "\n":
-                result += "</p>\n<p>"
+            if line != "\n":
+                lines.append(LineBuilder(line))
             else:
-                # result += stress_line(line, meter)
-                result += LineBuilder(line).stressed_HTML(meter)
-                result += "<br>\n"
-    result += "</p>\n</div>"
+                lines.append(None)
+
+    rhymes = {"None": "_"}
+    result = "<table>\n<tr>\n"
+    for line in lines:
+        if line is None:
+            result += "<td><br></td>\n</tr>\n<tr>"
+            rhymes = {"None": "_"}
+        else:
+            result += "<td>"
+            result += line.stressed_HTML(meter)
+            result += "</td>\n<td>_"
+            rp = str(line._rhyming_part)
+            try:
+                result += rhymes[rp] + "</td>\n"
+            except KeyError:
+                rhymes.update({rp: ascii_uppercase[len(rhymes)-1]})
+                result += rhymes[rp] + "</td>\n"
+            result += "</tr>\n<tr>"
+    result += "</tr>\n</table>"
     return result
 
 

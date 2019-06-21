@@ -211,6 +211,17 @@ class Test_WordBuilder(unittest.TestCase):
                 self.assertEqual(WordBuilder(word)._matched_syllables(METER),
                                  matches)
 
+    def test__rhyming_part(self):
+        """Should return the rhyming part of the word."""
+        LINES = {
+                 "Hen,": "EH1 N",
+                 "Poesy": None
+                 }
+        for line, rhyme in LINES.items():
+            with self.subTest('Original line: ' + line):
+                self.assertEqual(WordBuilder(line)._rhyming_part,
+                                 rhyme)
+
     def test_stressed_HTML(self):
         """Should give an HTML representation of the word's fit to meter."""
         WORDS = {
@@ -294,10 +305,21 @@ class Test_LineBuilder(unittest.TestCase):
     def test__word_list(self):
         """Should create a list of WordBuilder instances."""
         LINE = "Two Owls and a Hen,"
-        for word in LineBuilder(LINE)._word_list():
+        for word in LineBuilder(LINE)._word_list:
             with self.subTest('Original word: ' + str(word)):
                 self.assertEqual(repr(word),
                                  "WordBuilder('" + str(word) + "')")
+
+    def test__rhyming_part(self):
+        """Should return the rhyming part of the last word of the line."""
+        LINES = {
+                 "Two Owls and a Hen,": "EH1 N",
+                 "I knew to be my demon Poesy.": None
+                 }
+        for line, rhyme in LINES.items():
+            with self.subTest('Original line: ' + line):
+                self.assertEqual(LineBuilder(line)._rhyming_part,
+                                 rhyme)
 
     def test_stressed_HTML(self):
         """Should give an HTML representation of the line's fit to meter."""
