@@ -2,6 +2,7 @@
 
 from pronouncing import stresses_for_word, phones_for_word, rhyming_part
 from nltk import SyllableTokenizer
+from string import ascii_uppercase
 
 SSP = SyllableTokenizer()
 
@@ -307,14 +308,20 @@ def scanned_poem(path, meter):
             else:
                 lines.append(None)
 
+    rhymes = {"None": "_"}
     result = "<div>\n<p>\n"
     for line in lines:
         if line is None:
             result += "</p>\n<p>"
+            rhymes = {"None": "_"}
         else:
             result += line.stressed_HTML(meter)
-            if line._rhyming_part is not None:
-                result += " ______ " + line._rhyming_part
+            rp = str(line._rhyming_part)
+            try:
+                result += " ...... " + rhymes[rp]
+            except KeyError:
+                rhymes.update({rp: ascii_uppercase[len(rhymes)-1]})
+                result += " ...... " + rhymes[rp]
             result += "<br>\n"
     result += "</p>\n</div>"
     return result
