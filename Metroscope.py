@@ -309,21 +309,23 @@ def scanned_poem(path, meter):
                 lines.append(None)
 
     rhymes = {"None": "_"}
-    result = "<div>\n<p>\n"
+    result = "<table>\n<tr>\n"
     for line in lines:
         if line is None:
-            result += "</p>\n<p>"
+            result += "<td><br></td>\n</tr>\n<tr>"
             rhymes = {"None": "_"}
         else:
+            result += "<td>"
             result += line.stressed_HTML(meter)
+            result += "</td>\n<td>_"
             rp = str(line._rhyming_part)
             try:
-                result += " ...... " + rhymes[rp]
+                result += rhymes[rp] + "</td>\n"
             except KeyError:
                 rhymes.update({rp: ascii_uppercase[len(rhymes)-1]})
-                result += " ...... " + rhymes[rp]
-            result += "<br>\n"
-    result += "</p>\n</div>"
+                result += rhymes[rp] + "</td>\n"
+            result += "</tr>\n<tr>"
+    result += "</tr>\n</table>"
     return result
 
 
