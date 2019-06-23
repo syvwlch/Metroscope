@@ -190,7 +190,7 @@ class WordBuilder(object):
                 else:
                     result.append([syllable,
                                    False,
-                                   pronunciation_stress != '2'])
+                                   pronunciation_stress != '1'])
             else:
                 result.append([syllable,
                                None,
