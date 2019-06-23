@@ -11,7 +11,7 @@ class Test_WordBuilder(object):
     """
     Test the WordBuilder class.
 
-    Using TDD so coverage needs to be complete.
+    Coverage is complete and this class is under TDD.
     """
 
     def test_init(self):
@@ -221,7 +221,7 @@ class Test_LineBuilder(object):
     """
     Test the LineBuilder class.
 
-    Using TDD so coverage needs to be complete.
+    Coverage is complete and this class is under TDD.
     """
 
     def test_init(self):
