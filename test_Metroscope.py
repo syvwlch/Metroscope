@@ -1,14 +1,13 @@
 """
 Unit test the Metroscope package.
 
-Work in progress, coverage not complete.
+Coverage complete, switching to Test Driven Development.
 """
 
-import unittest
 from Metroscope import WordBuilder, LineBuilder
 
 
-class Test_WordBuilder(unittest.TestCase):
+class Test_WordBuilder(object):
     """
     Test the WordBuilder class.
 
@@ -218,7 +217,7 @@ class Test_WordBuilder(unittest.TestCase):
             assert(WordBuilder(word).stressed_HTML(METER) == HTML)
 
 
-class Test_LineBuilder(unittest.TestCase):
+class Test_LineBuilder(object):
     """
     Test the LineBuilder class.
 
@@ -297,4 +296,4 @@ class Test_LineBuilder(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    print("Run pytest from the command line.")
