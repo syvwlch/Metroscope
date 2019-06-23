@@ -7,4 +7,4 @@ install:
   - pipenv install
 script:
   - flake8
-  - python test_Metroscope.py
+  - pytest
