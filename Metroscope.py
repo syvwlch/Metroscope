@@ -125,7 +125,7 @@ class WordBuilder(object):
             except IndexError:
                 word_stresses = ""
         if "è" in self.word:
-            word_stresses += "1"
+            word_stresses += "2"
         return list(word_stresses)
 
     @property
