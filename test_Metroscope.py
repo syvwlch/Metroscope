@@ -1,18 +1,17 @@
 """
 Unit test the Metroscope package.
 
-Work in progress, coverage not complete.
+Coverage complete, switching to Test Driven Development.
 """
 
-import unittest
 from Metroscope import WordBuilder, LineBuilder
 
 
-class Test_WordBuilder(unittest.TestCase):
+class Test_WordBuilder(object):
     """
     Test the WordBuilder class.
 
-    Using TDD so coverage needs to be complete.
+    Coverage is complete and this class is under TDD.
     """
 
     def test_init(self):
@@ -22,9 +21,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "serene",
                  )
         for word in WORDS:
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(WordBuilder(word).word,
-                                 word)
+            assert(WordBuilder(word).word == word)
 
     def test_str_magic_method(self):
         """Should return the original word."""
@@ -34,9 +31,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "pass’d",
                  )
         for word in WORDS:
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(str(WordBuilder(word)),
-                                 word)
+            assert(str(WordBuilder(word)) == word)
 
     def test_repr_magic_method(self):
         """Should evaluate to itself."""
@@ -46,9 +41,8 @@ class Test_WordBuilder(unittest.TestCase):
                  "pass’d",
                  )
         for word in WORDS:
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(repr(WordBuilder(word)),
-                                 "WordBuilder('" + word + "')")
+            assert(repr(WordBuilder(word))
+                   == "WordBuilder('" + word + "')")
 
     def test__is_in_custom_dict(self):
         """Should return True if the word is in the provided custom_dict."""
@@ -59,9 +53,8 @@ class Test_WordBuilder(unittest.TestCase):
                  "batman": False,
                  }
         for word, bool in WORDS.items():
-            with self.subTest('Word is in custom_dict: ' + str(bool)):
-                wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-                self.assertEqual(wb._is_in_custom_dict, bool)
+            wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+            assert(wb._is_in_custom_dict == bool)
 
     def test_syllables(self):
         """Should set the syllables from the original word."""
@@ -70,9 +63,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "serene": ['se', 're', 'ne'],
                  }
         for word, syllables in WORDS.items():
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(WordBuilder(word).syllables,
-                                 syllables)
+            assert(WordBuilder(word).syllables == syllables)
 
     def test_stresses(self):
         """Should set the stresses from the original word."""
@@ -81,24 +72,21 @@ class Test_WordBuilder(unittest.TestCase):
                  "serene": ['0', '1'],
                  }
         for word, stresses in WORDS.items():
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(WordBuilder(word).stresses,
-                                 stresses)
+            assert(WordBuilder(word).stresses == stresses)
 
     def test_custom_dict(self):
         """Should retrieve stresses from custom dict if provided."""
-        WORDS = {
-                "phidian": {"syllable": ["phi", "dian"],
-                            "stresses": "20"},
-                "indolence": {"syllable": ["in", "do", "lence"],
-                              "stresses": "200"}
+        CUSTOM_DICT = {
+                       "phidian": {"syllable": ["phi", "dian"],
+                                   "stresses": "20"},
+                       "indolence": {"syllable": ["in", "do", "lence"],
+                                     "stresses": "200"}
                  }
-        for word, entry in WORDS.items():
-            with self.subTest('Original word: ' + word):
-                self.assertNotEqual(WordBuilder(word).stresses,
-                                    list(entry["stresses"]))
-                self.assertEqual(WordBuilder(word, custom_dict=WORDS).stresses,
-                                 list(entry["stresses"]))
+        for word, entry in CUSTOM_DICT.items():
+            assert(WordBuilder(word).stresses
+                   == [])
+            assert(WordBuilder(word, custom_dict=CUSTOM_DICT).stresses
+                   == list(entry["stresses"]))
 
     def test__stressed_syllables(self):
         """Should be a list of the original word's syllables with stress."""
@@ -108,9 +96,8 @@ class Test_WordBuilder(unittest.TestCase):
                  "serene": [['se', '0'], ['rene', '1']],
                  }
         for word, stressed_syllables in WORDS.items():
-            with self.subTest('Original word: ' + word):
-                self.assertEqual(WordBuilder(word)._stressed_syllables,
-                                 stressed_syllables)
+            assert(WordBuilder(word)._stressed_syllables
+                   == stressed_syllables)
 
     def test_word_already_clean(self):
         """Should return an already clean word unchanged."""
@@ -118,9 +105,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "serene",
                  )
         for word in WORDS:
-            with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word)._clean_word,
-                                 word)
+            assert(WordBuilder(word)._clean_word == word)
 
     def test_word_has_grave_over_e(self):
         """Should change an 'è' to an 'e'."""
@@ -130,9 +115,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "joinèd": "joined",
                  }
         for word, cleaned_word in WORDS.items():
-            with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word)._clean_word,
-                                 cleaned_word)
+            assert(WordBuilder(word)._clean_word == cleaned_word)
 
     def test_word_has_elision(self):
         """Should replace ’d with ed."""
@@ -141,9 +124,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "pass’d": "passed",
                  }
         for word, cleaned_word in WORDS.items():
-            with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word)._clean_word,
-                                 cleaned_word)
+            assert(WordBuilder(word)._clean_word == cleaned_word)
 
     def test_word_has_possessive(self):
         """Should strip final ’s without touching longer strings."""
@@ -153,9 +134,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "know’st": "know’st",
                  }
         for word, cleaned_word in WORDS.items():
-            with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word)._clean_word,
-                                 cleaned_word)
+            assert(WordBuilder(word)._clean_word == cleaned_word)
 
     def test_word_has_uppercase(self):
         """Should force lowercase."""
@@ -165,9 +144,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "One": "one",
                  }
         for word, cleaned_word in WORDS.items():
-            with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word)._clean_word,
-                                 cleaned_word)
+            assert(WordBuilder(word)._clean_word == cleaned_word)
 
     def test_word_has_punctuation(self):
         """Should strip punctuation."""
@@ -177,19 +154,15 @@ class Test_WordBuilder(unittest.TestCase):
                  ".,;:!?—'\"": "",
                  }
         for word, cleaned_word in WORDS.items():
-            with self.subTest('Tried to clean: ' + word):
-                self.assertEqual(WordBuilder(word)._clean_word,
-                                 cleaned_word)
+            assert(WordBuilder(word)._clean_word == cleaned_word)
 
     def test__tag_string(self):
         """Should wrap a string with an HTML tag and optional style attr."""
-        wb = WordBuilder("Test")
-        with self.subTest('Without a style'):
-            self.assertEqual(wb._tag_string("copy", "span"),
-                             "<span>copy</span>")
-        with self.subTest('With a style'):
-            self.assertEqual(wb._tag_string("text", "strong", "color:red"),
-                             "<strong style='color:red'>text</strong>")
+        wb = WordBuilder("Irrelevant")
+        assert(wb._tag_string("Without a style passed", "span")
+               == "<span>Without a style passed</span>")
+        assert(wb._tag_string("With a style passed", "strong", "color:red")
+               == "<strong style='color:red'>With a style passed</strong>")
 
     def test__matched_syllables(self):
         """Should give a list of list with the word's fit to meter."""
@@ -206,10 +179,9 @@ class Test_WordBuilder(unittest.TestCase):
                  [['One', False, True]],
                  }
         for word, matches in WORDS.items():
-            with self.subTest('Original word: ' + word):
-                METER = [0, 1, 0]
-                self.assertEqual(WordBuilder(word)._matched_syllables(METER),
-                                 matches)
+            METER = [0, 1, 0]
+            assert(WordBuilder(word)._matched_syllables(METER)
+                   == matches)
 
     def test__rhyming_part(self):
         """Should return the rhyming part of the word."""
@@ -218,9 +190,7 @@ class Test_WordBuilder(unittest.TestCase):
                  "Poesy": None
                  }
         for line, rhyme in LINES.items():
-            with self.subTest('Original line: ' + line):
-                self.assertEqual(WordBuilder(line)._rhyming_part,
-                                 rhyme)
+            assert(WordBuilder(line)._rhyming_part == rhyme)
 
     def test_stressed_HTML(self):
         """Should give an HTML representation of the word's fit to meter."""
@@ -243,17 +213,15 @@ class Test_WordBuilder(unittest.TestCase):
 </span>",
                  }
         for word, HTML in WORDS.items():
-            with self.subTest('Original word: ' + word):
-                METER = [0, 1, 0]
-                self.assertEqual(WordBuilder(word).stressed_HTML(METER),
-                                 HTML)
+            METER = [0, 1, 0]
+            assert(WordBuilder(word).stressed_HTML(METER) == HTML)
 
 
-class Test_LineBuilder(unittest.TestCase):
+class Test_LineBuilder(object):
     """
     Test the LineBuilder class.
 
-    Using TDD so coverage needs to be complete.
+    Coverage is complete and this class is under TDD.
     """
 
     def test_init(self):
@@ -263,9 +231,7 @@ class Test_LineBuilder(unittest.TestCase):
                  "And once more came they by:-alas! wherefore?",
                  )
         for line in LINES:
-            with self.subTest('Original line: ' + line):
-                self.assertEqual(LineBuilder(line).line,
-                                 line)
+            assert(LineBuilder(line).line == line)
 
     def test_str_magic_method(self):
         """Should return the original word."""
@@ -274,9 +240,7 @@ class Test_LineBuilder(unittest.TestCase):
                  "And once more came they by:-alas! wherefore?",
                  )
         for line in LINES:
-            with self.subTest('Original line: ' + line):
-                self.assertEqual(str(LineBuilder(line)),
-                                 line)
+            assert(str(LineBuilder(line)) == line)
 
     def test_repr_magic_method(self):
         """Should evaluate to itself."""
@@ -285,9 +249,8 @@ class Test_LineBuilder(unittest.TestCase):
                  "And once more came they by:-alas! wherefore?",
                  )
         for line in LINES:
-            with self.subTest('Original line: ' + line):
-                self.assertEqual(repr(LineBuilder(line)),
-                                 "LineBuilder('" + line + "')")
+            assert(repr(LineBuilder(line))
+                   == "LineBuilder('" + line + "')")
 
     def test__clean_line(self):
         """Should replace hyphens and emlines with spaces."""
@@ -298,17 +261,13 @@ class Test_LineBuilder(unittest.TestCase):
                  "And once more came they by: alas! wherefore?",
                  }
         for line, clean_line in LINES.items():
-            with self.subTest('Original line: ' + line):
-                self.assertEqual(LineBuilder(line)._clean_line(),
-                                 clean_line)
+            assert(LineBuilder(line)._clean_line() == clean_line)
 
     def test__word_list(self):
         """Should create a list of WordBuilder instances."""
         LINE = "Two Owls and a Hen,"
         for word in LineBuilder(LINE)._word_list:
-            with self.subTest('Original word: ' + str(word)):
-                self.assertEqual(repr(word),
-                                 "WordBuilder('" + str(word) + "')")
+            assert(repr(word) == "WordBuilder('" + str(word) + "')")
 
     def test__rhyming_part(self):
         """Should return the rhyming part of the last word of the line."""
@@ -317,9 +276,7 @@ class Test_LineBuilder(unittest.TestCase):
                  "I knew to be my demon Poesy.": None
                  }
         for line, rhyme in LINES.items():
-            with self.subTest('Original line: ' + line):
-                self.assertEqual(LineBuilder(line)._rhyming_part,
-                                 rhyme)
+            assert(LineBuilder(line)._rhyming_part == rhyme)
 
     def test_stressed_HTML(self):
         """Should give an HTML representation of the line's fit to meter."""
@@ -334,11 +291,9 @@ class Test_LineBuilder(unittest.TestCase):
 </span> ",
                  }
         for line, HTML in LINES.items():
-            with self.subTest('Original line: ' + line):
-                METER = [0, 1, 0, 0, 1]
-                self.assertEqual(LineBuilder(line).stressed_HTML(METER),
-                                 HTML)
+            METER = [0, 1, 0, 0, 1]
+            assert(LineBuilder(line).stressed_HTML(METER) == HTML)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    print("Run pytest from the command line.")

@@ -1,9 +1,6 @@
 # raw texts I do not have a license to share online
 Texts/NonFreeTexts/
 
-# ignore all pickled results of long processing runs
-*.pickle
-
 # MacOS system files
 *.DS_Store
 
