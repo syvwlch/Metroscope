@@ -168,12 +168,12 @@ class Test_WordBuilder(object):
         """Should give a list of list with the word's fit to meter."""
         WORDS = {
                  "automatic":
-                 [['au', False, False],
+                 [['au', False, True],
                   ['to', True, False],
-                  ['ma', False, True],
+                  ['ma', False, False],
                   ['tic', None, False]],
                  "Shadows":
-                 [['Sha', False, True],
+                 [['Sha', False, False],
                   ['dows', True, True]],
                  "One":
                  [['One', False, True]],
@@ -197,14 +197,14 @@ class Test_WordBuilder(object):
         WORDS = {
                  "automatic":
                  "<span>\
-<span style='color:red'>au</span>\
+<span style='color:black'>au</span>\
 <strong style='color:red'>to</strong>\
-<span style='color:black'>ma</span>\
+<span style='color:red'>ma</span>\
 <small style='color:red'>tic</small>\
 </span>",
                  "Shadows":
                  "<span>\
-<span style='color:black'>Sha</span>\
+<span style='color:red'>Sha</span>\
 <strong style='color:black'>dows</strong>\
 </span>",
                  "One":

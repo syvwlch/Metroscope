@@ -124,8 +124,12 @@ class WordBuilder(object):
                 word_stresses = stresses_for_word(str(self._clean_word))[0]
             except IndexError:
                 word_stresses = ""
+        # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
+        # CMU is too generous with the 1s when the word has one syllable.
+        if word_stresses == "1":
+            word_stresses = "2"
         return list(word_stresses)
 
     @property
