@@ -116,7 +116,14 @@ class WordBuilder(object):
 
     @property
     def stresses(self):
-        """Return a list of the stresses for the given word."""
+        """
+        Return a list of the stresses for the given word.
+
+        Consumers of this list make the following assumptions:
+         - syllables with a "1" should be stressed by the meter
+         - syllables with a "2" can be stressed or unstressed by the meter
+         - syllables with a "0" should be unstressed by the meter
+        """
         if self._is_in_custom_dict:
             word_stresses = self.custom_dict[self._clean_word]["stresses"]
         else:
@@ -127,8 +134,8 @@ class WordBuilder(object):
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
-        # CMU is too generous with the 1s when the word has one syllable.
-        if word_stresses == "1":
+        # Words of one syllable can usually be pronounced either way.
+        if word_stresses in ("1", "0"):
             word_stresses = "2"
         return list(word_stresses)
 
