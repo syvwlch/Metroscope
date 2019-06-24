@@ -1,10 +1,10 @@
 """
-Unit test the Metroscope package.
+Unit test the metroscope package.
 
 Coverage complete, switching to Test Driven Development.
 """
 
-from Metroscope import WordBuilder, LineBuilder
+from metroscope import WordBuilder, LineBuilder
 
 
 class Test_WordBuilder(object):

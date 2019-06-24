@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
-from Metroscope import scanned_poem
+from metroscope import scanned_poem
 import markdown
 
 application = Flask(__name__)
