@@ -5,6 +5,12 @@ python:
 install:
   - pip install pipenv
   - pipenv install
+# automatic tests
 script:
   - flake8
   - pytest
+# safelist
+branches:
+  only:
+  - master
+  - stable
