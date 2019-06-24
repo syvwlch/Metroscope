@@ -1,5 +1,5 @@
 """
-Unit test the Metroscope package.
+Unit test the metroscope package.
 
 Coverage complete, switching to Test Driven Development.
 """
