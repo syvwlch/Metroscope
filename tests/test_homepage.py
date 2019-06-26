@@ -1,16 +1,20 @@
 """Test the homepage using flask's test_client()."""
+import pytest
 from run import application
 
 
-def test_not_404():
+@pytest.fixture
+def client():
+    """Fixture to create the test client."""
+    application.config['TESTING'] = True
+    yield application.test_client()
+
+
+def test_not_404(client):
     """Make sure the homepage doesn't 404."""
-    client = application.test_client()
-    response = client.get('/')
-    assert "404" not in response.status
+    assert "404" not in client.get('/').status
 
 
-def test_not_500():
+def test_not_500(client):
     """Make sure the homepage doesn't 500."""
-    client = application.test_client()
-    response = client.get('/')
-    assert "500" not in response.status
+    assert "500" not in client.get('/').status
