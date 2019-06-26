@@ -1,4 +1,4 @@
-"""Test the homepage using flask's test_client()."""
+"""Test the major pages using flask's test_client()."""
 import pytest
 from run import application
 
@@ -10,16 +10,13 @@ def client():
     yield application.test_client()
 
 
-def test_not_404(client):
-    """Make sure the homepage doesn't 404."""
-    assert "404" not in client.get('/').status
+@pytest.mark.parametrize("route", ['/', '/about', '/poem/OldManWithBeard'])
+def test_200(client, route):
+    """Make sure the page returns a 200."""
+    assert "200" in client.get(route).status
 
 
-def test_not_500(client):
-    """Make sure the homepage doesn't 500."""
-    assert "500" not in client.get('/').status
-
-
-def test_200(client):
-    """Make sure the homepage returns a 200."""
-    assert "200" in client.get('/').status
+@pytest.mark.parametrize("route", ['/foo', '/poem/bar'])
+def test_unknown_pages(client, route):
+    """Make sure that pages that don't exist do 404."""
+    assert "404" in client.get(route).status
