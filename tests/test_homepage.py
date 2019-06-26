@@ -18,3 +18,8 @@ def test_not_404(client):
 def test_not_500(client):
     """Make sure the homepage doesn't 500."""
     assert "500" not in client.get('/').status
+
+
+def test_200(client):
+    """Make sure the homepage returns a 200."""
+    assert "200" in client.get('/').status
