@@ -14,6 +14,8 @@ What's left of the original command line script is the module that processes a l
 
 The code lives on github at [/syvwlch/Metroscope](https://github.com/syvwlch/Metroscope), under the MIT license.
 
+I'm also playing around with Travis CI for Continuous Integration and Heroku for deployment to staging and production. This site is currently hosted on Heroku.
+
 The public repository only has text that is in the public domain, of course, but you can put other text in /Texts/NonFreeTexts/ as well. The gitignore file has been set to ignore anything you place there.
 
 ## Attribution and dependencies
