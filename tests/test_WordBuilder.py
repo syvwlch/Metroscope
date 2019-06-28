@@ -49,6 +49,16 @@ def test__is_in_custom_dict():
         assert(wb._is_in_custom_dict == bool)
 
 
+def test__phones():
+    """Should set the phones from the original word."""
+    WORDS = {
+             "automatic": 'AO2 T AH0 M AE1 T IH0 K',
+             "serene": 'S ER0 IY1 N',
+             }
+    for word, phones in WORDS.items():
+        assert(WordBuilder(word)._phones == phones)
+
+
 def test_syllables():
     """Should set the syllables from the original word."""
     WORDS = {

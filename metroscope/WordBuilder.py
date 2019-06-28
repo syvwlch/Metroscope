@@ -1,6 +1,7 @@
 """The class that holds the representation of a word."""
 
-from pronouncing import stresses_for_word, phones_for_word, rhyming_part
+from pronouncing import stresses, phones_for_word, rhyming_part
+from pronouncing import stresses_for_word
 from nltk import SyllableTokenizer
 
 SSP = SyllableTokenizer()
@@ -28,6 +29,15 @@ class WordBuilder(object):
     def __repr__(self):
         """Create the formal string representation of the class."""
         return "WordBuilder('" + self.word + "')"
+
+    @property
+    def _phones(self):
+        """Return the phones of the original word."""
+        if self._is_in_custom_dict:
+            word_phones = self.custom_dict[self._clean_word]["phones"]
+        else:
+            word_phones = phones_for_word(self.word)[0]
+        return word_phones
 
     @property
     def syllables(self):
