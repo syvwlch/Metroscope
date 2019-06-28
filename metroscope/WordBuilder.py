@@ -1,6 +1,6 @@
 """The class that holds the representation of a word."""
 
-from pronouncing import stresses_for_word, phones_for_word, rhyming_part
+from pronouncing import stresses, phones_for_word, rhyming_part
 from nltk import SyllableTokenizer
 
 SSP = SyllableTokenizer()
@@ -30,6 +30,18 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
+    def _phones(self):
+        """Return the phones of the original word."""
+        if self._is_in_custom_dict:
+            try:
+                word_phones = self.custom_dict[self._clean_word]["phones"]
+            except KeyError:
+                word_phones = ""
+        else:
+            word_phones = phones_for_word(self._clean_word)[0]
+        return word_phones
+
+    @property
     def syllables(self):
         """Return the syllables of the original word."""
         if self._is_in_custom_dict:
@@ -39,7 +51,7 @@ class WordBuilder(object):
         return word_syllables
 
     @property
-    def stresses(self):
+    def stress_list(self):
         """
         Return a list of the stresses for the given word.
 
@@ -48,13 +60,11 @@ class WordBuilder(object):
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        if self._is_in_custom_dict:
-            word_stresses = self.custom_dict[self._clean_word]["stresses"]
-        else:
-            try:
-                word_stresses = stresses_for_word(str(self._clean_word))[0]
-            except IndexError:
-                word_stresses = ""
+        try:
+            # word_stresses = stresses_for_word(str(self._clean_word))[0]
+            word_stresses = stresses(self._phones)
+        except IndexError:
+            word_stresses = ""
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
@@ -68,7 +78,7 @@ class WordBuilder(object):
         """Combine the syllables and stresses of the original word."""
         word = self.word
         syllables = self.syllables
-        stresses = self.stresses
+        stresses = self.stress_list
         result = []
         for syllable in syllables:
             if len(stresses) > 1:
@@ -137,9 +147,17 @@ class WordBuilder(object):
         """Return the rhyming part of the original word."""
         if not self._is_in_custom_dict:
             phones = phones_for_word(self._clean_word)
-            if phones != []:
-                return rhyming_part(phones[0])
-        return None
+            if phones == []:
+                return None
+            result = rhyming_part(phones[0])
+        else:
+            phones = self.custom_dict[self._clean_word]["phones"]
+            if phones == "":
+                return None
+            result = rhyming_part(phones)
+        for stress in "012":
+            result = result.replace(stress, "")
+        return result
 
     def stressed_HTML(self, pattern):
         """

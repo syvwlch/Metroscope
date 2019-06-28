@@ -56,7 +56,7 @@ def test__word_list():
 def test__rhyming_part():
     """Should return the rhyming part of the last word of the line."""
     LINES = {
-             "Two Owls and a Hen,": "EH1 N",
+             "Two Owls and a Hen,": "EH N",
              "I knew to be my demon Poesy.": None
              }
     for line, rhyme in LINES.items():

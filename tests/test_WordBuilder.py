@@ -6,7 +6,7 @@ from metroscope import WordBuilder
 def test_init():
     """Should initialize from the original word."""
     WORDS = (
-             "automatic",
+             "Automatic",
              "serene",
              )
     for word in WORDS:
@@ -38,10 +38,12 @@ def test_repr_magic_method():
 
 def test__is_in_custom_dict():
     """Should return True if the word is in the provided custom_dict."""
-    CUSTOM_DICT = {"indolence": {"syllable": ["in", "do", "lence"],
-                                 "stresses": "200"}}
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   }
     WORDS = {
-             "indolence": True,
+             "Phidian": True,
              "batman": False,
              }
     for word, bool in WORDS.items():
@@ -49,50 +51,70 @@ def test__is_in_custom_dict():
         assert(wb._is_in_custom_dict == bool)
 
 
+def test__phones():
+    """Should set the phones from the original word."""
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   }
+    WORDS = {
+             "Automatic": 'AO2 T AH0 M AE1 T IH0 K',
+             "serene": 'S ER0 IY1 N',
+             "hen": 'HH EH1 N',
+             "Phidian": "F IH1 D IY0 N",
+             }
+    for word, phones in WORDS.items():
+        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        assert(wb._phones == phones)
+
+
 def test_syllables():
     """Should set the syllables from the original word."""
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   }
     WORDS = {
-             "automatic": ['au', 'to', 'ma', 'tic'],
+             "Automatic": ['Au', 'to', 'ma', 'tic'],
              "serene": ['se', 're', 'ne'],
+             "phidian": ["phi", "dian"],
              }
     for word, syllables in WORDS.items():
-        assert(WordBuilder(word).syllables == syllables)
+        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        assert(wb.syllables == syllables)
 
 
-def test_stresses():
+def test_stress_list():
     """Should set the stresses from the original word."""
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   }
     WORDS = {
-             "automatic": ['2', '0', '1', '0'],
+             "Automatic": ['2', '0', '1', '0'],
              "serene": ['0', '1'],
+             "phidian": ['1', '0'],
              }
     for word, stresses in WORDS.items():
-        assert(WordBuilder(word).stresses == stresses)
-
-
-def test_custom_dict():
-    """Should retrieve stresses from custom dict if provided."""
-    CUSTOM_DICT = {
-                   "phidian": {"syllable": ["phi", "dian"],
-                               "stresses": "20"},
-                   "indolence": {"syllable": ["in", "do", "lence"],
-                                 "stresses": "200"}
-             }
-    for word, entry in CUSTOM_DICT.items():
-        assert(WordBuilder(word).stresses
-               == [])
-        assert(WordBuilder(word, custom_dict=CUSTOM_DICT).stresses
-               == list(entry["stresses"]))
+        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        assert(wb.stress_list == stresses)
 
 
 def test__stressed_syllables():
     """Should be a list of the original word's syllables with stress."""
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   }
     WORDS = {
              "automatic":
              [['au', '2'], ['to', '0'], ['ma', '1'], ['tic', '0']],
              "serene": [['se', '0'], ['rene', '1']],
+             "phidian": [['phi', '1'], ['dian', '0']],
              }
     for word, stressed_syllables in WORDS.items():
-        assert(WordBuilder(word)._stressed_syllables
+        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        assert(wb._stressed_syllables
                == stressed_syllables)
 
 
@@ -170,6 +192,10 @@ def test__tag_string():
 
 def test__matched_syllables():
     """Should give a list of list with the word's fit to meter."""
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   }
     WORDS = {
              "automatic":
              [['au', False, True],
@@ -184,18 +210,24 @@ def test__matched_syllables():
              }
     for word, matches in WORDS.items():
         METER = [0, 1, 0]
-        assert(WordBuilder(word)._matched_syllables(METER)
-               == matches)
+        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        assert(wb._matched_syllables(METER) == matches)
 
 
 def test__rhyming_part():
     """Should return the rhyming part of the word."""
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   }
     LINES = {
-             "Hen,": "EH1 N",
+             "Hen,": "EH N",
+             "Phidian": "IH D IY N",
              "Poesy": None
              }
     for line, rhyme in LINES.items():
-        assert(WordBuilder(line)._rhyming_part == rhyme)
+        wb = WordBuilder(line, custom_dict=CUSTOM_DICT)
+        assert(wb._rhyming_part == rhyme)
 
 
 def test_stressed_HTML():
