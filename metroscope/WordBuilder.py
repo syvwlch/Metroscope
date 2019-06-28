@@ -1,7 +1,6 @@
 """The class that holds the representation of a word."""
 
 from pronouncing import stresses, phones_for_word, rhyming_part
-from pronouncing import stresses_for_word
 from nltk import SyllableTokenizer
 
 SSP = SyllableTokenizer()
@@ -36,7 +35,7 @@ class WordBuilder(object):
         if self._is_in_custom_dict:
             word_phones = self.custom_dict[self._clean_word]["phones"]
         else:
-            word_phones = phones_for_word(self.word)[0]
+            word_phones = phones_for_word(self._clean_word)[0]
         return word_phones
 
     @property
@@ -49,7 +48,7 @@ class WordBuilder(object):
         return word_syllables
 
     @property
-    def stresses(self):
+    def stress_list(self):
         """
         Return a list of the stresses for the given word.
 
@@ -62,7 +61,8 @@ class WordBuilder(object):
             word_stresses = self.custom_dict[self._clean_word]["stresses"]
         else:
             try:
-                word_stresses = stresses_for_word(str(self._clean_word))[0]
+                # word_stresses = stresses_for_word(str(self._clean_word))[0]
+                word_stresses = stresses(self._phones)
             except IndexError:
                 word_stresses = ""
         # Poets often signal syllables that would normally be silent this way.
@@ -78,7 +78,7 @@ class WordBuilder(object):
         """Combine the syllables and stresses of the original word."""
         word = self.word
         syllables = self.syllables
-        stresses = self.stresses
+        stresses = self.stress_list
         result = []
         for syllable in syllables:
             if len(stresses) > 1:

@@ -54,6 +54,7 @@ def test__phones():
     WORDS = {
              "automatic": 'AO2 T AH0 M AE1 T IH0 K',
              "serene": 'S ER0 IY1 N',
+             "hen": 'HH EH1 N',
              }
     for word, phones in WORDS.items():
         assert(WordBuilder(word)._phones == phones)
@@ -69,14 +70,14 @@ def test_syllables():
         assert(WordBuilder(word).syllables == syllables)
 
 
-def test_stresses():
+def test_stress_list():
     """Should set the stresses from the original word."""
     WORDS = {
              "automatic": ['2', '0', '1', '0'],
              "serene": ['0', '1'],
              }
     for word, stresses in WORDS.items():
-        assert(WordBuilder(word).stresses == stresses)
+        assert(WordBuilder(word).stress_list == stresses)
 
 
 def test_custom_dict():
@@ -88,9 +89,9 @@ def test_custom_dict():
                                  "stresses": "200"}
              }
     for word, entry in CUSTOM_DICT.items():
-        assert(WordBuilder(word).stresses
+        assert(WordBuilder(word).stress_list
                == [])
-        assert(WordBuilder(word, custom_dict=CUSTOM_DICT).stresses
+        assert(WordBuilder(word, custom_dict=CUSTOM_DICT).stress_list
                == list(entry["stresses"]))
 
 
