@@ -68,15 +68,14 @@ CUSTOM_DICT = {
                             "phones": "P ER1 P AH0 L D"},
                 "maidenhead": {"syllables": ["mai", "den", "head"],
                                "phones": "M EY1 D AH0 N HH EH1 D"},
+                "stutt’ring": {"syllables": ["stutt’", "ring"],
+                               "phones": "S T AH1 T R IH0 NG"},
                 "orisons": {"syllables": ["o", "ri", "son"],
-                            "phones": "",
-                            "stresses": "102"},
+                            "phones": "AO1 R AH0 S AH2 N Z"},
                 "mockeries": {"syllables": ["mocke", "ries"],
-                              "phones": "",
-                              "stresses": "10"},
+                              "phones": "M AA1 K ER IY0 Z"},
                 "pallor": {"syllables": ["pa", "llor"],
-                           "phones": "",
-                           "stresses": "10"},
+                           "phones": "P AE1 L ER0"},
               }
 
 
