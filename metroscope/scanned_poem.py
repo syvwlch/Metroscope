@@ -34,7 +34,7 @@ def scanned_poem(path, meter):
                 result += rhymes[rp] + "</td>\n"
             except KeyError:
                 rhymes.update({rp: ascii_uppercase[len(rhymes)-1]})
-                result += rhymes[rp] + "</td>\n"
+                result += rhymes[rp] + " (" + rp + ")</td>\n"
             result += "</tr>\n<tr>"
     result += "</tr>\n</table>"
     return result
