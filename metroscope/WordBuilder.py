@@ -33,7 +33,10 @@ class WordBuilder(object):
     def _phones(self):
         """Return the phones of the original word."""
         if self._is_in_custom_dict:
-            word_phones = self.custom_dict[self._clean_word]["phones"]
+            try:
+                word_phones = self.custom_dict[self._clean_word]["phones"]
+            except KeyError:
+                word_phones = ""
         else:
             word_phones = phones_for_word(self._clean_word)[0]
         return word_phones
@@ -57,14 +60,11 @@ class WordBuilder(object):
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        if self._is_in_custom_dict:
-            word_stresses = self.custom_dict[self._clean_word]["stresses"]
-        else:
-            try:
-                # word_stresses = stresses_for_word(str(self._clean_word))[0]
-                word_stresses = stresses(self._phones)
-            except IndexError:
-                word_stresses = ""
+        try:
+            # word_stresses = stresses_for_word(str(self._clean_word))[0]
+            word_stresses = stresses(self._phones)
+        except IndexError:
+            word_stresses = ""
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"

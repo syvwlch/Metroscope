@@ -83,16 +83,20 @@ def test_stress_list():
 def test_custom_dict():
     """Should retrieve stresses from custom dict if provided."""
     CUSTOM_DICT = {
-                   "phidian": {"syllable": ["phi", "dian"],
-                               "stresses": "20"},
-                   "indolence": {"syllable": ["in", "do", "lence"],
-                                 "stresses": "200"}
-             }
-    for word, entry in CUSTOM_DICT.items():
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": "F IH1 D IY0 N"},
+                   "indolence": {"syllables": ["in", "do", "lence"],
+                                 "phones": "IH2 N D OW0 L EH1 N S"},
+                   }
+    RESULTS = {
+               "phidian": "10",
+               "indolence": "201"
+               }
+    for word, result in RESULTS.items():
         assert(WordBuilder(word).stress_list
                == [])
         assert(WordBuilder(word, custom_dict=CUSTOM_DICT).stress_list
-               == list(entry["stresses"]))
+               == list(result))
 
 
 def test__stressed_syllables():

@@ -4,9 +4,9 @@ from metroscope import WordBuilder
 
 CUSTOM_DICT = {
                 "phidian": {"syllables": ["phi", "dian"],
-                            "stresses": "10"},
+                            "phones": "F IH1 D IY0 N"},
                 "indolence": {"syllables": ["in", "do", "lence"],
-                              "stresses": "102"},
+                              "phones": "IH2 N D OW0 L EH1 N S"},
                 "benumbed": {"syllables": ["be", "numbed"],
                              "stresses": "01"},
                 "unhaunted": {"syllables": ["un", "haun", "ted"],
