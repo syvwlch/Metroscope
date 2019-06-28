@@ -103,13 +103,14 @@ def scanned_poem(path, meter):
         else:
             result += "<td>"
             result += line.stressed_HTML(meter)
-            result += "</td>\n<td>_"
             rp = str(line._rhyming_part)
+            result += "</td>\n<td data-toggle='tooltip' title='"
+            result += rp + "'>"
             try:
                 result += rhymes[rp] + "</td>\n"
             except KeyError:
                 rhymes.update({rp: ascii_uppercase[len(rhymes)-1]})
-                result += rhymes[rp] + " (" + rp + ")</td>\n"
+                result += rhymes[rp] + "</td>\n"
             result += "</tr>\n<tr>"
     result += "</tr>\n</table>"
     return result
