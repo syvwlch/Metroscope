@@ -147,14 +147,17 @@ class WordBuilder(object):
         """Return the rhyming part of the original word."""
         if not self._is_in_custom_dict:
             phones = phones_for_word(self._clean_word)
+            if phones == []:
+                return None
+            result = rhyming_part(phones[0])
         else:
-            try:
-                phones = self.custom_dict[self._clean_word]["phones"]
-            except KeyError:
-                phones = []
-        if phones != []:
-            return rhyming_part(phones[0])
-        return None
+            phones = self.custom_dict[self._clean_word]["phones"]
+            if phones == "":
+                return None
+            result = rhyming_part(phones)
+        for stress in "012":
+            result = result.replace(stress, "")
+        return result
 
     def stressed_HTML(self, pattern):
         """
