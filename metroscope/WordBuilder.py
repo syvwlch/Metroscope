@@ -34,7 +34,7 @@ class WordBuilder(object):
         """Return the phones of the original word."""
         if self._is_in_custom_dict:
             try:
-                word_phones = self.custom_dict[self._clean_word]["phones"]
+                word_phones = self.custom_dict[self._clean_word]["phones"][0]
             except KeyError:
                 word_phones = ""
         else:
@@ -154,7 +154,7 @@ class WordBuilder(object):
             phones = self.custom_dict[self._clean_word]["phones"]
             if phones == "":
                 return None
-            result = rhyming_part(phones)
+            result = rhyming_part(phones[0])
         for stress in "012":
             result = result.replace(stress, "")
         return result

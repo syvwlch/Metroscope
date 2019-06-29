@@ -40,7 +40,7 @@ def test__is_in_custom_dict():
     """Should return True if the word is in the provided custom_dict."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": "F IH1 D IY0 N"},
+                               "phones": ["F IH1 D IY0 N"]},
                    }
     WORDS = {
              "Phidian": True,
@@ -55,7 +55,7 @@ def test__phones():
     """Should set the phones from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": "F IH1 D IY0 N"},
+                               "phones": ["F IH1 D IY0 N"]},
                    }
     WORDS = {
              "Automatic": 'AO2 T AH0 M AE1 T IH0 K',
@@ -72,7 +72,7 @@ def test_syllables():
     """Should set the syllables from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": "F IH1 D IY0 N"},
+                               "phones": ["F IH1 D IY0 N"]},
                    }
     WORDS = {
              "Automatic": ['Au', 'to', 'ma', 'tic'],
@@ -88,7 +88,7 @@ def test_stress_list():
     """Should set the stresses from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": "F IH1 D IY0 N"},
+                               "phones": ["F IH1 D IY0 N"]},
                    }
     WORDS = {
              "Automatic": ['2', '0', '1', '0'],
@@ -104,7 +104,7 @@ def test__stressed_syllables():
     """Should be a list of the original word's syllables with stress."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": "F IH1 D IY0 N"},
+                               "phones": ["F IH1 D IY0 N"]},
                    }
     WORDS = {
              "automatic":
@@ -194,7 +194,7 @@ def test__matched_syllables():
     """Should give a list of list with the word's fit to meter."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": "F IH1 D IY0 N"},
+                               "phones": ["F IH1 D IY0 N"]},
                    }
     WORDS = {
              "automatic":
@@ -218,7 +218,7 @@ def test__rhyming_part():
     """Should return the rhyming part of the word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": "F IH1 D IY0 N"},
+                               "phones": ["F IH1 D IY0 N"]},
                    }
     LINES = {
              "Hen,": "EH N",
