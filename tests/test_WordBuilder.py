@@ -56,7 +56,7 @@ def test__phones():
         assert(wb._phones == phones)
 
 
-def test__phones_index():
+def test_index():
     """Should set the index to use with the _phones list."""
     CUSTOM_DICT = {
                    "blarghe": {"syllables": ["blarghe"],
@@ -64,25 +64,17 @@ def test__phones_index():
                                           "B L AE1 R G E2"]},
                    }
     WORDS = {
-             "blarghe": [
-                         [["1", "0"], ["1", "2"]],
-                         ["AE R G AE", "E"]
-                         ]
+             "blarghe": ["B L AE1 R G AE0",
+                         "B L AE1 R G E2"]
              }
-    for word, results in WORDS.items():
-        stresses = results[0]
-        rhymes = results[1]
+    for word, phones_list in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        wb._phones_index = 0
-        assert(wb.stress_list == stresses[0])
-        assert(wb._rhyming_part == rhymes[0])
-        wb._phones_index = 1
-        assert(wb.stress_list == stresses[1])
-        assert(wb._rhyming_part == rhymes[1])
+        wb.index = 0
+        assert(wb._phones == phones_list[0])
+        wb.index = 1
+        assert(wb._phones == phones_list[1])
         with pytest.raises(IndexError):
-            wb._phones_index = 2
-            wb.stress_list
-            wb._rhyming_part
+            wb.index = 2
 
 
 def test_syllables():
