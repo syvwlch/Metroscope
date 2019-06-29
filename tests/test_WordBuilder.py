@@ -1,5 +1,6 @@
 """Unit test the WordBuilder Class."""
 
+import pytest
 from metroscope import WordBuilder
 
 
@@ -10,7 +11,9 @@ def test_init():
              "serene",
              )
     for word in WORDS:
-        assert(WordBuilder(word).word == word)
+        wb = WordBuilder(word)
+        assert(wb.word == word)
+        assert(wb._phones_index == 0)
 
 
 def test_str_magic_method():
@@ -51,6 +54,35 @@ def test__phones():
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
         assert(wb._phones == phones)
+
+
+def test__phones_index():
+    """Should set the index to use with the _phones list."""
+    CUSTOM_DICT = {
+                   "blarghe": {"syllables": ["blarghe"],
+                               "phones": ["B L AE1 R G AE0",
+                                          "B L AE1 R G E2"]},
+                   }
+    WORDS = {
+             "blarghe": [
+                         [["1", "0"], ["1", "2"]],
+                         ["AE R G AE", "E"]
+                         ]
+             }
+    for word, results in WORDS.items():
+        stresses = results[0]
+        rhymes = results[1]
+        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        wb._phones_index = 0
+        assert(wb.stress_list == stresses[0])
+        assert(wb._rhyming_part == rhymes[0])
+        wb._phones_index = 1
+        assert(wb.stress_list == stresses[1])
+        assert(wb._rhyming_part == rhymes[1])
+        with pytest.raises(IndexError):
+            wb._phones_index = 2
+            wb.stress_list
+            wb._rhyming_part
 
 
 def test_syllables():

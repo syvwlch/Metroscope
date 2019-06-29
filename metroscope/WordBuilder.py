@@ -19,6 +19,7 @@ class WordBuilder(object):
         """Initialize from original word."""
         self.word = word
         self.custom_dict = custom_dict
+        self._phones_index = 0
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -33,17 +34,17 @@ class WordBuilder(object):
         """Return the list of phones of the original word."""
         word_phones = []
         try:
-            word_phones.append(self.custom_dict[self._clean_word]["phones"][0])
+            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
         except KeyError:
             pass
         try:
-            word_phones.append(phones_for_word(self._clean_word)[0])
+            word_phones.extend(phones_for_word(self._clean_word))
         except IndexError:
             pass
         if word_phones == []:
             return None
         else:
-            return word_phones[0]
+            return word_phones[self._phones_index]
 
     @property
     def syllables(self):
