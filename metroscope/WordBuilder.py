@@ -15,11 +15,11 @@ class WordBuilder(object):
     syllable objects with various properties.
     """
 
-    def __init__(self, word, custom_dict={}):
+    def __init__(self, word, custom_dict={}, index=0):
         """Initialize from original word."""
         self.word = word
         self.custom_dict = custom_dict
-        self._is_in_custom_dict = self._clean_word in self.custom_dict
+        self._phones_index = index
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -30,23 +30,46 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
-    def _phones(self):
-        """Return the phones of the original word."""
-        if self._is_in_custom_dict:
-            try:
-                word_phones = self.custom_dict[self._clean_word]["phones"]
-            except KeyError:
-                word_phones = ""
+    def index(self):
+        """Return the current index for the _phones list."""
+        return self._phones_index
+
+    @index.setter
+    def index(self, index):
+        """Set the current index for the _phones_list."""
+        self._phones_index = index
+        self._phones
+
+    @property
+    def _phones_list(self):
+        """Return the list of phones of the original word."""
+        word_phones = []
+        try:
+            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
+        except KeyError:
+            pass
+        try:
+            word_phones.extend(phones_for_word(self._clean_word))
+        except IndexError:
+            pass
+        if word_phones == []:
+            return None
         else:
-            word_phones = phones_for_word(self._clean_word)[0]
-        return word_phones
+            return word_phones
+
+    @property
+    def _phones(self):
+        """Return the current phones (as per index into phones list)."""
+        if self._phones_list is None:
+            return None
+        return self._phones_list[self._phones_index]
 
     @property
     def syllables(self):
         """Return the syllables of the original word."""
-        if self._is_in_custom_dict:
+        try:
             word_syllables = self.custom_dict[self._clean_word]["syllables"]
-        else:
+        except KeyError:
             word_syllables = SSP.tokenize(self.word)
         return word_syllables
 
@@ -60,11 +83,9 @@ class WordBuilder(object):
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        try:
-            # word_stresses = stresses_for_word(str(self._clean_word))[0]
-            word_stresses = stresses(self._phones)
-        except IndexError:
-            word_stresses = ""
+        if self._phones is None:
+            return None
+        word_stresses = stresses(self._phones)
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
@@ -79,6 +100,8 @@ class WordBuilder(object):
         word = self.word
         syllables = self.syllables
         stresses = self.stress_list
+        if stresses is None:
+            return None
         result = []
         for syllable in syllables:
             if len(stresses) > 1:
@@ -125,8 +148,11 @@ class WordBuilder(object):
             - Boolean for pattern stress,
             - Boolean for match between pattern & pronunciation
         """
+        stressed_syllables = self._stressed_syllables
+        if stressed_syllables is None:
+            return [[self.word, None, False]]
         result = []
-        for syllable, pronunciation_stress in self._stressed_syllables:
+        for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
                 if pattern.pop(0):
                     result.append([syllable,
@@ -145,16 +171,10 @@ class WordBuilder(object):
     @property
     def _rhyming_part(self):
         """Return the rhyming part of the original word."""
-        if not self._is_in_custom_dict:
-            phones = phones_for_word(self._clean_word)
-            if phones == []:
-                return None
-            result = rhyming_part(phones[0])
-        else:
-            phones = self.custom_dict[self._clean_word]["phones"]
-            if phones == "":
-                return None
-            result = rhyming_part(phones)
+        phones = self._phones
+        if phones is None:
+            return None
+        result = rhyming_part(phones)
         for stress in "012":
             result = result.replace(stress, "")
         return result

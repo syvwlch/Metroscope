@@ -52,7 +52,11 @@ class LineBuilder(object):
 
         stressed_line = ""
         for word in self._word_list:
-            number_stresses = len(word.stress_list)
+            stress_list = word.stress_list
+            if stress_list is None:
+                number_stresses = 0
+            else:
+                number_stresses = len(word.stress_list)
             word_meter = stress_pattern[0:number_stresses]
             stress_pattern = stress_pattern[number_stresses:]
             # use the stress pattern directly for the word stresses
