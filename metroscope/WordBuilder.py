@@ -19,7 +19,6 @@ class WordBuilder(object):
         """Initialize from original word."""
         self.word = word
         self.custom_dict = custom_dict
-        self._is_in_custom_dict = self._clean_word in self.custom_dict
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -31,22 +30,27 @@ class WordBuilder(object):
 
     @property
     def _phones(self):
-        """Return the phones of the original word."""
-        if self._is_in_custom_dict:
-            try:
-                word_phones = self.custom_dict[self._clean_word]["phones"][0]
-            except KeyError:
-                word_phones = ""
+        """Return the list of phones of the original word."""
+        word_phones = []
+        try:
+            word_phones.append(self.custom_dict[self._clean_word]["phones"][0])
+        except KeyError:
+            pass
+        try:
+            word_phones.append(phones_for_word(self._clean_word)[0])
+        except IndexError:
+            pass
+        if word_phones == []:
+            return None
         else:
-            word_phones = phones_for_word(self._clean_word)[0]
-        return word_phones
+            return word_phones[0]
 
     @property
     def syllables(self):
         """Return the syllables of the original word."""
-        if self._is_in_custom_dict:
+        try:
             word_syllables = self.custom_dict[self._clean_word]["syllables"]
-        else:
+        except KeyError:
             word_syllables = SSP.tokenize(self.word)
         return word_syllables
 
@@ -60,11 +64,9 @@ class WordBuilder(object):
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        try:
-            # word_stresses = stresses_for_word(str(self._clean_word))[0]
-            word_stresses = stresses(self._phones)
-        except IndexError:
-            word_stresses = ""
+        if self._phones is None:
+            return None
+        word_stresses = stresses(self._phones)
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
@@ -79,6 +81,8 @@ class WordBuilder(object):
         word = self.word
         syllables = self.syllables
         stresses = self.stress_list
+        if stresses is None:
+            return None
         result = []
         for syllable in syllables:
             if len(stresses) > 1:
@@ -125,8 +129,11 @@ class WordBuilder(object):
             - Boolean for pattern stress,
             - Boolean for match between pattern & pronunciation
         """
+        stressed_syllables = self._stressed_syllables
+        if stressed_syllables is None:
+            return [[self.word, None, False]]
         result = []
-        for syllable, pronunciation_stress in self._stressed_syllables:
+        for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
                 if pattern.pop(0):
                     result.append([syllable,
@@ -145,16 +152,10 @@ class WordBuilder(object):
     @property
     def _rhyming_part(self):
         """Return the rhyming part of the original word."""
-        if not self._is_in_custom_dict:
-            phones = phones_for_word(self._clean_word)
-            if phones == []:
-                return None
-            result = rhyming_part(phones[0])
-        else:
-            phones = self.custom_dict[self._clean_word]["phones"]
-            if phones == "":
-                return None
-            result = rhyming_part(phones[0])
+        phones = self._phones
+        if phones is None:
+            return None
+        result = rhyming_part(phones)
         for stress in "012":
             result = result.replace(stress, "")
         return result

@@ -36,21 +36,6 @@ def test_repr_magic_method():
                == "WordBuilder('" + word + "')")
 
 
-def test__is_in_custom_dict():
-    """Should return True if the word is in the provided custom_dict."""
-    CUSTOM_DICT = {
-                   "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
-                   }
-    WORDS = {
-             "Phidian": True,
-             "batman": False,
-             }
-    for word, bool in WORDS.items():
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb._is_in_custom_dict == bool)
-
-
 def test__phones():
     """Should set the phones from the original word."""
     CUSTOM_DICT = {
@@ -59,9 +44,9 @@ def test__phones():
                    }
     WORDS = {
              "Automatic": 'AO2 T AH0 M AE1 T IH0 K',
-             "serene": 'S ER0 IY1 N',
              "hen": 'HH EH1 N',
              "Phidian": "F IH1 D IY0 N",
+             "Poesy.": None,
              }
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
@@ -78,6 +63,7 @@ def test_syllables():
              "Automatic": ['Au', 'to', 'ma', 'tic'],
              "serene": ['se', 're', 'ne'],
              "phidian": ["phi", "dian"],
+             "Poesy.": ["Poe", "sy."],
              }
     for word, syllables in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
@@ -94,6 +80,7 @@ def test_stress_list():
              "Automatic": ['2', '0', '1', '0'],
              "serene": ['0', '1'],
              "phidian": ['1', '0'],
+             "Poesy.": None
              }
     for word, stresses in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
@@ -111,6 +98,7 @@ def test__stressed_syllables():
              [['au', '2'], ['to', '0'], ['ma', '1'], ['tic', '0']],
              "serene": [['se', '0'], ['rene', '1']],
              "phidian": [['phi', '1'], ['dian', '0']],
+             "Poesy.": None
              }
     for word, stressed_syllables in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
@@ -207,6 +195,11 @@ def test__matched_syllables():
               ['dows', True, True]],
              "One":
              [['One', False, True]],
+             "Phidian":
+             [['Phi', False, False],
+              ['dian', True, False]],
+             "Poesy.":
+             [['Poesy.', None, False]],
              }
     for word, matches in WORDS.items():
         METER = [0, 1, 0]
@@ -232,6 +225,10 @@ def test__rhyming_part():
 
 def test_stressed_HTML():
     """Should give an HTML representation of the word's fit to meter."""
+    CUSTOM_DICT = {
+                   "phidian": {"syllables": ["phi", "dian"],
+                               "phones": ["F IH1 D IY0 N"]},
+                   }
     WORDS = {
              "automatic":
              "<span>\
@@ -249,7 +246,17 @@ def test_stressed_HTML():
              "<span>\
 <span style='color:black'>One</span>\
 </span>",
+             "Phidian":
+             "<span>\
+<span style='color:red'>Phi</span>\
+<strong style='color:red'>dian</strong>\
+</span>",
+             "Poesy.":
+             "<span>\
+<small style='color:red'>Poesy.</small>\
+</span>",
              }
     for word, HTML in WORDS.items():
         METER = [0, 1, 0]
-        assert(WordBuilder(word).stressed_HTML(METER) == HTML)
+        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
+        assert(wb.stressed_HTML(METER) == HTML)
