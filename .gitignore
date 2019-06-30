@@ -4,9 +4,6 @@ Texts/NonFreeTexts/
 # MacOS system files
 *.DS_Store
 
-# local sqlite db file
-*.sqlite
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

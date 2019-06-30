@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "135a407b69237b509bf5abcb2246a7c580b8ef4cb0f80c04882c50124942c766"
+            "sha256": "9ec41606d738a6b2605a7efe211313539459ded07ad29698d2e4c6561f8b651b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -80,14 +80,6 @@
             ],
             "index": "pypi",
             "version": "==3.3.7.1"
-        },
-        "flask-sqlalchemy": {
-            "hashes": [
-                "sha256:0c9609b0d72871c540a7945ea559c8fdf5455192d2db67219509aed680a3d45a",
-                "sha256:8631bbea987bc3eb0f72b1f691d47bd37ceb795e73b59ab48586d76d75a7c605"
-            ],
-            "index": "pypi",
-            "version": "==2.4.0"
         },
         "gunicorn": {
             "hashes": [
@@ -168,10 +160,11 @@
         },
         "more-itertools": {
             "hashes": [
-                "sha256:3ad685ff8512bf6dc5a8b82ebf73543999b657eded8c11803d9ba6b648986f4d",
-                "sha256:8bb43d1f51ecef60d81854af61a3a880555a14643691cc4b64a6ee269c78f09a"
+                "sha256:2112d2ca570bb7c3e53ea1a35cd5df42bb0fd10c45f0fb97178679c3c03d64c7",
+                "sha256:c3e4748ba1aad8dba30a4886b0b1a2004f9a863837b8654e7059eebf727afa5a"
             ],
-            "version": "==7.1.0"
+            "markers": "python_version > '2.7'",
+            "version": "==7.0.0"
         },
         "nltk": {
             "hashes": [
@@ -231,11 +224,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:2878de8ae1c79a62c012da6186b88ff0562ea96ce29c4208d2a9b11d9f607df1",
-                "sha256:95b700cf21ed5b7e91bce7a6b5a573b2e3ef7b3643d00f681d8f9c4672f9fbdf"
+                "sha256:4a784f1d4f2ef198fe9b7aef793e9fa1a3b2f84e822d9b3a64a181293a572d45",
+                "sha256:926855726d8ae8371803f7b2e6ec0a69953d9c6311fa7c3b6c1b929ff92d27da"
             ],
             "index": "pypi",
-            "version": "==5.0.0"
+            "version": "==4.6.3"
         },
         "six": {
             "hashes": [
@@ -243,12 +236,6 @@
                 "sha256:d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"
             ],
             "version": "==1.12.0"
-        },
-        "sqlalchemy": {
-            "hashes": [
-                "sha256:c30925d60af95443458ebd7525daf791f55762b106049ae71e18f8dd58084c2f"
-            ],
-            "version": "==1.3.5"
         },
         "visitor": {
             "hashes": [
