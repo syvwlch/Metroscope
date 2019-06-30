@@ -93,46 +93,27 @@ def about():
                            )
 
 
-@application.route("/poem/<filename>")
-def poem(filename):
+@application.route("/poem/<keyword>")
+def poem(keyword):
     """Define the poem route."""
-    if filename == "OdeOnIndolence":
-        POEM_TITLE = "Ode on Indolence"
-        POET_NAME = "John Keats"
-        POEM_PATH = "Texts/FreeTexts/OdeOnIndolence.txt"
-        METER_NAME = "strict iambic pentameter"
-        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
-    elif filename == "OldManWithBeard":
-        POEM_TITLE = "There Was an Old Man with a Beard"
-        POET_NAME = "Edward Lear"
-        POEM_PATH = "Texts/FreeTexts/OldManWithBeard.txt"
-        METER_NAME = "anapestic trimeter"
-        METER_PATTERN = [0, 1, 0, 0, 1, 0, 0, 1, ]
-    elif filename == "Flea":
-        POEM_TITLE = "The Flea"
-        POET_NAME = "John Donne"
-        POEM_PATH = "Texts/FreeTexts/Flea.txt"
-        METER_NAME = "strict iambic pentameter"
-        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
-    elif filename == "AnthemForDoomedYouth":
-        POEM_TITLE = "Anthem for Doomed Youth"
-        POET_NAME = "Wilfred Owen"
-        POEM_PATH = "Texts/FreeTexts/AnthemForDoomedYouth.txt"
-        METER_NAME = "strict iambic pentameter"
-        METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
-    # elif filename == "NearingForty":
-    #     POEM_TITLE = "Nearing Forty"
-    #     POET_NAME = "Derek Walcott"
-    #     POEM_PATH = "Texts/FreeTexts/NearingForty.txt"
-    #     METER_NAME = "strict iambic pentameter"
-    #     METER_PATTERN = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, ]
-    else:
-        return render_template('404.html'), 404
+    poem = Poem.query.filter_by(keyword=keyword).first_or_404()
+    POEM_TITLE = poem.title
+    POET_NAME = poem.author.name
+    POEM_TEXT = poem.raw_text
+    METER_NAME = poem.meter.name
+    METER_PATTERN = []
+    for beat in poem.meter.pattern:
+        if beat == '0':
+            METER_PATTERN.append(0)
+        elif beat == '1':
+            METER_PATTERN.append(1)
+    print(METER_PATTERN)
+    #    return render_template('404.html'), 404
     return render_template("poem.html",
                            title=POEM_TITLE,
                            poet=POET_NAME,
                            meter=METER_NAME,
-                           poem=scanned_poem(POEM_PATH, METER_PATTERN),
+                           poem=scanned_poem(POEM_TEXT, METER_PATTERN),
                            )
 
 
