@@ -1,6 +1,11 @@
 """Test the site's database."""
 # import pytest
-from run import application  # , db
+from run import application, db
+
+
+def test_db_uses_SQLAlchemy():
+    """Makes sure db is an SQLAlchemy object."""
+    assert('SQLAlchemy' in repr(db))
 
 
 def test_db_URI_set():
