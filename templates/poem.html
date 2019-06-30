@@ -9,3 +9,12 @@
     <p>- by {{ poet }}, scanned in {{ meter }}.</p>
     {{ poem|safe }}
 {% endblock page_content %}
+
+{% block scripts %}
+    {{super()}}
+    <script>
+        $(document).ready(function(){
+          $("[data-toggle='tooltip']").tooltip();
+        });
+    </script>
+{% endblock scripts %}
