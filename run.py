@@ -20,6 +20,19 @@ db = SQLAlchemy(application)
 bootstrap = Bootstrap(application)
 
 
+class Meter(db.Model):
+    """Define the meters table."""
+
+    __tablename__ = 'meters'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True, nullable=False)
+    pattern = db.Column(db.String(64), nullable=False)
+
+    def __repr__(self):
+        """Represent the class."""
+        return '<meter ' + self.name + '>'
+
+
 @application.route("/")
 def home():
     """Define the home route."""
