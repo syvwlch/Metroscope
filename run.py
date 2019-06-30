@@ -1,11 +1,22 @@
 """Run script for the website."""
 
+import os
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
 from metroscope import scanned_poem
 import markdown
 
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 application = Flask(__name__)
+
+application.config['SQLALCHEMY_DATABASE_URI'] =\
+    'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(application)
+
 bootstrap = Bootstrap(application)
 
 
