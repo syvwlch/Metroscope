@@ -33,6 +33,12 @@ class Meter(db.Model):
         return "<meter '" + self.name + "'>"
 
 
+@application.shell_context_processor
+def make_shell_context():
+    """Add a shell context processor."""
+    return dict(db=db, Meter=Meter)
+
+
 @application.route("/")
 def home():
     """Define the home route."""
