@@ -16,6 +16,7 @@ nltk = "*"
 markdown = "*"
 flake8 = "*"
 pytest = "*"
+flask-sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"
