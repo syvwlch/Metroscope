@@ -96,7 +96,10 @@ def about():
 @application.route("/poem/<keyword>")
 def poem(keyword):
     """Define the poem route."""
+    if "poems" not in db.engine.table_names():
+        reset_db()
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
+
     POEM_TITLE = poem.title
     POET_NAME = poem.author.name
     POEM_TEXT = poem.raw_text
@@ -174,6 +177,5 @@ def reset_db():
     db.session.commit()
 
 
-reset_db()
 if __name__ == "__main__":
     application.run()
