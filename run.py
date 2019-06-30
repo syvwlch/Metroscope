@@ -26,17 +26,47 @@ class Meter(db.Model):
     __tablename__ = 'meters'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
-    pattern = db.Column(db.String(64), nullable=False)
+    pattern = db.Column(db.String(64), unique=True, nullable=False)
+    poems = db.relationship('Poem', backref='meter', lazy='dynamic')
 
     def __repr__(self):
         """Represent the class."""
-        return "<meter '" + self.name + "'>"
+        return f"<Meter '{self.name}'>"
+
+
+class Poet(db.Model):
+    """Define the Poets table."""
+
+    __tablename__ = 'poets'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True, nullable=False)
+    poems = db.relationship('Poem', backref='author', lazy='dynamic')
+
+    def __repr__(self):
+        """Represent the class."""
+        return f"<Poet '{self.name}'>"
+
+
+class Poem(db.Model):
+    """Define the Poems table."""
+
+    __tablename__ = 'poems'
+    id = db.Column(db.Integer, primary_key=True)
+    keyword = db.Column(db.String(64), unique=True, nullable=False)
+    title = db.Column(db.String(64), nullable=False)
+    raw_text = db.Column(db.Text, nullable=False)
+    poet_id = db.Column(db.Integer, db.ForeignKey('poets.id'))
+    meter_id = db.Column(db.Integer, db.ForeignKey('meters.id'))
+
+    def __repr__(self):
+        """Represent the class."""
+        return f"<Poem '{self.title}'>"
 
 
 @application.shell_context_processor
 def make_shell_context():
     """Add a shell context processor."""
-    return dict(db=db, Meter=Meter)
+    return dict(db=db, Meter=Meter, Poet=Poet, Poem=Poem)
 
 
 @application.route("/")
