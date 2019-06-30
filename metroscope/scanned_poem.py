@@ -19,6 +19,7 @@ CUSTOM_DICT = {
                                 "phones": ["B IY2 S P R IH1 NG K AH0 L D"]},
                 "o’er": {"syllables": ["o’er"],
                          "phones": ["AO1 R"]},
+                "ambition": {"syllables": ["am", "bi", "tion"]},
                 "unmeek": {"phones": ["AH0 N M IY1 K"]},
                 "poesy": {"syllables": ["po", "e", "sy"],
                           "phones": ["P OW1 AH0 Z AY1"]},
