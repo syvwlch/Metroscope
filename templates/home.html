@@ -7,8 +7,8 @@
 {% block page_content %}
     <h1>Metroscope</h1>
     <p>Choose a poem from the list below:</p>
-    <li><a href="{{ url_for('poem', keyword='OdeOnIndolence') }}">Ode on Indolence</a></li>
-    <li><a href="{{ url_for('poem', keyword='OldManWithBeard') }}">There Was an Old Man with a Beard</a></li>
-    <li><a href="{{ url_for('poem', keyword='Flea') }}">The Flea</a></li>
-    <li><a href="{{ url_for('poem', keyword='AnthemForDoomedYouth') }}">Anthem for Doomed Youth</a></li>
+    <li><a href="{{ url_for('poem', filename='OdeOnIndolence') }}">Ode on Indolence</a></li>
+    <li><a href="{{ url_for('poem', filename='OldManWithBeard') }}">There Was an Old Man with a Beard</a></li>
+    <li><a href="{{ url_for('poem', filename='Flea') }}">The Flea</a></li>
+    <li><a href="{{ url_for('poem', filename='AnthemForDoomedYouth') }}">Anthem for Doomed Youth</a></li>
 {% endblock page_content %}

@@ -71,7 +71,7 @@ CUSTOM_DICT = {
               }
 
 
-def scanned_poem(poem, meter):
+def scanned_poem(path, meter):
     """
     Create HTML with the scanned poem.
 
@@ -79,11 +79,12 @@ def scanned_poem(poem, meter):
     and end each line with a <br> tag.
     """
     lines = []
-    for line in poem.split("\n"):
-        if line != "":
-            lines.append(LineBuilder(line, custom_dict=CUSTOM_DICT))
-        else:
-            lines.append(None)
+    with open(path, "r") as poem:
+        for line in poem:
+            if line != "\n":
+                lines.append(LineBuilder(line, custom_dict=CUSTOM_DICT))
+            else:
+                lines.append(None)
 
     rhymes = {"None": "_"}
     result = "<table>\n<tr>\n"
