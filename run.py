@@ -174,6 +174,6 @@ def reset_db():
     db.session.commit()
 
 
+reset_db()
 if __name__ == "__main__":
-    reset_db()
     application.run()
