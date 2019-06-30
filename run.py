@@ -30,7 +30,7 @@ class Meter(db.Model):
 
     def __repr__(self):
         """Represent the class."""
-        return '<meter ' + self.name + '>'
+        return "<meter '" + self.name + "'>"
 
 
 @application.route("/")
