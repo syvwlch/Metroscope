@@ -100,23 +100,15 @@ def poem(keyword):
     if "poems" not in db.engine.table_names():
         reset_db()
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
-    POEM_TITLE = poem.title
-    POET_NAME = poem.author.name
-    POEM_TEXT = poem.raw_text
-    METER_NAME = poem.meter.name
     METER_PATTERN = []
     for beat in poem.meter.pattern:
-        if beat == '0':
-            METER_PATTERN.append(0)
-        elif beat == '1':
-            METER_PATTERN.append(1)
-    print(METER_PATTERN)
-    #    return render_template('404.html'), 404
+        METER_PATTERN.append(beat == '1')
+
     return render_template("poem.html",
-                           title=POEM_TITLE,
-                           poet=POET_NAME,
-                           meter=METER_NAME,
-                           poem=scanned_poem(POEM_TEXT, METER_PATTERN),
+                           title=poem.title,
+                           poet=poem.author.name,
+                           meter=poem.meter.name,
+                           poem=scanned_poem(poem.raw_text, METER_PATTERN),
                            )
 
 
