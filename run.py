@@ -98,7 +98,8 @@ def about():
 def poem(keyword):
     """Define the poem route."""
     if "poems" not in db.engine.table_names():
-        reset_db()
+        return render_template('404.html'), 404
+
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
     METER_PATTERN = []
     for beat in poem.meter.pattern:
