@@ -7,8 +7,11 @@
 {% block page_content %}
     <h1>Metroscope</h1>
     <p>Choose a poem from the list below:</p>
-    <li><a href="{{ url_for('poem', keyword='OdeOnIndolence') }}">Ode on Indolence</a></li>
-    <li><a href="{{ url_for('poem', keyword='OldManWithBeard') }}">There Was an Old Man with a Beard</a></li>
-    <li><a href="{{ url_for('poem', keyword='Flea') }}">The Flea</a></li>
-    <li><a href="{{ url_for('poem', keyword='AnthemForDoomedYouth') }}">Anthem for Doomed Youth</a></li>
+    {% if poems == [] %}
+        <li>Sorry, no poems in the database!</li>
+    {% else %}
+        {% for poem in poems %}
+            <li><a href="{{ url_for('poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
+        {% endfor %}
+    {% endif %}
 {% endblock page_content %}

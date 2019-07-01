@@ -78,7 +78,11 @@ def make_shell_context():
 @application.route("/")
 def home():
     """Define the home route."""
-    return render_template("home.html")
+    if "poems" not in db.engine.table_names():
+        poems = []
+    else:
+        poems = Poem.query.all()
+    return render_template("home.html", poems=poems)
 
 
 @application.route("/about")
