@@ -2,6 +2,7 @@
 
 import os
 from flask import Flask, render_template
+import click
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from metroscope import scanned_poem
@@ -131,23 +132,30 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 
+@application.cli.command('reset_db')
 def reset_db():
     """Reset the database with the sample poems."""
+    click.echo("Dropping all tables...")
     db.drop_all()
+    click.echo("Creating all tables...")
     db.create_all()
 
+    click.echo("Adding meters...")
     db.session.add(Meter(name='Iambic Pentameter',
                          pattern='0101010101'))
     db.session.add(Meter(name='Cataleptic Anapestic Trimeter',
                          pattern='01001001'))
 
+    click.echo("Adding poets...")
     db.session.add(Poet(name='John Keats'))
     db.session.add(Poet(name='Edward Lear'))
     db.session.add(Poet(name='John Donne'))
     db.session.add(Poet(name='Wilfred Owen'))
 
+    click.echo("Commiting to database...")
     db.session.commit()
 
+    click.echo("Adding poems...")
     with open('Texts/FreeTexts/OdeOnIndolence.txt', "r") as poem:
         db.session.add(Poem(title='Ode on Indolence',
                             keyword='OdeOnIndolence',
@@ -173,7 +181,10 @@ def reset_db():
                             poet_id=4,
                             meter_id=1))
 
+    click.echo("Commiting to database...")
     db.session.commit()
+
+    click.echo("Database reset!")
 
 
 if __name__ == "__main__":
