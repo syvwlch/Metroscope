@@ -97,20 +97,19 @@ def about():
 @application.route("/poem/<keyword>")
 def poem(keyword):
     """Define the poem route."""
+    # if the poems table does not exist, 404 the route
     if "poems" not in db.engine.table_names():
         return render_template('404.html'), 404
 
+    # retrieve the requested poem if it exists
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
-    METER_PATTERN = []
-    for beat in poem.meter.pattern:
-        METER_PATTERN.append(beat == '1')
 
     return render_template("poem.html",
                            title=poem.title,
                            poet=poem.author.name,
                            meter=poem.meter.name,
-                           poem=scanned_poem(poem.raw_text, METER_PATTERN),
-                           )
+                           poem=scanned_poem(poem.raw_text,
+                                             poem.meter.pattern))
 
 
 @application.errorhandler(404)
