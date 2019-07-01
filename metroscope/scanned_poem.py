@@ -78,6 +78,10 @@ def scanned_poem(poem, meter):
     Wrap the poem in a <div> tag, each stanza in a <p> tag,
     and end each line with a <br> tag.
     """
+    meter_pattern = []
+    for beat in meter:
+        meter_pattern.append(beat == '1')
+
     lines = []
     for line in poem.split("\n"):
         if line != "":
@@ -93,7 +97,7 @@ def scanned_poem(poem, meter):
             rhymes = {"None": "_"}
         else:
             result += "<td>"
-            result += line.stressed_HTML(meter)
+            result += line.stressed_HTML(meter_pattern)
             rp = str(line._rhyming_part)
             result += "</td>\n<td data-toggle='tooltip' title='"
             result += rp + "'>"
