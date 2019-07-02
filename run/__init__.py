@@ -72,42 +72,70 @@ def reset_db():
     db.drop_all()
     db.create_all()
 
-    db.session.add(Meter(name='Iambic Pentameter',
-                         pattern='0101010101'))
-    db.session.add(Meter(name='Cataleptic Anapestic Trimeter',
-                         pattern='01001001'))
+    METERS = [
+        {'name': 'Iambic Pentameter', 'pattern': '0101010101'},
+        {'name': 'Cataleptic Anapestic Trimeter', 'pattern': '01001001'}
+    ]
+    for meter in METERS:
+        db.session.add(
+            Meter(name=meter['name'], pattern=meter['pattern'])
+        )
 
-    db.session.add(Poet(name='John Keats'))
-    db.session.add(Poet(name='Edward Lear'))
-    db.session.add(Poet(name='John Donne'))
-    db.session.add(Poet(name='Wilfred Owen'))
+    POETS = [
+        'John Keats',
+        'Edward Lear',
+        'John Donne',
+        'Wilfred Owen'
+    ]
+    for poet in POETS:
+        db.session.add(Poet(name=poet))
 
+    # commit so loading poets can use poets and meters tables
     db.session.commit()
 
-    with open('samples/free/OdeOnIndolence.txt', "r") as poem:
-        db.session.add(Poem(title='Ode on Indolence',
-                            keyword='OdeOnIndolence',
-                            raw_text=str(poem.read()),
-                            poet_id=1,
-                            meter_id=1))
-    with open('samples/free/OldManWithBeard.txt', "r") as poem:
-        db.session.add(Poem(title='There Was an Old Man with a Beard',
-                            keyword='OldManWithBeard',
-                            raw_text=str(poem.read()),
-                            poet_id=2,
-                            meter_id=2))
-    with open('samples/free/Flea.txt', "r") as poem:
-        db.session.add(Poem(title='The Flea',
-                            keyword='Flea',
-                            raw_text=str(poem.read()),
-                            poet_id=3,
-                            meter_id=1))
-    with open('samples/free/AnthemForDoomedYouth.txt', "r") as poem:
-        db.session.add(Poem(title='Anthem for Doomed Youth',
-                            keyword='AnthemForDoomedYouth',
-                            raw_text=str(poem.read()),
-                            poet_id=4,
-                            meter_id=1))
+    POEMS = [
+        {
+            'title': 'Ode on Indolence',
+            'keyword': 'OdeOnIndolence',
+            'poet': 'John Keats',
+            'pattern': '0101010101',
+        },
+        {
+            'title': 'There Was an Old Man with a Beard',
+            'keyword': 'OldManWithBeard',
+            'poet': 'Edward Lear',
+            'pattern': '01001001',
+        },
+        {
+            'title': 'The Flea',
+            'keyword': 'Flea',
+            'poet': 'John Donne',
+            'pattern': '0101010101',
+        },
+        {
+            'title': 'Anthem for Doomed Youth',
+            'keyword': 'AnthemForDoomedYouth',
+            'poet': 'Wilfred Owen',
+            'pattern': '0101010101',
+        },
+    ]
+    for sample in POEMS:
+        path = 'samples/free/' + sample['keyword'] + '.txt'
+        with open(path, "r") as poem:
+            title = sample['title']
+            keyword = sample['keyword']
+            poet_id = Poet.query.filter_by(name=sample['poet']).first().id
+            meter_id = Meter.query.filter_by(
+                pattern=sample['pattern']).first().id
+            db.session.add(
+                Poem(
+                    title=title,
+                    keyword=keyword,
+                    raw_text=str(poem.read()),
+                    poet_id=poet_id,
+                    meter_id=meter_id,
+                )
+            )
 
     db.session.commit()
 
