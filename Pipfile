@@ -17,6 +17,7 @@ markdown = "*"
 flake8 = "*"
 pytest = "*"
 flask-sqlalchemy = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.7"
