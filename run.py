@@ -80,25 +80,25 @@ def reset_db():
 
     db.session.commit()
 
-    with open('Texts/FreeTexts/OdeOnIndolence.txt', "r") as poem:
+    with open('samples/free/OdeOnIndolence.txt', "r") as poem:
         db.session.add(Poem(title='Ode on Indolence',
                             keyword='OdeOnIndolence',
                             raw_text=str(poem.read()),
                             poet_id=1,
                             meter_id=1))
-    with open('Texts/FreeTexts/OldManWithBeard.txt', "r") as poem:
+    with open('samples/free/OldManWithBeard.txt', "r") as poem:
         db.session.add(Poem(title='There Was an Old Man with a Beard',
                             keyword='OldManWithBeard',
                             raw_text=str(poem.read()),
                             poet_id=2,
                             meter_id=2))
-    with open('Texts/FreeTexts/Flea.txt', "r") as poem:
+    with open('samples/free/Flea.txt', "r") as poem:
         db.session.add(Poem(title='The Flea',
                             keyword='Flea',
                             raw_text=str(poem.read()),
                             poet_id=3,
                             meter_id=1))
-    with open('Texts/FreeTexts/AnthemForDoomedYouth.txt', "r") as poem:
+    with open('samples/free/AnthemForDoomedYouth.txt', "r") as poem:
         db.session.add(Poem(title='Anthem for Doomed Youth',
                             keyword='AnthemForDoomedYouth',
                             raw_text=str(poem.read()),
@@ -174,7 +174,11 @@ def internal_server_error(e):
 
 @app.route("/reset")
 def reset():
-    """Define the reset route."""
+    """
+    Define the reset route.
+
+    For safety, only works if the poems table does not already exist.
+    """
     if "poems" not in db.engine.table_names():
         reset_db()
     return redirect(url_for('home'))
