@@ -1,13 +1,13 @@
 """Test the major pages using flask's test_client()."""
 import pytest
-from run import application
+from run import app
 
 
 @pytest.fixture
 def client():
     """Fixture to create the test client."""
-    application.config['TESTING'] = True
-    yield application.test_client()
+    app.config['TESTING'] = True
+    yield app.test_client()
 
 
 @pytest.mark.parametrize("route", ['/', '/about'])

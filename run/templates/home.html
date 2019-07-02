@@ -6,10 +6,11 @@
 
 {% block page_content %}
     <h1>Metroscope</h1>
-    <p>Choose a poem from the list below:</p>
     {% if poems == [] %}
-        <li>Sorry, no poems in the database!</li>
+        <h2>Sorry, no poems in the database!</h2>
+        <p>Click <a href="{{ url_for('reset') }}">here</a> to load some samples!</p>
     {% else %}
+        <p>Choose a poem from the list below:</p>
         {% for poem in poems %}
             <li><a href="{{ url_for('poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
         {% endfor %}

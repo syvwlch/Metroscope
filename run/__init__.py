@@ -8,16 +8,20 @@ from metroscope import scanned_poem
 import markdown
 
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+app = Flask(__name__)
 
-application = Flask(__name__)
+basedir = app.instance_path
+try:
+    os.makedirs(basedir)
+except OSError:
+    pass
 
-application.config['SQLALCHEMY_DATABASE_URI'] =\
+app.config['SQLALCHEMY_DATABASE_URI'] =\
     'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(application)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-bootstrap = Bootstrap(application)
+bootstrap = Bootstrap(app)
 
 
 class Meter(db.Model):
@@ -80,25 +84,25 @@ def reset_db():
 
     db.session.commit()
 
-    with open('Texts/FreeTexts/OdeOnIndolence.txt', "r") as poem:
+    with open('samples/free/OdeOnIndolence.txt', "r") as poem:
         db.session.add(Poem(title='Ode on Indolence',
                             keyword='OdeOnIndolence',
                             raw_text=str(poem.read()),
                             poet_id=1,
                             meter_id=1))
-    with open('Texts/FreeTexts/OldManWithBeard.txt', "r") as poem:
+    with open('samples/free/OldManWithBeard.txt', "r") as poem:
         db.session.add(Poem(title='There Was an Old Man with a Beard',
                             keyword='OldManWithBeard',
                             raw_text=str(poem.read()),
                             poet_id=2,
                             meter_id=2))
-    with open('Texts/FreeTexts/Flea.txt', "r") as poem:
+    with open('samples/free/Flea.txt', "r") as poem:
         db.session.add(Poem(title='The Flea',
                             keyword='Flea',
                             raw_text=str(poem.read()),
                             poet_id=3,
                             meter_id=1))
-    with open('Texts/FreeTexts/AnthemForDoomedYouth.txt', "r") as poem:
+    with open('samples/free/AnthemForDoomedYouth.txt', "r") as poem:
         db.session.add(Poem(title='Anthem for Doomed Youth',
                             keyword='AnthemForDoomedYouth',
                             raw_text=str(poem.read()),
@@ -108,7 +112,7 @@ def reset_db():
     db.session.commit()
 
 
-@application.shell_context_processor
+@app.shell_context_processor
 def make_shell_context():
     """Add a shell context processor."""
     return dict(db=db,
@@ -119,7 +123,7 @@ def make_shell_context():
                 )
 
 
-@application.route("/")
+@app.route("/")
 def home():
     """Define the home route."""
     if "poems" not in db.engine.table_names():
@@ -129,7 +133,7 @@ def home():
     return render_template("home.html", poems=poems)
 
 
-@application.route("/about")
+@app.route("/about")
 def about():
     """Define the about route."""
     try:
@@ -142,7 +146,7 @@ def about():
                            )
 
 
-@application.route("/poem/<keyword>")
+@app.route("/poem/<keyword>")
 def poem(keyword):
     """Define the poem route."""
     # if the poems table does not exist, 404 the route
@@ -160,25 +164,25 @@ def poem(keyword):
                                              poem.meter.pattern))
 
 
-@application.errorhandler(404)
+@app.errorhandler(404)
 def page_not_found(e):
     """Define the route for the 404 error page."""
     return render_template('404.html'), 404
 
 
-@application.errorhandler(500)
+@app.errorhandler(500)
 def internal_server_error(e):
     """Define the route for the 500 error page."""
     return render_template('500.html'), 500
 
 
-@application.route("/reset")
+@app.route("/reset")
 def reset():
-    """Define the reset route."""
+    """
+    Define the reset route.
+
+    For safety, only works if the poems table does not already exist.
+    """
     if "poems" not in db.engine.table_names():
         reset_db()
     return redirect(url_for('home'))
-
-
-if __name__ == "__main__":
-    application.run()
