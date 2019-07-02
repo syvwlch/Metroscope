@@ -7,14 +7,14 @@ from run import app
 def client():
     """Fixture to create the test client."""
     app.config['TESTING'] = True
+    # Need to hit the /reset route to load sample poems into db
+    app.test_client().get('/reset')
     yield app.test_client()
 
 
-@pytest.mark.parametrize("route", ['/', '/about'])
+@pytest.mark.parametrize("route", ['/', '/about', '/poem/Flea'])
 def test_200(client, route):
     """Make sure the page returns a 200."""
-    # currently does not test the poem/foo route when poem foo exists
-    # need to put that back in once there's a test database
     assert "200" in client.get(route).status
 
 
