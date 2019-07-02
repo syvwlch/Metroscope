@@ -10,14 +10,14 @@ import markdown
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-application = Flask(__name__)
+app = Flask(__name__)
 
-application.config['SQLALCHEMY_DATABASE_URI'] =\
+app.config['SQLALCHEMY_DATABASE_URI'] =\
     'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(application)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-bootstrap = Bootstrap(application)
+bootstrap = Bootstrap(app)
 
 
 class Meter(db.Model):
@@ -108,7 +108,7 @@ def reset_db():
     db.session.commit()
 
 
-@application.shell_context_processor
+@app.shell_context_processor
 def make_shell_context():
     """Add a shell context processor."""
     return dict(db=db,
@@ -119,7 +119,7 @@ def make_shell_context():
                 )
 
 
-@application.route("/")
+@app.route("/")
 def home():
     """Define the home route."""
     if "poems" not in db.engine.table_names():
@@ -129,7 +129,7 @@ def home():
     return render_template("home.html", poems=poems)
 
 
-@application.route("/about")
+@app.route("/about")
 def about():
     """Define the about route."""
     try:
@@ -142,7 +142,7 @@ def about():
                            )
 
 
-@application.route("/poem/<keyword>")
+@app.route("/poem/<keyword>")
 def poem(keyword):
     """Define the poem route."""
     # if the poems table does not exist, 404 the route
@@ -160,19 +160,19 @@ def poem(keyword):
                                              poem.meter.pattern))
 
 
-@application.errorhandler(404)
+@app.errorhandler(404)
 def page_not_found(e):
     """Define the route for the 404 error page."""
     return render_template('404.html'), 404
 
 
-@application.errorhandler(500)
+@app.errorhandler(500)
 def internal_server_error(e):
     """Define the route for the 500 error page."""
     return render_template('500.html'), 500
 
 
-@application.route("/reset")
+@app.route("/reset")
 def reset():
     """Define the reset route."""
     if "poems" not in db.engine.table_names():
