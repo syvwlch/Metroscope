@@ -178,7 +178,3 @@ def reset():
     if "poems" not in db.engine.table_names():
         reset_db()
     return redirect(url_for('home'))
-
-
-if __name__ == "__main__":
-    application.run()
