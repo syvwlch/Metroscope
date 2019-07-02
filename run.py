@@ -8,9 +8,13 @@ from metroscope import scanned_poem
 import markdown
 
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
 app = Flask(__name__)
+
+basedir = app.instance_path
+try:
+    os.makedirs(basedir)
+except OSError:
+    pass
 
 app.config['SQLALCHEMY_DATABASE_URI'] =\
     'sqlite:///' + os.path.join(basedir, 'data.sqlite')

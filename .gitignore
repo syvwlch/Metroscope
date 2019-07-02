@@ -4,9 +4,6 @@ samples/copyrighted/
 # MacOS system files
 *.DS_Store
 
-# local sqlite db file
-*.sqlite
-
 # Unit test / coverage reports
 htmlcov/
 .coverage
