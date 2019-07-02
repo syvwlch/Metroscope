@@ -1,6 +1,7 @@
 """Test the site's database."""
 # import pytest
-from run import app, db
+from run import app
+from run.models import db
 
 
 def test_db_uses_SQLAlchemy():
