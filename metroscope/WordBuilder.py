@@ -48,10 +48,7 @@ class WordBuilder(object):
             word_phones.extend(self.custom_dict[self._clean_word]["phones"])
         except KeyError:
             pass
-        try:
-            word_phones.extend(phones_for_word(self._clean_word))
-        except IndexError:
-            pass
+        word_phones.extend(phones_for_word(self._clean_word))
         if word_phones == []:
             return None
         else:
