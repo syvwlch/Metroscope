@@ -1,6 +1,9 @@
 # raw texts I do not have a license to share online
 samples/copyrighted/
 
+# my databases
+*.sqlite
+
 # MacOS system files
 *.DS_Store
 

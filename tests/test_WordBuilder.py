@@ -12,8 +12,8 @@ def test_init():
              )
     for word in WORDS:
         wb = WordBuilder(word)
-        assert(wb.word == word)
-        assert(wb._phones_index == 0)
+        assert wb.word == word
+        assert wb._phones_index == 0
 
 
 def test_str_magic_method():
@@ -24,7 +24,7 @@ def test_str_magic_method():
              "pass’d",
              )
     for word in WORDS:
-        assert(str(WordBuilder(word)) == word)
+        assert str(WordBuilder(word)) == word
 
 
 def test_repr_magic_method():
@@ -53,7 +53,7 @@ def test__phones():
              }
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb._phones == phones)
+        assert wb._phones == phones
 
 
 def test_index():
@@ -70,9 +70,13 @@ def test_index():
     for word, phones_list in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
         wb.index = 0
-        assert(wb._phones == phones_list[0])
+        assert wb._phones_index == 0
+        assert wb.index == 0
+        assert wb._phones == phones_list[0]
         wb.index = 1
-        assert(wb._phones == phones_list[1])
+        assert wb._phones_index == 1
+        assert wb.index == 1
+        assert wb._phones == phones_list[1]
         with pytest.raises(IndexError):
             wb.index = 2
 
@@ -91,7 +95,7 @@ def test_syllables():
              }
     for word, syllables in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb.syllables == syllables)
+        assert wb.syllables == syllables
 
 
 def test_stress_list():
@@ -104,11 +108,12 @@ def test_stress_list():
              "Automatic": ['2', '0', '1', '0'],
              "serene": ['0', '1'],
              "phidian": ['1', '0'],
-             "Poesy.": None
+             "Poesy.": None,
+             "bowèd": ['1', '2']
              }
     for word, stresses in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb.stress_list == stresses)
+        assert wb.stress_list == stresses
 
 
 def test__stressed_syllables():
@@ -136,7 +141,7 @@ def test_word_already_clean():
              "serene",
              )
     for word in WORDS:
-        assert(WordBuilder(word)._clean_word == word)
+        assert WordBuilder(word)._clean_word == word
 
 
 def test_word_has_grave_over_e():
@@ -147,7 +152,7 @@ def test_word_has_grave_over_e():
              "joinèd": "joined",
              }
     for word, cleaned_word in WORDS.items():
-        assert(WordBuilder(word)._clean_word == cleaned_word)
+        assert WordBuilder(word)._clean_word == cleaned_word
 
 
 def test_word_has_elision():
@@ -157,7 +162,7 @@ def test_word_has_elision():
              "pass’d": "passed",
              }
     for word, cleaned_word in WORDS.items():
-        assert(WordBuilder(word)._clean_word == cleaned_word)
+        assert WordBuilder(word)._clean_word == cleaned_word
 
 
 def test_word_has_possessive():
@@ -168,7 +173,7 @@ def test_word_has_possessive():
              "know’st": "know’st",
              }
     for word, cleaned_word in WORDS.items():
-        assert(WordBuilder(word)._clean_word == cleaned_word)
+        assert WordBuilder(word)._clean_word == cleaned_word
 
 
 def test_word_has_uppercase():
@@ -179,7 +184,7 @@ def test_word_has_uppercase():
              "One": "one",
              }
     for word, cleaned_word in WORDS.items():
-        assert(WordBuilder(word)._clean_word == cleaned_word)
+        assert WordBuilder(word)._clean_word == cleaned_word
 
 
 def test_word_has_punctuation():
@@ -190,7 +195,7 @@ def test_word_has_punctuation():
              ".,;:!?—'\"": "",
              }
     for word, cleaned_word in WORDS.items():
-        assert(WordBuilder(word)._clean_word == cleaned_word)
+        assert WordBuilder(word)._clean_word == cleaned_word
 
 
 def test__tag_string():
@@ -228,7 +233,7 @@ def test__matched_syllables():
     for word, matches in WORDS.items():
         METER = [0, 1, 0]
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb._matched_syllables(METER) == matches)
+        assert wb._matched_syllables(METER) == matches
 
 
 def test__rhyming_part():
@@ -244,7 +249,7 @@ def test__rhyming_part():
              }
     for line, rhyme in LINES.items():
         wb = WordBuilder(line, custom_dict=CUSTOM_DICT)
-        assert(wb._rhyming_part == rhyme)
+        assert wb._rhyming_part == rhyme
 
 
 def test_stressed_HTML():
@@ -283,4 +288,4 @@ def test_stressed_HTML():
     for word, HTML in WORDS.items():
         METER = [0, 1, 0]
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb.stressed_HTML(METER) == HTML)
+        assert wb.stressed_HTML(METER) == HTML

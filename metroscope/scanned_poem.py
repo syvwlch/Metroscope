@@ -109,7 +109,3 @@ def scanned_poem(poem, meter):
             result += "</tr>\n<tr>"
     result += "</tr>\n</table>"
     return result
-
-
-if __name__ == "__main__":
-    print("This is a module, import it into a script to use.")
