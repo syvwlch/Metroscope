@@ -1,19 +1,6 @@
 """Database models for the site."""
 
-import os
-from flask_sqlalchemy import SQLAlchemy
-from run import app
-
-basedir = app.instance_path
-try:
-    os.makedirs(basedir)
-except OSError:
-    pass
-
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-    'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+from run import db
 
 
 class Meter(db.Model):
@@ -130,14 +117,3 @@ def reset_db():
             )
 
     db.session.commit()
-
-
-@app.shell_context_processor
-def make_shell_context():
-    """Add a shell context processor."""
-    return dict(db=db,
-                Meter=Meter,
-                Poet=Poet,
-                Poem=Poem,
-                reset_db=reset_db,
-                )

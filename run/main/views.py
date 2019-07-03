@@ -1,16 +1,15 @@
-"""Route definitions for the site."""
+"""Route definitions for the main blueprint."""
 
 from flask import render_template, redirect, url_for
-from flask_bootstrap import Bootstrap
+from . import main
+from .. import db
+from ..models import Poem, reset_db
+
 from metroscope import scanned_poem
 import markdown
-from run import app
-from run.models import db, Poem, reset_db
-
-bootstrap = Bootstrap(app)
 
 
-@app.route("/")
+@main.route("/")
 def home():
     """Define the home route."""
     if "poems" not in db.engine.table_names():
@@ -20,7 +19,7 @@ def home():
     return render_template("home.html", poems=poems)
 
 
-@app.route("/about")
+@main.route("/about")
 def about():
     """Define the about route."""
     try:
@@ -33,7 +32,7 @@ def about():
                            )
 
 
-@app.route("/poem/<keyword>")
+@main.route("/poem/<keyword>")
 def poem(keyword):
     """Define the poem route."""
     # if the poems table does not exist, 404 the route
@@ -51,19 +50,7 @@ def poem(keyword):
                                              poem.meter.pattern))
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    """Define the route for the 404 error page."""
-    return render_template('404.html'), 404
-
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    """Define the route for the 500 error page."""
-    return render_template('500.html'), 500
-
-
-@app.route("/reset")
+@main.route("/reset")
 def reset():
     """
     Define the reset route.
@@ -72,4 +59,4 @@ def reset():
     """
     if "poems" not in db.engine.table_names():
         reset_db()
-    return redirect(url_for('home'))
+    return redirect(url_for('.home'))
