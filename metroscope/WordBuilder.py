@@ -106,8 +106,6 @@ class WordBuilder(object):
                 word = word[len(syllable):]
             elif len(stresses) == 1:
                 result.append([word, stresses.pop(0)])
-            else:
-                pass
         return result
 
     @property
