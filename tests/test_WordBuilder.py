@@ -108,7 +108,8 @@ def test_stress_list():
              "Automatic": ['2', '0', '1', '0'],
              "serene": ['0', '1'],
              "phidian": ['1', '0'],
-             "Poesy.": None
+             "Poesy.": None,
+             "bowèd": ['1', '2']
              }
     for word, stresses in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
