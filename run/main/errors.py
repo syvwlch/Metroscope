@@ -13,4 +13,4 @@ def page_not_found(e):
 @main.app_errorhandler(500)
 def internal_server_error(e):
     """Define the route for the 500 error page."""
-    return render_template('500.html'), 500
+    return render_template('500.html'), 500  # pragma: no cover
