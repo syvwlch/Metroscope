@@ -85,9 +85,6 @@ def reset_db():
         },
     ]
 
-    db.drop_all()
-    db.create_all()
-
     for meter in METERS:
         if Meter.query.filter_by(pattern=meter['pattern']).first() is None:
             db.session.add(

@@ -60,5 +60,7 @@ def reset():
     For safety, only works if the poems table does not already exist.
     """
     if "poems" not in db.engine.table_names():
+        db.create_all()
+    if Poem.query.first() is None:
         reset_db()
     return redirect(url_for('.home'))
