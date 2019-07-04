@@ -32,15 +32,19 @@ def test_200(client, route):
     '/foo',
     '/poem/bar',
     ])
-def test_unknown_pages(client, route):
+def test_404(client, route):
     """Check routes that should always 404."""
-    assert "404" in client.get(route).status
+    response = client.get(route)
+    assert b'Page not found' in response.data
+    assert "404" in response.status
 
 
 def test_no_db(client):
     """Check behavior when the db is empty."""
     db.drop_all()
+
     assert b'Sorry' in client.get('/').data
+
     assert "404" in client.get('/poem/Flea').status
 
 
@@ -48,6 +52,11 @@ def test_reset(client):
     """Check the /reset route adds sample poems."""
     db.drop_all()
     client.get('/reset')
+
     assert b'Flea' in client.get('/').data
-    assert "200" in client.get('/poem/Flea').status
+
+    response = client.get('/poem/Flea')
+    assert b'Flea' in response.data
+    assert "200" in response.status
+
     assert "404" in client.get('/poem/foo').status
