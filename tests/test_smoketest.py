@@ -68,3 +68,18 @@ def test_reset(client):
     assert "200" in response.status
 
     assert "404" in client.get('/poem/foo').status
+
+
+def test_double_reset(client):
+    """Check that the /reset route is idempotent."""
+    db.drop_all()
+    client.get('/reset')
+    client.get('/reset')
+
+    assert b'Flea' in client.get('/').data
+
+    response = client.get('/poem/Flea')
+    assert b'Flea' in response.data
+    assert "200" in response.status
+
+    assert "404" in client.get('/poem/foo').status
