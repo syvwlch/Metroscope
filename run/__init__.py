@@ -33,7 +33,7 @@ migrate = Migrate(app, db)
 @app.shell_context_processor
 def make_shell_context():
     """Add a shell context processor."""
-    from models import Meter, Poet, Poem, reset_db
+    from run.models import Meter, Poet, Poem, reset_db
     return dict(db=db,
                 Meter=Meter,
                 Poet=Poet,
