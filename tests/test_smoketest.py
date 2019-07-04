@@ -1,7 +1,7 @@
 """Test the major pages using flask's test_client()."""
 import pytest
-from flask import current_app
 from run import create_app, db
+from run.models import reset_db
 
 
 @pytest.fixture
@@ -11,6 +11,7 @@ def test_app():
     app_context = app.app_context()
     app_context.push()
     db.create_all()
+    reset_db()
     yield app
     db.session.remove()
     db.drop_all()
@@ -20,16 +21,14 @@ def test_app():
 @pytest.fixture
 def client(test_app):
     """Fixture to create the test client."""
-    current_app.config['TESTING'] = True
-    # Need to hit the /reset route to load sample poems into db
-    current_app.test_client().get('/reset')
-    yield current_app.test_client()
+    test_app.config['TESTING'] = True
+    yield test_app.test_client()
 
 
 @pytest.mark.parametrize("route", [
     '/',
     '/about',
-    # '/poem/Flea',
+    '/poem/Flea',
     ])
 def test_200(client, route):
     """Make sure the page returns a 200."""
