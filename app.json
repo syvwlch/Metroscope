@@ -2,8 +2,14 @@
   "name": "Metroscope",
   "scripts": {},
   "env": {
-    "FLASK_APP": {
-      "required": true
+      "FLASK_APP": {
+        "required": true
+    },
+      "FLASK_CONFIG": {
+        "required": true
+    },
+      "FLASK_DEBUG": {
+        "required": true
     }
   },
   "formation": {
