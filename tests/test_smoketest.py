@@ -39,6 +39,14 @@ def test_404(client, route):
     assert "404" in response.status
 
 
+@pytest.mark.xfail
+def test_500(client):
+    """Check the error handler for 500 errors."""
+    response = client.put('/foo')
+    assert b'Page not found' in response.data
+    assert "500" in response.status
+
+
 def test_no_db(client):
     """Check behavior when the db is empty."""
     db.drop_all()
