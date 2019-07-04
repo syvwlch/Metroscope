@@ -3,6 +3,7 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from config import config
 
@@ -26,6 +27,7 @@ def create_app(config_name):
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+migrate = Migrate(app, db)
 
 
 @app.shell_context_processor
