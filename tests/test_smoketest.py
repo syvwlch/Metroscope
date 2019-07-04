@@ -1,37 +1,30 @@
 """Test the major pages using flask's test_client()."""
 import pytest
 from run import create_app, db
-from run.models import reset_db
 
 
 @pytest.fixture
-def test_app():
-    """Set up and tear down the test database."""
+def client():
+    """Set up and tear down the test app and client."""
     app = create_app('testing')
+    app.config['TESTING'] = True
+
     app_context = app.app_context()
     app_context.push()
-    db.create_all()
-    reset_db()
-    yield app
+
+    yield app.test_client()
+
     db.session.remove()
     db.drop_all()
     app_context.pop()
 
 
-@pytest.fixture
-def client(test_app):
-    """Fixture to create the test client."""
-    test_app.config['TESTING'] = True
-    yield test_app.test_client()
-
-
 @pytest.mark.parametrize("route", [
     '/',
     '/about',
-    '/poem/Flea',
     ])
 def test_200(client, route):
-    """Make sure the page returns a 200."""
+    """Check routes that should always return a 200."""
     assert "200" in client.get(route).status
 
 
@@ -40,5 +33,21 @@ def test_200(client, route):
     '/poem/bar',
     ])
 def test_unknown_pages(client, route):
-    """Make sure that pages that don't exist do 404."""
+    """Check routes that should always 404."""
     assert "404" in client.get(route).status
+
+
+def test_no_db(client):
+    """Check behavior when the db is empty."""
+    db.drop_all()
+    assert b'Sorry' in client.get('/').data
+    assert "404" in client.get('/poem/Flea').status
+
+
+def test_reset(client):
+    """Check the /reset route adds sample poems."""
+    db.drop_all()
+    client.get('/reset')
+    assert b'Flea' in client.get('/').data
+    assert "200" in client.get('/poem/Flea').status
+    assert "404" in client.get('/poem/foo').status
