@@ -48,30 +48,16 @@ class Poem(db.Model):
 
 def reset_db():
     """Reset the database with the sample poems."""
-    db.drop_all()
-    db.create_all()
-
     METERS = [
         {'name': 'Iambic Pentameter', 'pattern': '0101010101'},
         {'name': 'Cataleptic Anapestic Trimeter', 'pattern': '01001001'}
     ]
-    for meter in METERS:
-        db.session.add(
-            Meter(name=meter['name'], pattern=meter['pattern'])
-        )
-
     POETS = [
         'John Keats',
         'Edward Lear',
         'John Donne',
         'Wilfred Owen'
     ]
-    for poet in POETS:
-        db.session.add(Poet(name=poet))
-
-    # commit so loading poets can use poets and meters tables
-    db.session.commit()
-
     POEMS = [
         {
             'title': 'Ode on Indolence',
@@ -98,22 +84,40 @@ def reset_db():
             'pattern': '0101010101',
         },
     ]
-    for sample in POEMS:
-        path = 'samples/free/' + sample['keyword'] + '.txt'
-        with open(path, "r") as poem:
-            title = sample['title']
-            keyword = sample['keyword']
-            poet_id = Poet.query.filter_by(name=sample['poet']).first().id
-            meter_id = Meter.query.filter_by(
-                pattern=sample['pattern']).first().id
+
+    db.drop_all()
+    db.create_all()
+
+    for meter in METERS:
+        if Meter.query.filter_by(pattern=meter['pattern']).first() is None:
             db.session.add(
-                Poem(
-                    title=title,
-                    keyword=keyword,
-                    raw_text=str(poem.read()),
-                    poet_id=poet_id,
-                    meter_id=meter_id,
-                )
+                Meter(name=meter['name'], pattern=meter['pattern'])
             )
+
+    for poet in POETS:
+        if Poet.query.filter_by(name=poet).first() is None:
+            db.session.add(Poet(name=poet))
+
+    # commit so loading poets can use poets and meters tables
+    db.session.commit()
+
+    for poem in POEMS:
+        if Poem.query.filter_by(keyword=poem['keyword']).first() is None:
+            path = 'samples/free/' + poem['keyword'] + '.txt'
+            with open(path, "r") as text_file:
+                title = poem['title']
+                keyword = poem['keyword']
+                poet_id = Poet.query.filter_by(name=poem['poet']).first().id
+                meter_id = Meter.query.filter_by(
+                    pattern=poem['pattern']).first().id
+                db.session.add(
+                    Poem(
+                        title=title,
+                        keyword=keyword,
+                        raw_text=str(text_file.read()),
+                        poet_id=poet_id,
+                        meter_id=meter_id,
+                    )
+                )
 
     db.session.commit()
