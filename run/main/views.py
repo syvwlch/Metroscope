@@ -1,5 +1,6 @@
 """Route definitions for the main blueprint."""
 
+import os
 from flask import render_template, redirect, url_for
 from . import main
 from .. import db
@@ -22,8 +23,9 @@ def home():
 @main.route("/about")
 def about():
     """Define the about route."""
+    ABOUT_FILE = os.environ.get('ABOUT_FILE') or 'README.md'
     try:
-        with open("README.md", "r") as readme:
+        with open(ABOUT_FILE, "r") as readme:
             ABOUT_CONTENTS = markdown.markdown(readme.read())
     except IOError:
         ABOUT_CONTENTS = "Failed to load the contents of the about page."
