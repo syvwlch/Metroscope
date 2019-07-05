@@ -231,7 +231,7 @@ def test__matched_syllables():
              [['Poesy.', None, False]],
              }
     for word, matches in WORDS.items():
-        METER = [0, 1, 0]
+        METER = "010"
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
         assert wb._matched_syllables(METER) == matches
 
@@ -286,6 +286,6 @@ def test_stressed_HTML():
 </span>",
              }
     for word, HTML in WORDS.items():
-        METER = [0, 1, 0]
+        METER = "010"
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
         assert wb.stressed_HTML(METER) == HTML

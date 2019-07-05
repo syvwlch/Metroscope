@@ -84,5 +84,5 @@ def test_stressed_HTML():
 <b style='color:red'> _ </b>",
              }
     for line, HTML in LINES.items():
-        METER = [0, 1, 0, 0, 1]
+        METER = "01001"
         assert(LineBuilder(line).stressed_HTML(METER) == HTML)
