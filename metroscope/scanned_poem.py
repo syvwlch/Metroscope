@@ -71,16 +71,16 @@ CUSTOM_DICT = {
               }
 
 
-def scanned_poem(poem, meter):
+def scanned_poem(poem, meter_pattern):
     """
     Create HTML with the scanned poem.
 
     Wrap the poem in a <table> tag, each line in a <tr> tag,
     and the stressed line & its rhyme each in their own <td>.
     """
-    meter_pattern = []
-    for beat in meter:
-        meter_pattern.append(beat == '1')
+    # meter_pattern = []
+    # for beat in meter:
+    #     meter_pattern.append(beat == '1')
 
     lines = []
     for line in poem.split("\n"):

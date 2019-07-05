@@ -149,7 +149,7 @@ class WordBuilder(object):
         result = []
         for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
-                if pattern.pop(0):
+                if pattern[0]:
                     result.append([syllable,
                                    True,
                                    pronunciation_stress != '0'])
@@ -157,6 +157,7 @@ class WordBuilder(object):
                     result.append([syllable,
                                    False,
                                    pronunciation_stress != '1'])
+                pattern = pattern[1:]
             else:
                 result.append([syllable,
                                None,
