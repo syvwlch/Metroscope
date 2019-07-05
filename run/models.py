@@ -1,6 +1,7 @@
 """Database models for the site."""
 
 from run import db
+from metroscope import scanned_poem
 
 
 class Meter(db.Model):
@@ -102,19 +103,20 @@ def reset_db():
     for poem in POEMS:
         if Poem.query.filter_by(keyword=poem['keyword']).first() is None:
             path = 'samples/free/' + poem['keyword'] + '.txt'
+            title = poem['title']
+            keyword = poem['keyword']
+            poet = Poet.query.filter_by(name=poem['poet']).first()
+            meter = Meter.query.filter_by(pattern=poem['pattern']).first()
             with open(path, "r") as text_file:
-                title = poem['title']
-                keyword = poem['keyword']
-                poet_id = Poet.query.filter_by(name=poem['poet']).first().id
-                meter_id = Meter.query.filter_by(
-                    pattern=poem['pattern']).first().id
+                raw_text = str(text_file.read())
                 db.session.add(
                     Poem(
                         title=title,
                         keyword=keyword,
-                        raw_text=str(text_file.read()),
-                        poet_id=poet_id,
-                        meter_id=meter_id,
+                        raw_text=raw_text,
+                        HTML=scanned_poem(raw_text, meter.pattern),
+                        poet_id=poet.id,
+                        meter_id=meter.id,
                     )
                 )
 
