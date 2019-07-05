@@ -75,8 +75,8 @@ def scanned_poem(poem, meter):
     """
     Create HTML with the scanned poem.
 
-    Wrap the poem in a <div> tag, each stanza in a <p> tag,
-    and end each line with a <br> tag.
+    Wrap the poem in a <table> tag, each line in a <tr> tag,
+    and the stressed line & its rhyme each in their own <td>.
     """
     meter_pattern = []
     for beat in meter:
