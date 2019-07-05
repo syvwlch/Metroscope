@@ -38,6 +38,7 @@ class Poem(db.Model):
     keyword = db.Column(db.String(64), unique=True, nullable=False)
     title = db.Column(db.String(64), nullable=False)
     raw_text = db.Column(db.Text, nullable=False)
+    HTML = db.Column(db.Text)
     poet_id = db.Column(db.Integer, db.ForeignKey('poets.id'))
     meter_id = db.Column(db.Integer, db.ForeignKey('meters.id'))
 
