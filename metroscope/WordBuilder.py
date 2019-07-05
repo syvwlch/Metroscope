@@ -73,7 +73,7 @@ class WordBuilder(object):
     @property
     def stress_list(self):
         """
-        Return a list of the stresses for the given word.
+        Return a string of the stresses for the given word.
 
         Consumers of this list make the following assumptions:
          - syllables with a "1" should be stressed by the meter
@@ -81,7 +81,7 @@ class WordBuilder(object):
          - syllables with a "0" should be unstressed by the meter
         """
         if self._phones is None:
-            return None
+            return ""
         word_stresses = stresses(self._phones)
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
@@ -89,7 +89,7 @@ class WordBuilder(object):
         # Words of one syllable can usually be pronounced either way.
         if word_stresses in ("1", "0"):
             word_stresses = "2"
-        return list(word_stresses)
+        return word_stresses
 
     @property
     def _stressed_syllables(self):
@@ -97,15 +97,17 @@ class WordBuilder(object):
         word = self.word
         syllables = self.syllables
         stresses = self.stress_list
-        if stresses is None:
+        if stresses == "":
             return None
         result = []
         for syllable in syllables:
             if len(stresses) > 1:
-                result.append([word[0:len(syllable)], stresses.pop(0)])
+                result.append([word[0:len(syllable)], stresses[0]])
                 word = word[len(syllable):]
+                stresses = stresses[1:]
             elif len(stresses) == 1:
-                result.append([word, stresses.pop(0)])
+                result.append([word, stresses[0]])
+                stresses = ""
         return result
 
     @property
