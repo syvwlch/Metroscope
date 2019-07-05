@@ -105,11 +105,11 @@ def test_stress_list():
                                "phones": ["F IH1 D IY0 N"]},
                    }
     WORDS = {
-             "Automatic": ['2', '0', '1', '0'],
-             "serene": ['0', '1'],
-             "phidian": ['1', '0'],
-             "Poesy.": None,
-             "bowèd": ['1', '2']
+             "Automatic": "2010",
+             "serene": "01",
+             "phidian": "10",
+             "Poesy.": "",
+             "bowèd": "12"
              }
     for word, stresses in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
@@ -231,7 +231,7 @@ def test__matched_syllables():
              [['Poesy.', None, False]],
              }
     for word, matches in WORDS.items():
-        METER = [0, 1, 0]
+        METER = "010"
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
         assert wb._matched_syllables(METER) == matches
 
@@ -286,6 +286,6 @@ def test_stressed_HTML():
 </span>",
              }
     for word, HTML in WORDS.items():
-        METER = [0, 1, 0]
+        METER = "010"
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
         assert wb.stressed_HTML(METER) == HTML

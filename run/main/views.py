@@ -6,7 +6,6 @@ from . import main
 from .. import db
 from ..models import Poem, reset_db
 
-from metroscope import scanned_poem
 import markdown
 
 
@@ -48,8 +47,7 @@ def poem(keyword):
                            title=poem.title,
                            poet=poem.author.name,
                            meter=poem.meter.name,
-                           poem=scanned_poem(poem.raw_text,
-                                             poem.meter.pattern))
+                           poem=poem.HTML)
 
 
 @main.route("/reset")
@@ -60,5 +58,7 @@ def reset():
     For safety, only works if the poems table does not already exist.
     """
     if "poems" not in db.engine.table_names():
+        db.create_all()
+    if Poem.query.first() is None:
         reset_db()
     return redirect(url_for('.home'))
