@@ -3,7 +3,7 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from flask_bootstrap import Bootstrap
 from config import config
 
@@ -40,3 +40,17 @@ def make_shell_context():
                 Poem=Poem,
                 reset_db=reset_db,
                 )
+
+
+@app.cli.command()
+def deploy():
+    """Run the (idempotent) deployment tasks."""
+    from .models import Meter, Poet, Poem
+
+    # Migrate the database to the latest revision
+    upgrade()
+
+    # create or update the sample meters, poets, and poems
+    Meter.insert_samples()
+    Poet.insert_samples()
+    Poem.insert_samples()

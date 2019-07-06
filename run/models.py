@@ -28,12 +28,17 @@ class Meter(db.Model):
             {'name': 'Iambic Pentameter', 'pattern': '0101010101'},
             {'name': 'Cataleptic Anapestic Trimeter', 'pattern': '01001001'}
         ]
+        needs_commit = False
         for meter in METERS:
             if Meter.query.filter_by(pattern=meter['pattern']).first() is None:
                 db.session.add(
                     Meter(name=meter['name'], pattern=meter['pattern'])
                 )
-        db.session.commit()
+                print(f"Adding meter '{meter['name']}' to database.")
+                needs_commit = True
+        if needs_commit:
+            db.session.commit()
+            print("Changes committed.")
 
 
 class Poet(db.Model):
@@ -61,10 +66,15 @@ class Poet(db.Model):
             'John Donne',
             'Wilfred Owen'
         ]
+        needs_commit = False
         for poet in POETS:
             if Poet.query.filter_by(name=poet).first() is None:
                 db.session.add(Poet(name=poet))
-        db.session.commit()
+                print(f"Adding poet '{poet}' to database.")
+                needs_commit = True
+        if needs_commit:
+            db.session.commit()
+            print("Changes committed.")
 
 
 class Poem(db.Model):
@@ -116,6 +126,7 @@ class Poem(db.Model):
                 'pattern': '0101010101',
             },
         ]
+        needs_commit = False
         for poem in POEMS:
             if Poet.query.filter_by(name=poem['poet']).first() is None:
                 raise ValueError('This poet does not exist.')
@@ -139,7 +150,11 @@ class Poem(db.Model):
                             meter_id=meter.id,
                         )
                     )
-        db.session.commit()
+                    print(f"Adding poem '{poem['title']}' to database.")
+                needs_commit = True
+        if needs_commit:
+            db.session.commit()
+            print("Changes committed.")
 
 
 def reset_db():
