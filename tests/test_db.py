@@ -1,16 +1,19 @@
 """Test the site's database."""
 import pytest
 from flask import current_app
-from run import create_app, db
+from run import create_app, db, upgrade
+from flask_migrate import Migrate
 
 
 @pytest.fixture
 def test_app():
     """Set up and tear down the test database."""
     app = create_app('testing')
+    Migrate(app, db)
+
     app_context = app.app_context()
     app_context.push()
-    db.create_all()
+    upgrade()
     yield app
     db.session.remove()
     db.drop_all()
