@@ -3,7 +3,7 @@
 import os
 from flask import render_template, redirect, url_for
 from . import main
-from .. import db
+from .. import db, upgrade
 from ..models import Poem, reset_db
 
 import markdown
@@ -52,13 +52,7 @@ def poem(keyword):
 
 @main.route("/reset")
 def reset():
-    """
-    Define the reset route.
-
-    For safety, only works if the poems table does not already exist.
-    """
-    if "poems" not in db.engine.table_names():
-        db.create_all()
-    if Poem.query.first() is None:
-        reset_db()
+    """Define the reset route."""
+    upgrade()
+    reset_db()
     return redirect(url_for('.home'))

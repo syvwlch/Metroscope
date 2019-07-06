@@ -2,24 +2,29 @@
 import os
 import pytest
 from run import create_app, db
-from run.models import Poem
+from flask_migrate import Migrate
 
 
 @pytest.fixture
-def client():
-    """Set up and tear down the test app and client."""
+def app():
+    """Set up and tear down the test app."""
     app = create_app('testing')
+    Migrate(app, db)
+
     app.config['TESTING'] = True
 
     app_context = app.app_context()
     app_context.push()
-    db.create_all()
 
-    yield app.test_client()
+    yield app
 
-    db.session.remove()
-    db.drop_all()
     app_context.pop()
+
+
+@pytest.fixture
+def client(app):
+    """Set up and tear down the test client."""
+    yield app.test_client()
 
 
 @pytest.mark.parametrize("route", [
@@ -61,46 +66,21 @@ def test_no_db(client):
     assert b'Sorry' in client.get('/').data
     assert "404" in client.get('/poem/Flea').status
 
-    # Create database and inject sample poems
-    client.get('/reset')
 
-    assert b'Flea' in client.get('/').data
-    response = client.get('/poem/Flea')
-    assert b'Flea' in response.data
-    assert "200" in response.status
-    assert "404" in client.get('/poem/foo').status
-
-
-def test_empty_db(client):
-    """Check behavior when the db is empty."""
-    for poem in Poem.query.all():
-        db.session.delete(poem.id)
-    db.session.commit()
-
-    # The database has no poems in it
+def test_reset_route(client):
+    """Check the /reset route."""
+    # The database has no poems in it when first initialized
     assert b'Sorry' in client.get('/').data
     assert "404" in client.get('/poem/Flea').status
 
     # Inject sample poems into existing database
     client.get('/reset')
+    assert b'Flea' in client.get('/').data
 
+    # Makes sure doing it twice doesn't break anything.
+    client.get('/reset')
     assert b'Flea' in client.get('/').data
     response = client.get('/poem/Flea')
     assert b'Flea' in response.data
     assert "200" in response.status
-    assert "404" in client.get('/poem/foo').status
-
-
-def test_double_reset(client):
-    """Check that the /reset route is idempotent."""
-    # Hitting the /reset route more than once should not break the db
-    client.get('/reset')
-    client.get('/reset')
-
-    assert b'Flea' in client.get('/').data
-
-    response = client.get('/poem/Flea')
-    assert b'Flea' in response.data
-    assert "200" in response.status
-
     assert "404" in client.get('/poem/foo').status
