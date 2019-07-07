@@ -1,26 +1,7 @@
 """Test the database models."""
 
 import pytest
-from run import create_app, db
 from run.models import Meter, Poet, Poem
-
-
-@pytest.fixture
-def app():
-    """Set up and tear down the test app."""
-    app = create_app('testing')
-
-    app.config['TESTING'] = True
-
-    app_context = app.app_context()
-    app_context.push()
-    db.create_all()
-
-    yield app
-
-    db.session.remove()
-    db.drop_all()
-    app_context.pop()
 
 
 def test_Meter_repr():

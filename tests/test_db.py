@@ -1,25 +1,6 @@
 """Test the site's database."""
-import pytest
 from flask import current_app
-from run import create_app, db
-
-
-@pytest.fixture
-def app():
-    """Set up and tear down the test app and db."""
-    app = create_app('testing')
-
-    app.config['TESTING'] = True
-
-    app_context = app.app_context()
-    app_context.push()
-    db.create_all()
-
-    yield app
-
-    db.session.remove()
-    db.drop_all()
-    app_context.pop()
+from run import db
 
 
 def test_app_exists(app):
