@@ -84,3 +84,15 @@ def test_reset_route(client):
     assert b'Flea' in response.data
     assert "200" in response.status
     assert "404" in client.get('/poem/foo').status
+
+
+def test_about_default(client, monkeypatch):
+    """Check that the about page is loading the default content."""
+    monkeypatch.delenv("ABOUT_FILE", raising=False)
+    assert b'What is Metroscope about?' in client.get('/about').data
+
+
+def test_about_missing_file(client, monkeypatch):
+    """Check that the about page fails to load content gracefully."""
+    monkeypatch.setenv("ABOUT_FILE", 'NONEXISTENT.file')
+    assert b'Failed to load' in client.get('/about').data
