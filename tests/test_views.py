@@ -1,5 +1,4 @@
-"""Test the major pages using flask's test_client()."""
-import os
+"""Test the major views using flask's test_client()."""
 import pytest
 from run import create_app, db
 from flask_migrate import Migrate
@@ -15,9 +14,12 @@ def app():
 
     app_context = app.app_context()
     app_context.push()
+    db.create_all()
 
     yield app
 
+    db.session.remove()
+    db.drop_all()
     app_context.pop()
 
 
@@ -55,27 +57,28 @@ def test_500(client):
     assert "500" in response.status
 
 
-def test_no_db(client):
-    """Check behavior when there is no db."""
-    try:
-        os.remove('data-test.sqlite')
-    except OSError:
-        pass
-
-    # There is no database
+def test_dropped_db(client):
+    """Check behavior when the db has no tables."""
+    db.drop_all()
     assert b'Sorry' in client.get('/').data
     assert "404" in client.get('/poem/Flea').status
 
 
 def test_reset_route(client):
     """Check the /reset route."""
-    # The database has no poems in it when first initialized
+    # The database has tables in it
+    assert "poems" in db.engine.table_names()
+    # The database has no poems in it
     assert b'Sorry' in client.get('/').data
     assert "404" in client.get('/poem/Flea').status
 
-    # Inject sample poems into existing database
+    # /reset route injects sample poems into database
     client.get('/reset')
     assert b'Flea' in client.get('/').data
+    response = client.get('/poem/Flea')
+    assert b'Flea' in response.data
+    assert "200" in response.status
+    assert "404" in client.get('/poem/foo').status
 
     # Makes sure doing it twice doesn't break anything.
     client.get('/reset')
