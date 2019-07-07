@@ -1,6 +1,26 @@
 """Test the database models."""
 
+import pytest
+from run import create_app, db
 from run.models import Meter, Poet, Poem
+
+
+@pytest.fixture
+def app():
+    """Set up and tear down the test app."""
+    app = create_app('testing')
+
+    app.config['TESTING'] = True
+
+    app_context = app.app_context()
+    app_context.push()
+    db.create_all()
+
+    yield app
+
+    db.session.remove()
+    db.drop_all()
+    app_context.pop()
 
 
 def test_Meter_repr():
@@ -27,3 +47,14 @@ def test_Poem_repr():
             meter_id=1,
         )
     ) == "<Poem 'title'>"
+
+
+def test_Poem_ValueError(app):
+    """Check that insert_samples() raises ValueError if meter/poet absent."""
+    with pytest.raises(ValueError) as excinfo:
+        Poem.insert_samples()
+    assert "This poet does not exist." in str(excinfo.value)
+    Poet.insert_samples()
+    with pytest.raises(ValueError) as excinfo:
+        Poem.insert_samples()
+    assert "This meter pattern does not exist." in str(excinfo.value)
