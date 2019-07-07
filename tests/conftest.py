@@ -37,3 +37,9 @@ def client(app):
 def client_empty_db(app):
     """Set up and tear down a test client with an empty db."""
     yield app.test_client()
+
+
+@pytest.fixture
+def runner(app):
+    """Return a cli test fixture with app context."""
+    return app.test_cli_runner()
