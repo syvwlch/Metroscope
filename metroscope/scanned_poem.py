@@ -104,7 +104,15 @@ def scanned_poem(poem, meter_pattern):
             try:
                 result += rhymes[rp] + "</td>\n"
             except KeyError:
-                rhymes.update({rp: ascii_uppercase[len(rhymes)-1]})
+                index = len(rhymes)-1
+                num_ascii = len(ascii_uppercase)
+                letter = ascii_uppercase[index % num_ascii]
+                modifier = index // num_ascii
+                if modifier == 0:
+                    modifier = ""
+                else:
+                    modifier = str(modifier)
+                rhymes.update({rp: (letter + modifier)})
                 result += rhymes[rp] + "</td>\n"
             result += "</tr>\n<tr>"
     result += "</tr>\n</table>"
