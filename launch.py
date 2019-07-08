@@ -1,13 +1,9 @@
 """Create the flask app from the factory in the run package."""
 
 import os
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, upgrade
-from flask_bootstrap import Bootstrap
-from run import create_app
+from run import create_app, db
 
-db = SQLAlchemy()
-bootstrap = Bootstrap()
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(app, db)

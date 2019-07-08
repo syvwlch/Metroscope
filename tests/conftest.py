@@ -1,7 +1,6 @@
 """Configure shared resources for entire test suite."""
 
 import pytest
-from run.models import reset_db
 
 
 @pytest.fixture
@@ -29,7 +28,11 @@ def app():
 @pytest.fixture
 def client(app):
     """Set up and tear down a test client with some samples in the db."""
-    reset_db()
+    from run.models import Meter, Poet, Poem
+
+    Meter.insert_samples()
+    Poet.insert_samples()
+    Poem.insert_samples()
     yield app.test_client()
 
 

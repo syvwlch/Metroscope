@@ -1,7 +1,6 @@
 """Database models for the site."""
 
 from run import db
-from metroscope import scanned_poem
 
 
 class Meter(db.Model):
@@ -100,6 +99,7 @@ class Poem(db.Model):
 
         Idempotent.
         """
+        from metroscope import scanned_poem
         POEMS = [
             {
                 'title': 'Ode on Indolence',
@@ -159,6 +159,9 @@ class Poem(db.Model):
 
 def reset_db():
     """Insert sample poems into the database."""
+    from flask_migrate import upgrade
+    upgrade()
+
     Meter.insert_samples()
     Poet.insert_samples()
     Poem.insert_samples()
