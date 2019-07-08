@@ -1,7 +1,6 @@
 """Database models for the site."""
 
 from run import db
-from metroscope import scanned_poem
 
 
 class Meter(db.Model):
@@ -100,6 +99,7 @@ class Poem(db.Model):
 
         Idempotent.
         """
+        from metroscope import scanned_poem
         POEMS = [
             {
                 'title': 'Ode on Indolence',

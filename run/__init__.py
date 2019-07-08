@@ -1,13 +1,13 @@
 """Set up the application factory for the site."""
 
-import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, upgrade
+from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from config import config
 
 db = SQLAlchemy()
+migrate = Migrate()
 bootstrap = Bootstrap()
 
 
@@ -18,39 +18,10 @@ def create_app(config_name):
     config[config_name].init_app(app)
 
     db.init_app(app)
+    migrate.init_app(app, db)
     bootstrap.init_app(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
     return app
-
-
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
-migrate = Migrate(app, db)
-
-
-@app.shell_context_processor
-def make_shell_context():
-    """Add a shell context processor."""
-    from run.models import Meter, Poet, Poem, reset_db
-    return dict(db=db,
-                Meter=Meter,
-                Poet=Poet,
-                Poem=Poem,
-                reset_db=reset_db,
-                )
-
-
-@app.cli.command()
-def deploy():
-    """Run the (idempotent) deployment tasks."""
-    from .models import Meter, Poet, Poem
-
-    # Migrate the database to the latest revision
-    upgrade()
-
-    # create or update the sample meters, poets, and poems
-    Meter.insert_samples()
-    Poet.insert_samples()
-    Poem.insert_samples()

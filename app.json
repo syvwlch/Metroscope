@@ -10,14 +10,22 @@
     },
       "FLASK_DEBUG": {
         "required": true
-    }
+    },
+      "SECRET_KEY": {
+        "required": true
+    },
+      "DATABASE_URL": {
+        "required": true
+      }
   },
   "formation": {
     "web": {
       "quantity": 1
     }
   },
-  "addons": [],
+  "addons": [
+      "heroku-postgresql:hobby-dev"
+  ],
   "buildpacks": [
     {
       "url": "heroku/python"

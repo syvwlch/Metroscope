@@ -1,13 +1,27 @@
 """Test the added flask CLI commands."""
 
-from run import db, make_shell_context
-from run.models import Meter, Poet, Poem
+from launch import make_shell_context, samples_command
 
 
-def test_make_shell_context():
+def test_make_shell_context(app):
     """Check the shell context processor adds the right objects."""
     context = make_shell_context()
-    assert context['db'] == db
-    assert context['Meter'] == Meter
-    assert context['Poet'] == Poet
-    assert context['Poem'] == Poem
+    assert 'db' in context
+    assert 'Meter' in context
+    assert 'Poet' in context
+    assert 'Poem' in context
+    assert 'reset_db' in context
+
+
+def test_samples(runner):
+    """Check that the samples CLI command works."""
+    # invoke the command directly
+    result = runner.invoke(samples_command)
+    assert result.exit_code == 0
+    assert 'Adding meter ' in result.output
+    assert 'Adding poet ' in result.output
+    assert 'Adding poem ' in result.output
+
+    # can't seem to invoke by name with runner.invoke(args=['deploy'])
+    # because the cli command gets added after app creation
+    # so I'd have to add it to the app fixture, which defeats the purpose.

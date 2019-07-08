@@ -3,7 +3,7 @@
 import os
 from flask import render_template, redirect, url_for
 from . import main
-from .. import db, upgrade
+from .. import db
 from ..models import Poem, reset_db
 
 import markdown
@@ -53,6 +53,5 @@ def poem(keyword):
 @main.route("/reset")
 def reset():
     """Define the reset route."""
-    upgrade()
     reset_db()
     return redirect(url_for('.home'))
