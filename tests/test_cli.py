@@ -1,6 +1,6 @@
 """Test the added flask CLI commands."""
 
-from launch import make_shell_context, deploy_command
+from launch import make_shell_context, samples_command
 
 
 def test_make_shell_context(app):
@@ -13,12 +13,11 @@ def test_make_shell_context(app):
     assert 'reset_db' in context
 
 
-def test_deploy(runner):
-    """Check that the deploy CLI command works."""
+def test_samples(runner):
+    """Check that the samples CLI command works."""
     # invoke the command directly
-    result = runner.invoke(deploy_command)
+    result = runner.invoke(samples_command)
     assert result.exit_code == 0
-    assert 'INFO  [alembic.runtime.migration]' in result.output
     assert 'Adding meter ' in result.output
     assert 'Adding poet ' in result.output
     assert 'Adding poem ' in result.output

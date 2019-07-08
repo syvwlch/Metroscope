@@ -159,9 +159,6 @@ class Poem(db.Model):
 
 def reset_db():
     """Insert sample poems into the database."""
-    from flask_migrate import upgrade
-    upgrade()
-
     Meter.insert_samples()
     Poet.insert_samples()
     Poem.insert_samples()

@@ -7,15 +7,14 @@ import pytest
 def app():
     """Set up and tear down the test app."""
     from run import create_app, db
-    from flask_migrate import Migrate
 
     app = create_app('testing')
-    Migrate(app, db)
 
     app.config['TESTING'] = True
 
     app_context = app.app_context()
     app_context.push()
+
     db.create_all()
 
     yield app
