@@ -5,12 +5,19 @@
 {% endblock title %}
 
 {% block page_content %}
-    <h1>Metroscope</h1>
+    <h1>
+    Hello
+    {% if current_user.is_authenticated %}
+        {{ current_user.display_name }}!
+    {% else %}
+        lover of Poesy!
+    {% endif %}
+    </h1>
     {% if poems == [] %}
         <h2>Sorry, no poems in the database!</h2>
         <p>Click <a href="{{ url_for('main.add_samples') }}">here</a> to load some samples!</p>
     {% else %}
-        <p>Choose a poem from the list below:</p>
+        <h2>Choose a poem from the list below:</h2>
         {% for poem in poems %}
             <li><a href="{{ url_for('main.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
         {% endfor %}
