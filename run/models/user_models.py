@@ -1,5 +1,7 @@
 """Database models for the users of the site."""
 
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 from run import db
 
 
@@ -16,15 +18,16 @@ class Role(db.Model):
         return f"<Role '{self.name}'>"
 
     @staticmethod
-    def insert_samples():
+    def insert_roles():
         """
-        Insert some sample roles into the database.
+        Insert roles into the database.
 
         Idempotent.
         """
         ROLES = [
             {'name': 'Contributor'},
-            {'name': 'Editor'}
+            {'name': 'Editor'},
+            {'name': 'Admin'},
         ]
         needs_commit = False
         for role in ROLES:
@@ -46,48 +49,55 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, nullable=False)
     display_name = db.Column(db.String(64), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __repr__(self):
         """Represent the class."""
         return f"<User '{self.display_name}'>"
 
+    @property
+    def password(self):
+        """Block attempts to read password."""
+        raise AttributeError('Password is not a readable attribute.')
+
+    @password.setter
+    def password(self, password):
+        """Generate the hash of the password."""
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        """Compare the password against the stored hash."""
+        return check_password_hash(self.password_hash, password)
+
     @staticmethod
-    def insert_samples():
+    def insert_admin():
         """
-        Insert some sample users into the database.
+        Insert the admin user into the database.
 
         Idempotent.
         """
-        USERS = [
-            {
-                'email': 'john.doe@test.org',
-                'display_name': 'John Doe',
-                'role': 'Contributor',
-            },
-            {
-                'email': 'admin@metro.scope',
-                'display_name': 'Ye Olde Admin',
-                'role': 'Editor',
-            },
-        ]
+        from flask import current_app
+
         needs_commit = False
-        for user in USERS:
-            if Role.query.filter_by(name=user['role']).first() is None:
-                raise ValueError('This role does not exist.')
-            email = user['email']
-            display_name = user['display_name']
-            if User.query.filter_by(email=email).first() is None:
-                role = Role.query.filter_by(name=user['role']).first()
-                db.session.add(
-                    User(
-                        email=email,
-                        display_name=display_name,
-                        role_id=role.id,
-                    )
+        email = current_app.config['ADMIN_EMAIL']
+        display_name = 'Admin'
+        role = 'Admin'
+        password = current_app.config['ADMIN_PASSWORD']
+
+        if Role.query.filter_by(name=role).first() is None:
+            raise ValueError('This role does not exist.')
+        if User.query.filter_by(email=email).first() is None:
+            role = Role.query.filter_by(name=role).first()
+            admin = User(
+                    email=email,
+                    display_name=display_name,
+                    role_id=role.id,
                 )
-                print(f"Adding user '{display_name}' to database.")
-                needs_commit = True
+            admin.password = password
+            db.session.add(admin)
+            print(f"Adding user '{display_name}' to database.")
+            needs_commit = True
         if needs_commit:
             db.session.commit()
             print("Changes committed.")

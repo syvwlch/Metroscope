@@ -3,6 +3,7 @@ samples/copyrighted/
 
 # my databases
 *.sqlite
+*.sqlite.bak
 
 # MacOS system files
 *.DS_Store

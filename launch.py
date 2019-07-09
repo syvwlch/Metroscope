@@ -35,6 +35,6 @@ def samples_command():
 def add_admin_command():
     """Inject the admin user idempotently."""
     from run.models import Role, User
-    # create or update the sample roles and users
-    Role.insert_samples()
-    User.insert_samples()
+    # create or update the roles and the admin user
+    Role.insert_roles()
+    User.insert_admin()
