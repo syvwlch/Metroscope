@@ -1,6 +1,8 @@
 {
   "name": "Metroscope",
-  "scripts": {},
+  "scripts": {
+    "postdeploy": "flask add_admin"
+  },
   "env": {
       "FLASK_APP": {
         "required": true
