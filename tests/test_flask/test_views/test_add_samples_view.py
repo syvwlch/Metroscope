@@ -7,7 +7,8 @@ def test_dropped_db(client):
     db.drop_all()
     assert b'Sorry' in client.get('/').data
     assert "404" in client.get('/poem/Flea').status
-    # /reset route causes server error when db has no tables
+    # /add_samples route should not cause server error when db has no tables
+    assert "404" in client.get('/add_samples').status
 
 
 def test_add_samples_route(client_empty_db):
