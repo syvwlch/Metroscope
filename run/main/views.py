@@ -4,7 +4,7 @@ import os
 from flask import render_template, redirect, url_for
 from . import main
 from .. import db
-from ..models import Poem, reset_db
+from ..models import Meter, Poet, Poem
 
 import markdown
 
@@ -50,8 +50,13 @@ def poem(keyword):
                            poem=poem.HTML)
 
 
-@main.route("/reset")
-def reset():
-    """Define the reset route."""
-    reset_db()
+@main.route("/add_samples")
+def add_samples():
+    """Define the add_samples route."""
+    try:
+        Meter.insert_samples()
+        Poet.insert_samples()
+        Poem.insert_samples()
+    except Exception:
+        return render_template('404.html'), 404
     return redirect(url_for('.home'))

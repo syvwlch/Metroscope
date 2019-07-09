@@ -10,7 +10,8 @@ def test_make_shell_context(app):
     assert 'Meter' in context
     assert 'Poet' in context
     assert 'Poem' in context
-    assert 'reset_db' in context
+    assert 'Role' in context
+    assert 'User' in context
 
 
 def test_samples(runner):

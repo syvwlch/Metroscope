@@ -8,7 +8,7 @@
     <h1>Metroscope</h1>
     {% if poems == [] %}
         <h2>Sorry, no poems in the database!</h2>
-        <p>Click <a href="{{ url_for('main.reset') }}">here</a> to load some samples!</p>
+        <p>Click <a href="{{ url_for('main.add_samples') }}">here</a> to load some samples!</p>
     {% else %}
         <p>Choose a poem from the list below:</p>
         {% for poem in poems %}

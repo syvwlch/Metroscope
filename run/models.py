@@ -245,10 +245,3 @@ class User(db.Model):
         if needs_commit:
             db.session.commit()
             print("Changes committed.")
-
-
-def reset_db():
-    """Insert sample poems into the database."""
-    Meter.insert_samples()
-    Poet.insert_samples()
-    Poem.insert_samples()

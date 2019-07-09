@@ -10,13 +10,14 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 @app.shell_context_processor
 def make_shell_context():
     """Add a shell context processor."""
-    from run.models import Meter, Poet, Poem, reset_db
+    from run.models import Meter, Poet, Poem, Role, User
     return dict(
                 db=db,
                 Meter=Meter,
                 Poet=Poet,
                 Poem=Poem,
-                reset_db=reset_db,
+                Role=Role,
+                User=User,
                 )
 
 
