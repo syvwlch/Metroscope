@@ -1,4 +1,4 @@
-"""Test the site's database."""
+"""Test the site's database configuration."""
 from flask import current_app
 from run import db
 
