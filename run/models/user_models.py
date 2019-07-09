@@ -2,7 +2,8 @@
 
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-from run import db
+from flask_login import UserMixin
+from run import db, login_manager
 
 
 class Role(db.Model):
@@ -42,7 +43,7 @@ class Role(db.Model):
             print("Changes committed.")
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """Define the users table."""
 
     __tablename__ = 'users'
@@ -101,3 +102,8 @@ class User(db.Model):
         if needs_commit:
             db.session.commit()
             print("Changes committed.")
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
