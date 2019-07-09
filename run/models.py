@@ -248,10 +248,7 @@ class User(db.Model):
 
 
 def reset_db():
-    """Insert samples into the database."""
+    """Insert sample poems into the database."""
     Meter.insert_samples()
     Poet.insert_samples()
     Poem.insert_samples()
-
-    Role.insert_samples()
-    User.insert_samples()

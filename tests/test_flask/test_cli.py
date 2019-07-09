@@ -1,6 +1,6 @@
 """Test the added flask CLI commands."""
 
-from launch import make_shell_context, samples_command
+from launch import make_shell_context, samples_command, add_admin_command
 
 
 def test_make_shell_context(app):
@@ -14,7 +14,7 @@ def test_make_shell_context(app):
 
 
 def test_samples(runner):
-    """Check that the samples CLI command works."""
+    """Check that the `samples` CLI command works."""
     # invoke the command directly
     result = runner.invoke(samples_command)
     assert result.exit_code == 0
@@ -22,6 +22,11 @@ def test_samples(runner):
     assert 'Adding poet ' in result.output
     assert 'Adding poem ' in result.output
 
-    # can't seem to invoke by name with runner.invoke(args=['deploy'])
-    # because the cli command gets added after app creation
-    # so I'd have to add it to the app fixture, which defeats the purpose.
+
+def test_add_admin(runner):
+    """Check that the `add_admin` CLI command works."""
+    # invoke the command directly
+    result = runner.invoke(add_admin_command)
+    assert result.exit_code == 0
+    assert 'Adding role ' in result.output
+    assert 'Adding user ' in result.output

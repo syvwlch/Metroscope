@@ -22,9 +22,18 @@ def make_shell_context():
 
 @app.cli.command('samples')
 def samples_command():
-    """Inject the samples idempotently."""
+    """Inject the sample poems idempotently."""
     from run.models import Meter, Poet, Poem
     # create or update the sample meters, poets, and poems
     Meter.insert_samples()
     Poet.insert_samples()
     Poem.insert_samples()
+
+
+@app.cli.command('add_admin')
+def add_admin_command():
+    """Inject the admin user idempotently."""
+    from run.models import Role, User
+    # create or update the sample roles and users
+    Role.insert_samples()
+    User.insert_samples()
