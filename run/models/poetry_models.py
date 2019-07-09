@@ -1,4 +1,4 @@
-"""Database models for the site."""
+"""Database models for the poetry on the site."""
 
 from run import db
 
@@ -41,7 +41,7 @@ class Meter(db.Model):
 
 
 class Poet(db.Model):
-    """Define the Poets table."""
+    """Define the poets table."""
 
     __tablename__ = 'poets'
     id = db.Column(db.Integer, primary_key=True)
@@ -77,7 +77,7 @@ class Poet(db.Model):
 
 
 class Poem(db.Model):
-    """Define the Poems table."""
+    """Define the poems table."""
 
     __tablename__ = 'poems'
     id = db.Column(db.Integer, primary_key=True)
@@ -155,10 +155,3 @@ class Poem(db.Model):
         if needs_commit:
             db.session.commit()
             print("Changes committed.")
-
-
-def reset_db():
-    """Insert sample poems into the database."""
-    Meter.insert_samples()
-    Poet.insert_samples()
-    Poem.insert_samples()

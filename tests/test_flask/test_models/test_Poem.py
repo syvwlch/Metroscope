@@ -1,20 +1,7 @@
-"""Test the database models."""
+"""Test the Poem model."""
 
 import pytest
-from run.models import Meter, Poet, Poem
-
-
-def test_Meter_repr():
-    """Test the __repr__ method."""
-    assert repr(
-        Meter(name='name', pattern='pattern')) == "<Meter 'name'>"
-
-
-def test_Poet_repr():
-    """Test the __repr__ method."""
-    assert repr(
-        Poet(name='name')
-    ) == "<Poet 'name'>"
+from run.models import Poet, Poem
 
 
 def test_Poem_repr():
