@@ -21,6 +21,7 @@ coverage = "*"
 flask-migrate = "*"
 psycopg2 = "*"
 flask-login = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.7"
