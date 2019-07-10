@@ -58,6 +58,18 @@ class User(UserMixin, db.Model):
         return f"<User '{self.display_name}'>"
 
     @property
+    def is_admin(self):
+        """Return True if the user is an admin."""
+        # Temporary implementation until permissions are implemented.
+        role = Role.query.filter_by(id=self.role_id).first()
+        if role is None:
+            return False
+        elif role.name != "Admin":
+            return False
+        else:
+            return True
+
+    @property
     def password(self):
         """Block attempts to read password."""
         raise AttributeError('Password is not a readable attribute.')
@@ -83,25 +95,29 @@ class User(UserMixin, db.Model):
         needs_commit = False
         email = current_app.config['ADMIN_EMAIL']
         display_name = 'Admin'
-        role = 'Admin'
+        role_name = 'Admin'
         password = current_app.config['ADMIN_PASSWORD']
 
-        if Role.query.filter_by(name=role).first() is None:
-            raise ValueError('This role does not exist.')
-        if User.query.filter_by(email=email).first() is None:
-            role = Role.query.filter_by(name=role).first()
+        role = Role.query.filter_by(name=role_name).first()
+        if role is None:
+            raise ValueError(f'The {role_name} role does not exist.')
+        if User.query.filter_by(role_id=role.id).first() is None:
             admin = User(
                     email=email,
                     display_name=display_name,
                     role_id=role.id,
+                    password=password,
                 )
-            admin.password = password
             db.session.add(admin)
-            print(f"Adding user '{display_name}' to database.")
+            print(f"Adding user {email} with the {role} role.")
             needs_commit = True
+        else:
+            print(f'A user with the {role} role already exists.')
         if needs_commit:
             db.session.commit()
             print("Changes committed.")
+        # else:
+        #     print('No changes committed.')
 
 
 @login_manager.user_loader
