@@ -14,7 +14,32 @@ def test_User_ValueError(app):
     """Check that insert_admin() raises ValueError if role absent."""
     with pytest.raises(ValueError) as excinfo:
         User.insert_admin()
-    assert "This role does not exist." in str(excinfo.value)
+    assert "The Admin role does not exist." in str(excinfo.value)
+
+
+def test_insert_admin_safe(app):
+    """Check insert_admin does nothing if an admin user already exists."""
+    from run import db
+    from run.models import Role
+    Role.insert_roles()
+    admin_role = Role.query.filter_by(name="Admin").first()
+    db.session.add(User(
+        email="a@b.c",
+        display_name="first_admin",
+        role_id=admin_role.id,
+        )
+    )
+    db.session.commit()
+    # check the baseline before running insert_admin
+    admins = User.query.filter_by(role_id=admin_role.id)
+    assert admins.count() == 1
+    assert admins.first().email == "a@b.c"
+    # insert_admin will now attempt to insert the admin user from env vars
+    # which has a different email address
+    User.insert_admin()
+    admins = User.query.filter_by(role_id=admin_role.id)
+    assert admins.count() == 1
+    assert admins.first().email == "a@b.c"
 
 
 def test_password_setter():
