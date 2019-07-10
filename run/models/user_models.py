@@ -58,6 +58,18 @@ class User(UserMixin, db.Model):
         return f"<User '{self.display_name}'>"
 
     @property
+    def is_admin(self):
+        """Return True if the user is an admin."""
+        # Temporary implementation until permissions are implemented.
+        role = Role.query.filter_by(id=self.role_id).first()
+        if role is None:
+            return False
+        elif role.name != "Admin":
+            return False
+        else:
+            return True
+
+    @property
     def password(self):
         """Block attempts to read password."""
         raise AttributeError('Password is not a readable attribute.')

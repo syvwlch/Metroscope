@@ -42,6 +42,24 @@ def test_insert_admin_safe(app):
     assert admins.first().email == "a@b.c"
 
 
+def test_is_admin(app):
+    """Check the is_admin property."""
+    from run.models import Role
+
+    Role.insert_roles()
+    User.insert_admin()
+    admin_role = Role.query.filter_by(name="Admin").first()
+    admin = User.query.filter_by(role_id=admin_role.id).first()
+    assert admin.is_admin
+
+    non_admin_role = Role.query.filter_by(name="Contributor").first()
+    admin.role_id = non_admin_role.id
+    assert not admin.is_admin
+
+    admin.role_id = None
+    assert not admin.is_admin
+
+
 def test_password_setter():
     """Check setting the password stores a hash."""
     u = User(password='cat')
