@@ -27,6 +27,7 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
+    """Define the logout route."""
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.home'))
@@ -34,6 +35,7 @@ def logout():
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
+    """Define the user registration route."""
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(email=form.email.data,
@@ -49,6 +51,7 @@ def register():
 @auth.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
+    """Define the change password route."""
     form = ChangePasswordForm()
     if form.validate_on_submit():
         if current_user.verify_password(form.old_password.data):
@@ -60,3 +63,14 @@ def change_password():
         else:
             flash('Invalid password.')
     return render_template("auth/change_password.html", form=form)
+
+
+@auth.route('/admin')
+@login_required
+def admin():
+    """Define the user admin route."""
+    if not current_user.is_admin:
+        flash('You must be an admin to access this page.')
+        return redirect(url_for('main.home'))
+    users = User.query.all()
+    return render_template("auth/admin.html", users=users)
