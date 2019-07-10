@@ -94,8 +94,8 @@ class User(UserMixin, db.Model):
                     email=email,
                     display_name=display_name,
                     role_id=role.id,
+                    password=password,
                 )
-            admin.password = password
             db.session.add(admin)
             print(f"Adding user {email} with the {role} role.")
             needs_commit = True
