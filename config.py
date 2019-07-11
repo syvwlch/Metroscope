@@ -10,7 +10,6 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL') or 'admin@metro.scope'
-    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'password'
     RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY') or None
     RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY') or None
 
