@@ -2,8 +2,16 @@
 
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-from flask_login import UserMixin
+from flask import current_app
+from flask_login import UserMixin, AnonymousUserMixin
 from run import db, login_manager
+
+
+class Permission:
+    ADMIN = 1
+    ADD_POEM = 2
+    ADD_METER = 4
+    CHANGE_METER = 8
 
 
 class Role(db.Model):
@@ -12,11 +20,32 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
+    default = db.Column(db.Boolean, default='False', index=True)
     users = db.relationship('User', backref='role', lazy='dynamic')
+    permissions = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        super(Role, self).__init__(**kwargs)
+        if self.permissions is None:
+            self.permissions = 0
 
     def __repr__(self):
         """Represent the class."""
         return f"<Role '{self.name}'>"
+
+    def add_permission(self, perm):
+        if not self.has_permission(perm):
+            self.permissions += perm
+
+    def remove_permission(self, perm):
+        if self.has_permission(perm):
+            self.permissions -= perm
+
+    def reset_permissions(self):
+        self.permissions = 0
+
+    def has_permission(self, perm):
+        return self.permissions & perm == perm
 
     @staticmethod
     def insert_roles():
@@ -25,22 +54,36 @@ class Role(db.Model):
 
         Idempotent.
         """
-        ROLES = [
-            {'name': 'Contributor'},
-            {'name': 'Editor'},
-            {'name': 'Admin'},
-        ]
-        needs_commit = False
-        for role in ROLES:
-            if Role.query.filter_by(name=role['name']).first() is None:
-                db.session.add(
-                    Role(name=role['name'])
-                )
-                print(f"Adding role '{role['name']}' to database.")
-                needs_commit = True
-        if needs_commit:
-            db.session.commit()
-            print("Changes committed.")
+        ROLES = {
+            'Contributor': [
+                Permission.CHANGE_METER
+            ],
+            'Editor': [
+                Permission.CHANGE_METER,
+                Permission.ADD_METER,
+                Permission.ADD_POEM,
+            ],
+            'Admin': [
+                Permission.CHANGE_METER,
+                Permission.ADD_METER,
+                Permission.ADD_POEM,
+                Permission.ADMIN,
+            ],
+        }
+        default_role = 'Contributor'
+        for r in ROLES:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+                print(f"Creating role '{r}'.")
+            role.reset_permissions()
+            for perm in ROLES[r]:
+                role.add_permission(perm)
+            print(f"Resetting permissions for role '{r}'.")
+            role.default = (role.name == default_role)
+            db.session.add(role)
+        db.session.commit()
+        print("Changes committed.")
 
 
 class User(UserMixin, db.Model):
@@ -53,21 +96,23 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if self.role is None:
+            if self.email == current_app.config['ADMIN_EMAIL']:
+                self.role = Role.query.filter_by(name='Admin').first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
+
     def __repr__(self):
         """Represent the class."""
         return f"<User '{self.display_name}'>"
 
-    @property
+    def can(self, perm):
+        return self.role is not None and self.role.has_permission(perm)
+
     def is_admin(self):
-        """Return True if the user is an admin."""
-        # Temporary implementation until permissions are implemented.
-        role = Role.query.filter_by(id=self.role_id).first()
-        if role is None:
-            return False
-        elif role.name != "Admin":
-            return False
-        else:
-            return True
+        return self.can(Permission.ADMIN)
 
     @property
     def password(self):
@@ -83,41 +128,16 @@ class User(UserMixin, db.Model):
         """Compare the password against the stored hash."""
         return check_password_hash(self.password_hash, password)
 
-    @staticmethod
-    def insert_admin():
-        """
-        Insert the admin user into the database.
 
-        Idempotent.
-        """
-        from flask import current_app
+class AnonymousUser(AnonymousUserMixin):
+    def can(self, perm):
+        return False
 
-        needs_commit = False
-        email = current_app.config['ADMIN_EMAIL']
-        display_name = 'Admin'
-        role_name = 'Admin'
-        password = current_app.config['ADMIN_PASSWORD']
+    def is_admin(self):
+        return False
 
-        role = Role.query.filter_by(name=role_name).first()
-        if role is None:
-            raise ValueError(f'The {role_name} role does not exist.')
-        if User.query.filter_by(role_id=role.id).first() is None:
-            admin = User(
-                    email=email,
-                    display_name=display_name,
-                    role_id=role.id,
-                    password=password,
-                )
-            db.session.add(admin)
-            print(f"Adding user {email} with the {role} role.")
-            needs_commit = True
-        else:
-            print(f'A user with the {role} role already exists.')
-        if needs_commit:
-            db.session.commit()
-            print("Changes committed.")
-        # else:
-        #     print('No changes committed.')
+
+login_manager.anonymous_user = AnonymousUser
 
 
 @login_manager.user_loader

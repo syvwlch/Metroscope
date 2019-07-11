@@ -31,10 +31,9 @@ def samples_command():
     Poem.insert_samples()
 
 
-@app.cli.command('add_admin')
-def add_admin_command():
-    """Inject the admin user idempotently."""
-    from run.models import Role, User
-    # create or update the roles and the admin user
+@app.cli.command('insert_roles')
+def insert_roles_command():
+    """Inject the roles idempotently."""
+    from run.models import Role
+    # create or update the roles
     Role.insert_roles()
-    User.insert_admin()

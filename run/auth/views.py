@@ -4,13 +4,16 @@ from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from run import db
 from . import auth
-from ..models import User
+from ..models import User, Role
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm
+from ..decorators import admin_required
 
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     """Define the login route."""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -67,10 +70,9 @@ def change_password():
 
 @auth.route('/admin')
 @login_required
+@admin_required
 def admin():
     """Define the user admin route."""
-    if not current_user.is_admin:
-        flash('You must be an admin to access this page.')
-        return redirect(url_for('main.home'))
     users = User.query.all()
-    return render_template("auth/admin.html", users=users)
+    roles = Role.query.all()
+    return render_template("auth/admin.html", users=users, roles=roles)
