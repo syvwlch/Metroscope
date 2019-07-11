@@ -1,7 +1,7 @@
 """Test the User model."""
 
 import pytest
-from run.models import User
+from run.models import User, AnonymousUser, Permission
 
 
 def test_User_repr(app):
@@ -36,3 +36,26 @@ def test_password_salts_are_random(app):
     u = User(password='cat')
     u2 = User(password='cat')
     assert u.password_hash != u2.password_hash
+
+
+def test_default_user_permissions(app):
+    from run.models import Role
+    Role.insert_roles()
+    u = User(
+        email='john@example.com',
+        display_name='John',
+        password='cat',
+    )
+    assert u.role.default
+    assert not u.can(Permission.ADMIN)
+    assert not u.can(Permission.ADD_POEM)
+    assert not u.can(Permission.ADD_METER)
+    assert u.can(Permission.CHANGE_METER)
+
+
+def test_anonymous_user_permissions(app):
+    u = AnonymousUser()
+    assert not u.can(Permission.ADMIN)
+    assert not u.can(Permission.ADD_POEM)
+    assert not u.can(Permission.ADD_METER)
+    assert not u.can(Permission.CHANGE_METER)
