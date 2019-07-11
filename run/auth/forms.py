@@ -1,6 +1,6 @@
 """Define the forms for the auth blueprint."""
 
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from ..models import User
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms import ValidationError
@@ -32,6 +32,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])
+    recaptcha = RecaptchaField()
     submit = SubmitField('Register')
 
     def validate_email(self, field):
