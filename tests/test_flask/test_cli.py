@@ -1,6 +1,6 @@
 """Test the added flask CLI commands."""
 
-from launch import make_shell_context, samples_command, add_admin_command
+from launch import make_shell_context, samples_command, insert_roles_command
 
 
 def test_make_shell_context(app):
@@ -24,10 +24,10 @@ def test_samples(runner):
     assert 'Adding poem ' in result.output
 
 
-def test_add_admin(runner):
-    """Check that the `add_admin` CLI command works."""
+def test_insert_roles(runner):
+    """Check that the `insert_roles` CLI command works."""
     # invoke the command directly
-    result = runner.invoke(add_admin_command)
+    result = runner.invoke(insert_roles_command)
     assert result.exit_code == 0
-    assert 'Adding role ' in result.output
-    assert 'Adding user ' in result.output
+    assert 'Creating role ' in result.output
+    assert 'Resetting permissions for role ' in result.output

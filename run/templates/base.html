@@ -41,7 +41,7 @@
                 {% else %}
                 <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
                 {% endif %}
-                {% if current_user.is_admin %}
+                {% if current_user.is_admin() %}
                 <li><a href="{{ url_for('auth.admin') }}">Manage Users</a></li>
                 {% endif %}
             </ul>
