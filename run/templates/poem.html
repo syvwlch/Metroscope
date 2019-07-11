@@ -7,6 +7,9 @@
 {% block page_content %}
     <h1>{{ title }}</h1>
     <p>- by {{ poet }}, scanned in {{ meter }}.</p>
+    {% if current_user.can(Permission.CHANGE_METER) %}
+        <p>You will soon be able to change the meter on this page!</p>
+    {% endif %}
     {{ poem|safe }}
 {% endblock page_content %}
 
