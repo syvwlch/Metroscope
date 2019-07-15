@@ -37,7 +37,8 @@ def test_Poem_insert_samples(app):
     Poem.insert_samples()
     assert Poem.query.first() is not None
 
-    for poem in Poem.query.all():
+    poems = Poem.query.all()
+    for poem in poems:
         assert isinstance(poem.title, str)
         assert isinstance(poem.keyword, str)
         assert isinstance(poem.raw_text, str)
@@ -45,10 +46,6 @@ def test_Poem_insert_samples(app):
         assert isinstance(poem.author, Poet)
         assert isinstance(poem.meter, Meter)
 
-    for meter in Meter.query.all():
-        for poem in meter.poems:
-            assert isinstance(poem, Poem)
-
-    for poet in Poet.query.all():
-        for poem in poet.poems:
-            assert isinstance(poem, Poem)
+    Poem.insert_samples()
+    # Check the operation is idempotent
+    assert poems == Poem.query.all()
