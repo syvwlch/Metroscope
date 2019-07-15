@@ -11,7 +11,6 @@ def test_Role_repr():
 
 def test_insert_roles_idempotent(app):
     """Check insert_roles is idempotent."""
-    from run.models import Role
     Role.insert_roles()
     roles = Role.query.all()
     Role.insert_roles()
