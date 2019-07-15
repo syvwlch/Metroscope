@@ -31,13 +31,24 @@ def test_Poem_ValueError(app):
 def test_Poem_insert_samples(app):
     """Test the insert_samples static method of Poem."""
     assert Poem.query.first() is None
+
     Meter.insert_samples()
     Poet.insert_samples()
     Poem.insert_samples()
     assert Poem.query.first() is not None
+
     for poem in Poem.query.all():
         assert isinstance(poem.title, str)
         assert isinstance(poem.keyword, str)
         assert isinstance(poem.raw_text, str)
+        assert isinstance(poem.HTML, str)
         assert isinstance(poem.author, Poet)
         assert isinstance(poem.meter, Meter)
+
+    for meter in Meter.query.all():
+        for poem in meter.poems:
+            assert isinstance(poem, Poem)
+
+    for poet in Poet.query.all():
+        for poem in poet.poems:
+            assert isinstance(poem, Poem)
