@@ -1,6 +1,6 @@
 """Test the Role model."""
 
-from run.models import Role
+from run.models import Role, Permission
 
 
 def test_Role_repr():
@@ -61,3 +61,22 @@ def test_Role_relationship_User(app):
         for user in role.users:
             assert isinstance(user, User)
             assert role == user.role
+
+
+def test_role_permissions():
+    """Check permissions methods."""
+    role = Role(name='new role')
+    assert not role.has_permission(Permission.ADMIN)
+    assert not role.has_permission(Permission.ADD_POEM)
+    role.add_permission(Permission.ADMIN)
+    assert role.has_permission(Permission.ADMIN)
+    assert not role.has_permission(Permission.ADD_POEM)
+    role.add_permission(Permission.ADD_POEM)
+    assert role.has_permission(Permission.ADMIN)
+    assert role.has_permission(Permission.ADD_POEM)
+    role.remove_permission(Permission.ADMIN)
+    assert not role.has_permission(Permission.ADMIN)
+    assert role.has_permission(Permission.ADD_POEM)
+    role.reset_permissions()
+    assert not role.has_permission(Permission.ADMIN)
+    assert not role.has_permission(Permission.ADD_POEM)
