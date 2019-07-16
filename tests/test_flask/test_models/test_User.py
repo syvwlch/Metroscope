@@ -63,6 +63,9 @@ def test_password_reset(app):
     token = u.generate_reset_token()
     assert User.reset_password(token, 'dog')
     assert u.verify_password('dog')
+    db.session.delete(u)
+    db.session.commit()
+    assert not User.reset_password(token, 'dog')
 
 
 def test_default_user_permissions(app):
