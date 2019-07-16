@@ -89,23 +89,36 @@ def test_anonymous_user_permissions(app):
     assert not u.can(Permission.ADD_POEM)
     assert not u.can(Permission.ADD_METER)
     assert not u.can(Permission.CHANGE_METER)
+    assert not u.is_admin()
 
 
 def test_admin_user_permissions(app):
     from run.models import Role
     Role.insert_roles()
-    ADMIN_EMAIL = app.config['ADMIN_EMAIL']
+    admin_role = Role.query.filter_by(name='Admin').first()
     u = User(
-        email=ADMIN_EMAIL,
+        email='john@example.com',
         display_name='John',
         password='cat',
+        role=admin_role,
     )
 
     assert u.role.name == 'Admin'
+    assert u.is_admin()
 
     assert u.can(Permission.ADMIN)
     assert u.can(Permission.ADD_POEM)
     assert u.can(Permission.ADD_METER)
     assert u.can(Permission.CHANGE_METER)
+
+
+def test_ADMIN_EMAIL(app):
+    from run.models import Role
+    Role.insert_roles()
+    u = User(
+        email=app.config['ADMIN_EMAIL'],
+        display_name='John',
+        password='cat',
+    )
 
     assert u.is_admin()
