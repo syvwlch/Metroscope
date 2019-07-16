@@ -63,14 +63,15 @@ def test_Role_relationship_User(app):
             assert role == user.role
 
 
-def test_role_permissions():
+def test_role_permissions_init():
     """Check permissions methods."""
     role = Role(name='new role')
     assert not role.has_permission(Permission.ADMIN)
     assert not role.has_permission(Permission.ADD_POEM)
-    role.add_permission(Permission.ADMIN)
+    role = Role(name='new role', permissions=Permission.ADMIN)
     assert role.has_permission(Permission.ADMIN)
     assert not role.has_permission(Permission.ADD_POEM)
+    role.add_permission(Permission.ADMIN)
     role.add_permission(Permission.ADD_POEM)
     assert role.has_permission(Permission.ADMIN)
     assert role.has_permission(Permission.ADD_POEM)
@@ -80,3 +81,5 @@ def test_role_permissions():
     role.reset_permissions()
     assert not role.has_permission(Permission.ADMIN)
     assert not role.has_permission(Permission.ADD_POEM)
+    role.remove_permission(Permission.ADMIN)
+    assert not role.has_permission(Permission.ADMIN)
