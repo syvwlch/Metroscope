@@ -1,7 +1,6 @@
 """The module that generates the HTML for a poem."""
 
 from metroscope import LineBuilder
-from string import ascii_uppercase
 
 
 CUSTOM_DICT = {
@@ -71,6 +70,24 @@ CUSTOM_DICT = {
               }
 
 
+def rhyme_designator(index):
+    """
+    Returns a string with an uppercase letter and a modifier.
+
+    The modifier indicates how many times around the alphabet the index has
+    gone, e.g. for index = 27, the string is A'.
+    """
+    from string import ascii_uppercase
+    num = len(ascii_uppercase)
+    letter = ascii_uppercase[index % num]
+    modifier = index // num
+    if modifier == 0:
+        modifier = ""
+    else:
+        modifier = str(modifier)
+    return letter + modifier
+
+
 def scanned_poem(poem, meter_pattern):
     """
     Create HTML with the scanned poem.
@@ -78,9 +95,6 @@ def scanned_poem(poem, meter_pattern):
     Wrap the poem in a <table> tag, each line in a <tr> tag,
     and the stressed line & its rhyme each in their own <td>.
     """
-    # meter_pattern = []
-    # for beat in meter:
-    #     meter_pattern.append(beat == '1')
 
     lines = []
     for line in poem.split("\n"):
@@ -105,14 +119,7 @@ def scanned_poem(poem, meter_pattern):
                 result += rhymes[rp] + "</td>\n"
             except KeyError:
                 index = len(rhymes)-1
-                num_ascii = len(ascii_uppercase)
-                letter = ascii_uppercase[index % num_ascii]
-                modifier = index // num_ascii
-                if modifier == 0:
-                    modifier = ""
-                else:
-                    modifier = str(modifier)
-                rhymes.update({rp: (letter + modifier)})
+                rhymes.update({rp: rhyme_designator(index)})
                 result += rhymes[rp] + "</td>\n"
             result += "</tr>\n<tr>"
     result += "</tr>\n</table>"
