@@ -1,5 +1,7 @@
 """Test the login view using flask's test_client()."""
 
+from flask_login import current_user
+
 
 def test_200(client):
     """Check the login view should always return a 200."""
@@ -8,8 +10,6 @@ def test_200(client):
 
 def test_login_user(client, auth):
     """Check the login user route authenticates the user."""
-    from flask_login import current_user
-
     with client:
         auth.register()
         assert not current_user.is_authenticated
@@ -26,6 +26,16 @@ def test_login_authenticated_user(client, auth):
     with client:
         auth.register()
         auth.login()
-        response = auth.login()
+        response = client.get('/auth/login')
+        assert current_user.is_authenticated
         assert "302" in response.status
         assert url_for('main.home', _external=True) == response.location
+
+
+def test_login_bad_credentials(client, auth):
+    """Check the login user route errors with bad credentials."""
+    with client:
+        response = auth.login()
+        assert not current_user.is_authenticated
+        assert "200" in response.status
+        assert b"Invalid username or password." in response.data
