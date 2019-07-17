@@ -67,7 +67,7 @@ class AuthActions(object):
     ):
         url = '/auth/login'
         if next is not None:
-            url += f'?next="{next}"'
+            url += f'?next={next}'
         return self._client.post(
             url,
             data={

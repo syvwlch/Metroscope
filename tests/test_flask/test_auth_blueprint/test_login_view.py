@@ -47,7 +47,7 @@ def test_login_with_next(client, auth):
     """Check that login obeys the next parameter."""
     with client:
         auth.register(follow_redirects=True)
-        response = auth.login(next=url_for('main.about'))
+        response = auth.login(next="%2Fabout")
         assert current_user.is_authenticated
         assert "302" in response.status
         assert url_for('main.about', _external=True) == response.location
