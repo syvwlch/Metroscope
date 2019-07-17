@@ -1,5 +1,6 @@
 """Test the login view using flask's test_client()."""
 
+from flask import url_for, get_flashed_messages
 from flask_login import current_user
 
 
@@ -11,25 +12,26 @@ def test_200(client):
 def test_login_user(client, auth):
     """Check the login user route authenticates the user."""
     with client:
-        auth.register()
+        auth.register(follow_redirects=True)
         assert not current_user.is_authenticated
 
         response = auth.login()
         assert current_user.is_authenticated
         assert "302" in response.status
-        assert b"Invalid username or password." not in response.data
+        assert url_for('main.home', _external=True) == response.location
+        assert get_flashed_messages() == []
 
 
 def test_login_authenticated_user(client, auth):
     """Check that login redirects when the user is already authenticated."""
-    from flask import url_for
     with client:
         auth.register()
-        auth.login()
+        auth.login(follow_redirects=True)
         response = client.get('/auth/login')
         assert current_user.is_authenticated
         assert "302" in response.status
         assert url_for('main.home', _external=True) == response.location
+        assert get_flashed_messages() == []
 
 
 def test_login_bad_credentials(client, auth):
@@ -38,4 +40,15 @@ def test_login_bad_credentials(client, auth):
         response = auth.login()
         assert not current_user.is_authenticated
         assert "200" in response.status
-        assert b"Invalid username or password." in response.data
+        assert "Invalid username or password." in get_flashed_messages()[0]
+
+
+def test_login_with_next(client, auth):
+    """Check that login obeys the next parameter."""
+    with client:
+        auth.register(follow_redirects=True)
+        response = auth.login(next=url_for('main.about'))
+        assert current_user.is_authenticated
+        assert "302" in response.status
+        assert url_for('main.about', _external=True) == response.location
+        assert get_flashed_messages() == []

@@ -63,9 +63,13 @@ class AuthActions(object):
         email='john@metro.scope',
         password='cat',
         follow_redirects=False,
+        next=None,
     ):
+        url = '/auth/login'
+        if next is not None:
+            url += f'?next="{next}"'
         return self._client.post(
-            '/auth/login',
+            url,
             data={
                 'email': email,
                 'password': password,
