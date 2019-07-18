@@ -11,11 +11,14 @@ def test_200(client):
 
 def test_register_user(client, auth):
     """Check the register user route adds a user to the db."""
+    from run.models import User
+    assert User.query.first() is None
     with client:
         response = auth.register()
         assert "302" in response.status
         assert url_for('auth.login', _external=True) == response.location
         assert "You can now login." in get_flashed_messages()[0]
+    assert User.query.first() is not None
 
 
 def test_register_authenticated_user(client, auth):
