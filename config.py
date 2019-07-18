@@ -8,10 +8,21 @@ class Config:
     """Define the base class for configurations."""
 
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL') or 'admin@metro.scope'
     RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY') or None
     RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY') or None
+
+    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in \
+        ['true', 'on', '1']
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_SUBJECT_PREFIX = '[Metroscope]'
+    MAIL_SENDER = 'Metroscope <sendmail.arca@example.com>'
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL') or 'admin@metro.scope'
 
     @staticmethod
     def init_app(app):
@@ -31,6 +42,7 @@ class TestingConfig(Config):
     """Extend the base class for testing."""
 
     TESTING = True
+    WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
 

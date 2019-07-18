@@ -38,6 +38,36 @@ def test_password_salts_are_random(app):
     assert u.password_hash != u2.password_hash
 
 
+def test_password_reset_token(app):
+    """Check that password reset tokens can be verified."""
+    from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+    u = User(password='cat')
+    token = u.generate_reset_token()
+    s = Serializer(app.config['SECRET_KEY'])
+    assert s.loads(token.encode('utf-8')).get('reset') == u.id
+
+
+def test_password_reset(app):
+    """Check that the password_reset static method works."""
+    from run import db
+    u = User(
+        email='john@example.com',
+        display_name='John',
+        password='cat',
+    )
+    db.session.add(u)
+    db.session.commit()
+    token = 'fake_token'
+    assert not User.reset_password(token, 'dog')
+    assert u.verify_password('cat')
+    token = u.generate_reset_token()
+    assert User.reset_password(token, 'dog')
+    assert u.verify_password('dog')
+    db.session.delete(u)
+    db.session.commit()
+    assert not User.reset_password(token, 'dog')
+
+
 def test_default_user_permissions(app):
     from run.models import Role
     Role.insert_roles()
@@ -59,3 +89,36 @@ def test_anonymous_user_permissions(app):
     assert not u.can(Permission.ADD_POEM)
     assert not u.can(Permission.ADD_METER)
     assert not u.can(Permission.CHANGE_METER)
+    assert not u.is_admin()
+
+
+def test_admin_user_permissions(app):
+    from run.models import Role
+    Role.insert_roles()
+    admin_role = Role.query.filter_by(name='Admin').first()
+    u = User(
+        email='john@example.com',
+        display_name='John',
+        password='cat',
+        role=admin_role,
+    )
+
+    assert u.role.name == 'Admin'
+    assert u.is_admin()
+
+    assert u.can(Permission.ADMIN)
+    assert u.can(Permission.ADD_POEM)
+    assert u.can(Permission.ADD_METER)
+    assert u.can(Permission.CHANGE_METER)
+
+
+def test_ADMIN_EMAIL(app):
+    from run.models import Role
+    Role.insert_roles()
+    u = User(
+        email=app.config['ADMIN_EMAIL'],
+        display_name='John',
+        password='cat',
+    )
+
+    assert u.is_admin()

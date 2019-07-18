@@ -26,18 +26,7 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Set up and tear down a test client with some samples in the db."""
-    from run.models import Meter, Poet, Poem
-
-    Meter.insert_samples()
-    Poet.insert_samples()
-    Poem.insert_samples()
-    yield app.test_client()
-
-
-@pytest.fixture
-def client_empty_db(app):
-    """Set up and tear down a test client with an empty db."""
+    """Set up and tear down a test client without sample poems in the db."""
     yield app.test_client()
 
 
@@ -45,3 +34,59 @@ def client_empty_db(app):
 def runner(app):
     """Return a cli test fixture with app context."""
     return app.test_cli_runner()
+
+
+class AuthActions(object):
+    def __init__(self, client):
+        self._client = client
+
+    def register(
+        self,
+        display_name='John',
+        email='john@metro.scope',
+        password='cat',
+        follow_redirects=False,
+    ):
+        return self._client.post(
+            '/auth/register',
+            data={
+                'display_name': display_name,
+                'email': email,
+                'password': password,
+                'password2': password,
+            },
+            follow_redirects=follow_redirects,
+        )
+
+    def login(
+        self,
+        email='john@metro.scope',
+        password='cat',
+        follow_redirects=False,
+        next=None,
+    ):
+        url = '/auth/login'
+        if next is not None:
+            url += f'?next={next}'
+        return self._client.post(
+            url,
+            data={
+                'email': email,
+                'password': password,
+            },
+            follow_redirects=follow_redirects,
+        )
+
+    def logout(
+        self,
+        follow_redirects=False,
+    ):
+        return self._client.get(
+            '/auth/logout',
+            follow_redirects=follow_redirects,
+        )
+
+
+@pytest.fixture
+def auth(client):
+    return AuthActions(client)

@@ -16,6 +16,6 @@ visible in one column, and the rhyme scheme in another.
 
 from .WordBuilder import WordBuilder
 from .LineBuilder import LineBuilder
-from .scanned_poem import scanned_poem
+from .scanned_poem import scanned_poem, rhyme_designator
 
-__all__ = ["WordBuilder", "LineBuilder", "scanned_poem"]
+__all__ = ["WordBuilder", "LineBuilder", "scanned_poem", "rhyme_designator"]
