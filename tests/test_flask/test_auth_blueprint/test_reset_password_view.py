@@ -22,9 +22,23 @@ def test_password_reset_authenticated_user(client, auth):
         assert get_flashed_messages() == []
 
 
+def get_token_from_reset_email(body):
+    """Return the token from reset email body"""
+    reset_url = url_for(
+        'auth.password_reset',
+        token='',
+        _external=True,
+    )
+    for line in body.splitlines():
+        if line.startswith(reset_url):
+            return line.replace(reset_url, '')
+    return None
+
+
 def test_reset_password(client, auth):
     """Check the reset password request works."""
     from run import mail
+    from run.models import User
     with client:
         auth.register(follow_redirects=True)
 
@@ -37,12 +51,10 @@ def test_reset_password(client, auth):
             )
             assert len(outbox) == 1
             assert outbox[0].subject == "[Metroscope] Reset Your Password"
-            reset_url = url_for(
-                'auth.password_reset',
-                token='',
-                _external=True,
+            assert User.reset_password(
+                get_token_from_reset_email(outbox[0].body),
+                'cat',
             )
-            assert reset_url in outbox[0].body
             assert not current_user.is_authenticated
             assert "302" in response.status
             assert url_for('auth.login', _external=True) == response.location
