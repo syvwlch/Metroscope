@@ -6,7 +6,12 @@
 
 {% block page_content %}
     <h1>
-        List of poems on Metroscope
+    Hello
+    {% if current_user.is_authenticated %}
+        {{ current_user.display_name }}!
+    {% else %}
+        lover of Poësy!
+    {% endif %}
     </h1>
     {% if poems == [] %}
         <h2>Sorry, no poems in the database!</h2>
