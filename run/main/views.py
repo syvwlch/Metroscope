@@ -3,20 +3,13 @@
 import os
 from flask import render_template
 from . import main
-from .. import db
-from ..models import Poem
-
 import markdown
 
 
 @main.route("/")
 def home():
     """Define the home route."""
-    if "poems" not in db.engine.table_names():
-        poems = []
-    else:
-        poems = Poem.query.all()
-    return render_template("main/home.html", poems=poems)
+    return render_template("main/home.html")
 
 
 @main.route("/about")
