@@ -16,7 +16,7 @@ def poem(keyword):
     # retrieve the requested poem if it exists
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
 
-    return render_template("poem.html",
+    return render_template("analyze/poem.html",
                            title=poem.title,
                            poet=poem.author.name,
                            meter=poem.meter.name,
