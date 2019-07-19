@@ -34,4 +34,7 @@ def create_app(config_name):
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
+    from .analyze import analyze as analyze_blueprint
+    app.register_blueprint(analyze_blueprint, url_prefix='/analyze')
+
     return app
