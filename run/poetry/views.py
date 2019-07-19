@@ -1,4 +1,4 @@
-"""Route definitions for the analyze blueprint."""
+"""Route definitions for the poetry blueprint."""
 
 from flask import render_template, redirect, url_for
 from run import db
