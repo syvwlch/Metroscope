@@ -6,6 +6,15 @@ from . import poetry
 from ..models import Meter, Poet, Poem
 
 
+@poetry.route("/poem")
+def poem_list():
+    if "poems" not in db.engine.table_names():
+        poems = []
+    else:
+        poems = Poem.query.all()
+    return render_template("poetry/poem_list.html", poems=poems)
+
+
 @poetry.route("/poem/<keyword>")
 def poem(keyword):
     """Define the poem route."""
