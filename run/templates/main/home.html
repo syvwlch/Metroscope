@@ -13,13 +13,5 @@
         lover of Poësy!
     {% endif %}
     </h1>
-    {% if poems == [] %}
-        <h2>Sorry, no poems in the database!</h2>
-        <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
-    {% else %}
-        <h2>Choose a poem from the list below:</h2>
-        {% for poem in poems %}
-            <li><a href="{{ url_for('poetry.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
-        {% endfor %}
-    {% endif %}
+    <p>Click <a href="{{ url_for('poetry.poem_list') }}">here</a> to see a list of available poems!</p>
 {% endblock page_content %}
