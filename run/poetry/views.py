@@ -2,11 +2,11 @@
 
 from flask import render_template, redirect, url_for
 from run import db
-from . import analyze
+from . import poetry
 from ..models import Meter, Poet, Poem
 
 
-@analyze.route("/poem/<keyword>")
+@poetry.route("/poem/<keyword>")
 def poem(keyword):
     """Define the poem route."""
     # if the poems table does not exist, 404 the route
@@ -16,14 +16,14 @@ def poem(keyword):
     # retrieve the requested poem if it exists
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
 
-    return render_template("analyze/poem.html",
+    return render_template("poetry/poem.html",
                            title=poem.title,
                            poet=poem.author.name,
                            meter=poem.meter.name,
                            poem=poem.HTML)
 
 
-@analyze.route("/add_samples")
+@poetry.route("/add_samples")
 def add_samples():
     """Define the add_samples route."""
     try:

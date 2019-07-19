@@ -3,7 +3,7 @@
 
 def test_200(client_poems):
     """Check the poem should always return a 200."""
-    response = client_poems.get('/analyze/poem/Flea')
+    response = client_poems.get('/poetry/poem/Flea')
     assert b'Flea' in response.data
     assert "200" in response.status
-    assert "404" in client_poems.get('/poem/foo').status
+    assert "404" in client_poems.get('/poetry/poem/foo').status
