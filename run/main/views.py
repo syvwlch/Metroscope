@@ -16,7 +16,7 @@ def home():
         poems = []
     else:
         poems = Poem.query.all()
-    return render_template("home.html", poems=poems)
+    return render_template("main/home.html", poems=poems)
 
 
 @main.route("/about")
@@ -28,6 +28,6 @@ def about():
             ABOUT_CONTENTS = markdown.markdown(readme.read())
     except IOError:
         ABOUT_CONTENTS = "Failed to load the contents of the about page."
-    return render_template("about.html",
+    return render_template("main/about.html",
                            contents=ABOUT_CONTENTS,
                            )

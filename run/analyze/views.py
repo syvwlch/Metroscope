@@ -11,7 +11,7 @@ def poem(keyword):
     """Define the poem route."""
     # if the poems table does not exist, 404 the route
     if "poems" not in db.engine.table_names():
-        return render_template('404.html'), 404
+        return render_template('main/404.html'), 404
 
     # retrieve the requested poem if it exists
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
@@ -31,5 +31,5 @@ def add_samples():
         Poet.insert_samples()
         Poem.insert_samples()
     except Exception:
-        return render_template('404.html'), 404
+        return render_template('main/404.html'), 404
     return redirect(url_for('main.home'))
