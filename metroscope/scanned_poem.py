@@ -99,9 +99,11 @@ def scanned_poem(poem, meter_pattern):
     """
 
     lines = []
+    count = 0
     rhymes = {"None": "_"}
     for line in poem.split("\n"):
         if line != "":
+            count += 1
             lb = LineBuilder(line, custom_dict=CUSTOM_DICT)
             rp = str(lb._rhyming_part)
             try:
@@ -111,6 +113,7 @@ def scanned_poem(poem, meter_pattern):
                 rd = rhymes[rp]
 
             lines.append({
+                "count": count,
                 "HTML": lb.stressed_HTML(meter_pattern),
                 "rhyming_part": rp,
                 "rhyme_designator": rd,
