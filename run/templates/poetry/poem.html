@@ -1,38 +1,45 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {{ title }} - Metroscope
+{{ title }} - Metroscope
 {% endblock title %}
 
 {% block page_content %}
-    <h1>{{ title }}</h1>
-    <p>- by {{ poet }}, scanned in {{ meter }}.</p>
+<h1>{{ title }}</h1>
+<p>- by {{ poet }}, scanned in {{ meter }}.</p>
+<div class='container'>
     <table>
         <thead>
             <tr>
+                <th scope="col" style="text-align:center">Verse</th>
                 <th scope="col"> </th>
-                <th scope="col">Rhyme</th>
+                <th scope="col" style="text-align:center">Rhyme</th>
             </tr>
         </thead>
         <tbody>
-        {% for line in lines %}
-            <tr>
-                <td>{{ line['HTML']|safe }}</td>
-                <td style="text-align:center">
-                    <span data-toggle='tooltip' title='{{ line['rhyming_part'] }}'>{{ line['rhyme_designator'] }}</span>
+            {% for line in lines %}
+            <tr style="border-top:hidden">
+                <td class="text-center text-muted">
+                    <small>{{ line['count'] }}</small>
+                </td>
+                <td>
+                    {{ line['HTML']|safe }}
+                </td>
+                <td class="text-center text-muted">
+                    <small data-toggle='tooltip' title='{{ line['rhyming_part'] }}'>{{ line['rhyme_designator'] }}</small>
                 </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
-
+</div>
 {% endblock page_content %}
 
 {% block scripts %}
-    {{super()}}
-    <script>
-        $(document).ready(function(){
-          $("[data-toggle='tooltip']").tooltip();
-        });
-    </script>
+{{super()}}
+<script>
+    $(document).ready(function(){
+      $("[data-toggle='tooltip']").tooltip();
+    });
+</script>
 {% endblock scripts %}
