@@ -145,7 +145,7 @@ class Poem(db.Model):
                             title=title,
                             keyword=keyword,
                             raw_text=raw_text,
-                            HTML=scanned_poem(raw_text, meter.pattern),
+                            # HTML=scanned_poem(raw_text, meter.pattern),
                             poet_id=poet.id,
                             meter_id=meter.id,
                         )

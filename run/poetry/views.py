@@ -4,6 +4,7 @@ from flask import render_template, redirect, url_for
 from run import db
 from . import poetry
 from ..models import Meter, Poet, Poem
+from metroscope import scanned_poem
 
 
 @poetry.route("/poem")
@@ -25,11 +26,13 @@ def poem(keyword):
     # retrieve the requested poem if it exists
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
 
-    return render_template("poetry/poem.html",
-                           title=poem.title,
-                           poet=poem.author.name,
-                           meter=poem.meter.name,
-                           poem=poem.HTML)
+    return render_template(
+        "poetry/poem.html",
+        title=poem.title,
+        poet=poem.author.name,
+        meter=poem.meter.name,
+        lines=scanned_poem(poem.raw_text, poem.meter.pattern),
+    )
 
 
 @poetry.route("/add_samples")

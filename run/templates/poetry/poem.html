@@ -7,10 +7,25 @@
 {% block page_content %}
     <h1>{{ title }}</h1>
     <p>- by {{ poet }}, scanned in {{ meter }}.</p>
-    {% if current_user.can(Permission.CHANGE_METER) %}
-        <p>You will soon be able to change the meter on this page!</p>
-    {% endif %}
-    {{ poem|safe }}
+    <table>
+        <thead>
+            <tr>
+                <th scope="col"> </th>
+                <th scope="col">Rhyme</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for line in lines %}
+            <tr>
+                <td>{{ line['HTML']|safe }}</td>
+                <td style="text-align:center">
+                    <span data-toggle='tooltip' title='{{ line['rhyming_part'] }}'>{{ line['rhyme_designator'] }}</span>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock page_content %}
 
 {% block scripts %}

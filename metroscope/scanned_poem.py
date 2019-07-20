@@ -90,37 +90,58 @@ def rhyme_designator(index):
 
 def scanned_poem(poem, meter_pattern):
     """
-    Create HTML with the scanned poem.
+    Create a list of lines from the poem.
 
-    Wrap the poem in a <table> tag, each line in a <tr> tag,
-    and the stressed line & its rhyme each in their own <td>.
+    Each line will include:
+     1. the HTML showing the stress patter, and
+     2. the rhyming part at the end of the line, and
+     3. the designator for the rhyme in the rhyme scheme.
     """
 
     lines = []
+    rhymes = {"None": "_"}
     for line in poem.split("\n"):
         if line != "":
-            lines.append(LineBuilder(line, custom_dict=CUSTOM_DICT))
-        else:
-            lines.append(None)
-
-    rhymes = {"None": "_"}
-    result = "<table>\n<tr>\n"
-    for line in lines:
-        if line is None:
-            result += "<td><br></td>\n</tr>\n<tr>"
-            rhymes = {"None": "_"}
-        else:
-            result += "<td>"
-            result += line.stressed_HTML(meter_pattern)
-            rp = str(line._rhyming_part)
-            result += "</td>\n<td data-toggle='tooltip' title='"
-            result += rp + "'>"
+            lb = LineBuilder(line, custom_dict=CUSTOM_DICT)
+            rp = str(lb._rhyming_part)
             try:
-                result += rhymes[rp] + "</td>\n"
+                rd = rhymes[rp]
             except KeyError:
-                index = len(rhymes)-1
-                rhymes.update({rp: rhyme_designator(index)})
-                result += rhymes[rp] + "</td>\n"
-            result += "</tr>\n<tr>"
-    result += "</tr>\n</table>"
-    return result
+                rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
+                rd = rhymes[rp]
+
+            lines.append({
+                "HTML": lb.stressed_HTML(meter_pattern),
+                "rhyming_part": rp,
+                "rhyme_designator": rd,
+            })
+        else:
+            rhymes = {"None": "_"}
+            lines.append({
+                "HTML": "<br>",
+                "rhyming_part": "",
+                "rhyme_designator": "",
+            })
+    return lines
+
+    # rhymes = {"None": "_"}
+    # result = "<table>\n<tr>\n"
+    # for line in lines:
+    #     if line is None:
+    #         result += "<td><br></td>\n</tr>\n<tr>"
+    #         rhymes = {"None": "_"}
+    #     else:
+    #         result += "<td>"
+    #         result += line.stressed_HTML(meter_pattern)
+    #         rp = str(line._rhyming_part)
+    #         result += "</td>\n<td data-toggle='tooltip' title='"
+    #         result += rp + "'>"
+    #         try:
+    #             result += rhymes[rp] + "</td>\n"
+    #         except KeyError:
+    #             index = len(rhymes)-1
+    #             rhymes.update({rp: rhyme_designator(index)})
+    #             result += rhymes[rp] + "</td>\n"
+    #         result += "</tr>\n<tr>"
+    # result += "</tr>\n</table>"
+    # return result

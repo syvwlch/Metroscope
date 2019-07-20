@@ -42,7 +42,7 @@ def test_Poem_insert_samples(app):
         assert isinstance(poem.title, str)
         assert isinstance(poem.keyword, str)
         assert isinstance(poem.raw_text, str)
-        assert isinstance(poem.HTML, str)
+        # assert isinstance(poem.HTML, str)
         assert isinstance(poem.author, Poet)
         assert isinstance(poem.meter, Meter)
 
