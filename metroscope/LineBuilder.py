@@ -46,17 +46,44 @@ class LineBuilder(object):
         """Return the rhyming part of the line's last word."""
         return self._word_list[-1]._rhyming_part
 
-    def stressed_HTML(self, stress_pattern):
-        """Mark up the line based on the stress pattern provided."""
-        MISSING = "<b style='color:red'> _ </b>"
+    def _matched_words(self, stress_pattern):
+        """
+        Match each word's syllables against the given pattern.
 
-        stressed_line = ""
+        Private method in service of stressed_HTML().
+        Returns a list of dictionaries:
+            - word: WorldBuilder instance for the original word
+            - stresses: slice of the line's stress pattern for that word
+        """
+        matched_words = []
         for word in self._word_list:
             number_stresses = len(word.stress_list)
             word_meter = stress_pattern[0:number_stresses]
             stress_pattern = stress_pattern[number_stresses:]
             # use the stress pattern directly for the word stresses
-            stressed_line += word.stressed_HTML(word_meter) + " "
-        for stress in stress_pattern:
-            stressed_line += MISSING
+            matched_words.append({
+                'word': word,
+                'stresses': word_meter,
+            })
+        if stress_pattern != []:
+            matched_words.append({
+                'word': None,
+                'stresses': stress_pattern,
+            })
+        return matched_words
+
+    def stressed_HTML(self, stress_pattern):
+        """Mark up the line based on the stress pattern provided."""
+        MISSING = "<b style='color:red'> _ </b>"
+
+        stressed_line = ""
+        for matched_word in self._matched_words(stress_pattern):
+            word = matched_word['word']
+            # use the stress pattern directly for the word stresses
+            word_meter = matched_word['stresses']
+            if word is not None:
+                stressed_line += word.stressed_HTML(word_meter) + " "
+            else:
+                for stress in word_meter:
+                    stressed_line += MISSING
         return stressed_line
