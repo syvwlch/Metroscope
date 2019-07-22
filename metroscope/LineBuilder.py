@@ -66,24 +66,18 @@ class LineBuilder(object):
                 'stresses': word_meter,
             })
         if stress_pattern != []:
-            matched_words.append({
-                'word': None,
-                'stresses': stress_pattern,
-            })
+            for stress in stress_pattern:
+                matched_words.append({
+                    'word': WordBuilder('_'),
+                    'stresses': stress,
+                })
         return matched_words
 
     def stressed_HTML(self, stress_pattern):
         """Mark up the line based on the stress pattern provided."""
-        MISSING = "<b style='color:red'> _ </b>"
 
         stressed_line = ""
-        for matched_word in self._matched_words(stress_pattern):
-            word = matched_word['word']
+        for word in self._matched_words(stress_pattern):
             # use the stress pattern directly for the word stresses
-            word_meter = matched_word['stresses']
-            if word is not None:
-                stressed_line += word.stressed_HTML(word_meter) + " "
-            else:
-                for stress in word_meter:
-                    stressed_line += MISSING
+            stressed_line += word['word'].stressed_HTML(word['stresses']) + " "
         return stressed_line

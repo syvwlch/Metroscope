@@ -81,7 +81,7 @@ def test_stressed_HTML():
 <span><span style='color:black'>and</span></span> \
 <span><span style='color:black'>a</span></span> \
 <span><small style='color:red'>Poesy.</small></span> \
-<b style='color:red'> _ </b>",
+<span><small style='color:red'>_</small></span> ",
              }
     for line, HTML in LINES.items():
         METER = "01001"
