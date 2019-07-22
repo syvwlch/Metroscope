@@ -215,20 +215,20 @@ def test__matched_syllables():
                    }
     WORDS = {
              "automatic":
-             [['au', False, True],
-              ['to', True, False],
-              ['ma', False, False],
-              ['tic', None, False]],
+             [{'text': 'au', 'stress': False, 'match': True},
+              {'text': 'to', 'stress': True, 'match': False},
+              {'text': 'ma', 'stress': False, 'match': False},
+              {'text': 'tic', 'stress': None, 'match': False}],
              "Shadows":
-             [['Sha', False, False],
-              ['dows', True, True]],
+             [{'text': 'Sha', 'stress': False, 'match': False},
+              {'text': 'dows', 'stress': True, 'match': True}],
              "One":
-             [['One', False, True]],
+             [{'text': 'One', 'stress': False, 'match': True}],
              "Phidian":
-             [['Phi', False, False],
-              ['dian', True, False]],
+             [{'text': 'Phi', 'stress': False, 'match': False},
+              {'text': 'dian', 'stress': True, 'match': False}],
              "Poesy.":
-             [['Poesy.', None, False]],
+             [{'text': 'Poesy.', 'stress': None, 'match': False}],
              }
     for word, matches in WORDS.items():
         METER = "010"
