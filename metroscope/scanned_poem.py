@@ -97,7 +97,11 @@ def scanned_poem(poem, meter_pattern):
      2. the rhyming part at the end of the line, and
      3. the designator for the rhyme in the rhyme scheme.
     """
-
+    from collections import namedtuple
+    Line = namedtuple(
+        'Line',
+        'count matched_words rhyming_part rhyme_designator',
+    )
     lines = []
     count = 0
     rhymes = {"None": "_"}
@@ -112,13 +116,13 @@ def scanned_poem(poem, meter_pattern):
                 rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
                 rd = rhymes[rp]
 
-            lines.append({
-                "count": count,
-                "matched_words": lb._matched_words(meter_pattern),
-                "rhyming_part": rp,
-                "rhyme_designator": rd,
-            })
+            lines.append(Line(
+                count=count,
+                matched_words=lb._matched_words(meter_pattern),
+                rhyming_part=rp,
+                rhyme_designator=rd,
+            ))
         else:
             rhymes = {"None": "_"}
-            lines.append({})
+            lines.append(None)
     return lines
