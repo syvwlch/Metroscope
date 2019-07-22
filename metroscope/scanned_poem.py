@@ -114,15 +114,11 @@ def scanned_poem(poem, meter_pattern):
 
             lines.append({
                 "count": count,
-                "HTML": lb.stressed_HTML(meter_pattern),
+                "matched_words": lb._matched_words(meter_pattern),
                 "rhyming_part": rp,
                 "rhyme_designator": rd,
             })
         else:
             rhymes = {"None": "_"}
-            lines.append({
-                "HTML": "<br>",
-                "rhyming_part": "",
-                "rhyme_designator": "",
-            })
+            lines.append({})
     return lines

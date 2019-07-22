@@ -19,15 +19,23 @@
         <tbody>
             {% for line in lines %}
             <tr style="border-top:hidden">
+                {% if line['count'] %}
                 <td class="text-center text-muted">
                     <small>{{ line['count'] }}</small>
                 </td>
                 <td>
-                    {{ line['HTML']|safe }}
+                {% for word in line['matched_words'] %}
+                    {{ word['word'].stressed_HTML(word['stresses'])|safe }}
+                {% endfor %}
                 </td>
                 <td class="text-center text-muted">
                     <small data-toggle='tooltip' title='{{ line['rhyming_part'] }}'>{{ line['rhyme_designator'] }}</small>
                 </td>
+                {% else %}
+                <td><br></td>
+                <td><br></td>
+                <td><br></td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
