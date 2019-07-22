@@ -126,25 +126,3 @@ def scanned_poem(poem, meter_pattern):
                 "rhyme_designator": "",
             })
     return lines
-
-    # rhymes = {"None": "_"}
-    # result = "<table>\n<tr>\n"
-    # for line in lines:
-    #     if line is None:
-    #         result += "<td><br></td>\n</tr>\n<tr>"
-    #         rhymes = {"None": "_"}
-    #     else:
-    #         result += "<td>"
-    #         result += line.stressed_HTML(meter_pattern)
-    #         rp = str(line._rhyming_part)
-    #         result += "</td>\n<td data-toggle='tooltip' title='"
-    #         result += rp + "'>"
-    #         try:
-    #             result += rhymes[rp] + "</td>\n"
-    #         except KeyError:
-    #             index = len(rhymes)-1
-    #             rhymes.update({rp: rhyme_designator(index)})
-    #             result += rhymes[rp] + "</td>\n"
-    #         result += "</tr>\n<tr>"
-    # result += "</tr>\n</table>"
-    # return result
