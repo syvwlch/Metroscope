@@ -55,22 +55,24 @@ class LineBuilder(object):
             - word: WorldBuilder instance for the original word
             - stresses: slice of the line's stress pattern for that word
         """
+        from collections import namedtuple
+        Word = namedtuple('Word', 'word stresses')
         matched_words = []
         for word in self._word_list:
             number_stresses = len(word.stress_list)
             word_meter = stress_pattern[0:number_stresses]
             stress_pattern = stress_pattern[number_stresses:]
             # use the stress pattern directly for the word stresses
-            matched_words.append({
-                'word': word,
-                'stresses': word_meter,
-            })
+            matched_words.append(Word(
+                word=word,
+                stresses=word_meter,
+            ))
         if stress_pattern != []:
             for stress in stress_pattern:
-                matched_words.append({
-                    'word': WordBuilder('_'),
-                    'stresses': stress,
-                })
+                matched_words.append(Word(
+                    word=WordBuilder('_'),
+                    stresses=stress,
+                ))
         return matched_words
 
     def stressed_HTML(self, stress_pattern):
@@ -79,5 +81,5 @@ class LineBuilder(object):
         stressed_line = ""
         for word in self._matched_words(stress_pattern):
             # use the stress pattern directly for the word stresses
-            stressed_line += word['word'].stressed_HTML(word['stresses']) + " "
+            stressed_line += word.word.stressed_HTML(word.stresses) + " "
         return stressed_line
