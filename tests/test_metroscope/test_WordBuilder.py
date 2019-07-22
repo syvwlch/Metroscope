@@ -213,22 +213,24 @@ def test__matched_syllables():
                    "phidian": {"syllables": ["phi", "dian"],
                                "phones": ["F IH1 D IY0 N"]},
                    }
+    from collections import namedtuple
+    Syllable = namedtuple('Syllable', 'text stress match')
     WORDS = {
              "automatic":
-             [{'text': 'au', 'stress': False, 'match': True},
-              {'text': 'to', 'stress': True, 'match': False},
-              {'text': 'ma', 'stress': False, 'match': False},
-              {'text': 'tic', 'stress': None, 'match': False}],
+             [Syllable(text='au', stress=False, match=True),
+              Syllable(text='to', stress=True, match=False),
+              Syllable(text='ma', stress=False, match=False),
+              Syllable(text='tic', stress=None, match=False)],
              "Shadows":
-             [{'text': 'Sha', 'stress': False, 'match': False},
-              {'text': 'dows', 'stress': True, 'match': True}],
+             [Syllable(text='Sha', stress=False, match=False),
+              Syllable(text='dows', stress=True, match=True)],
              "One":
-             [{'text': 'One', 'stress': False, 'match': True}],
+             [Syllable(text='One', stress=False, match=True)],
              "Phidian":
-             [{'text': 'Phi', 'stress': False, 'match': False},
-              {'text': 'dian', 'stress': True, 'match': False}],
+             [Syllable(text='Phi', stress=False, match=False),
+              Syllable(text='dian', stress=True, match=False)],
              "Poesy.":
-             [{'text': 'Poesy.', 'stress': None, 'match': False}],
+             [Syllable(text='Poesy.', stress=None, match=False)],
              }
     for word, matches in WORDS.items():
         METER = "010"

@@ -140,40 +140,42 @@ class WordBuilder(object):
         Match the pronounced stresses against the given pattern.
 
         Private method in service of stressed_HTML().
-        Returns a list of dictionaries:
-            - text: string of the original syllable,
-            - stress: Boolean for pattern stress,
-            - match: Boolean for match between pattern & pronunciation
+        Returns a list of namedtuples:
+            - Syllable.text: string of the original syllable,
+            - Syllable.stress: Boolean for pattern stress,
+            - Syllable.match: Boolean for match between pattern & pronunciation
         """
+        from collections import namedtuple
+        Syllable = namedtuple('Syllable', 'text stress match')
         stressed_syllables = self._stressed_syllables
         if stressed_syllables is None:
-            return [{
-                'text': self.word,
-                'stress': None,
-                'match': False,
-            }]
+            return [Syllable(
+                text=self.word,
+                stress=None,
+                match=False,
+            )]
         result = []
         for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
                 if pattern[0] == '1':
-                    result.append({
-                        'text': syllable,
-                        'stress': True,
-                        'match': pronunciation_stress != '0',
-                    })
+                    result.append(Syllable(
+                        text=syllable,
+                        stress=True,
+                        match=pronunciation_stress != '0',
+                    ))
                 else:
-                    result.append({
-                        'text': syllable,
-                        'stress': False,
-                        'match': pronunciation_stress != '1',
-                    })
+                    result.append(Syllable(
+                        text=syllable,
+                        stress=False,
+                        match=pronunciation_stress != '1',
+                    ))
                 pattern = pattern[1:]
             else:
-                result.append({
-                    'text': syllable,
-                    'stress': None,
-                    'match': False,
-                    })
+                result.append(Syllable(
+                    text=syllable,
+                    stress=None,
+                    match=False,
+                    ))
         return result
 
     @property
@@ -204,8 +206,8 @@ class WordBuilder(object):
         result = ""
         for syllable in self._matched_syllables(pattern):
             result += self._tag_string(
-                syllable['text'],
-                TAGS[syllable['stress']],
-                STYLES[syllable['match']],
+                syllable.text,
+                TAGS[syllable.stress],
+                STYLES[syllable.match],
                 )
         return self._tag_string(result, "span")
