@@ -12,10 +12,19 @@ class LineBuilder(object):
     on the website.
     """
 
-    def __init__(self, line, pattern='', custom_dict={}):
+    def __init__(
+        self,
+        line,
+        pattern='',
+        count=0,
+        rhyme_designator='',
+        custom_dict={},
+    ):
         """Initialize from original line."""
         self.line = line
         self.pattern = pattern
+        self.count = count
+        self.rhyme_designator = rhyme_designator
         self.custom_dict = custom_dict
 
     def __str__(self):

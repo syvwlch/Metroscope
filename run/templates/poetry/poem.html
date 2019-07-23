@@ -19,12 +19,12 @@
         <tbody>
             {% for line in lines %}
             <tr style="border-top:hidden">
-            {% if line.count %}
+            {% if line %}
                 <td class="text-center text-muted">
                     <small>{{ line.count }}</small>
                 </td>
                 <td>
-                {% for word in line.matched_words %}
+                {% for word in line._matched_words() %}
                     {{ word.stressed_HTML()|safe }}
                 {% endfor %}
                 </td>

@@ -97,11 +97,6 @@ def scanned_poem(poem, pattern):
      2. the rhyming part at the end of the line, and
      3. the designator for the rhyme in the rhyme scheme.
     """
-    from collections import namedtuple
-    Line = namedtuple(
-        'Line',
-        'count matched_words rhyming_part rhyme_designator',
-    )
     lines = []
     count = 0
     rhymes = {"None": "_"}
@@ -111,6 +106,7 @@ def scanned_poem(poem, pattern):
             lb = LineBuilder(
                 line=line,
                 pattern=pattern,
+                count=count,
                 custom_dict=CUSTOM_DICT,
             )
             rp = str(lb._rhyming_part)
@@ -119,13 +115,8 @@ def scanned_poem(poem, pattern):
             except KeyError:
                 rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
                 rd = rhymes[rp]
-
-            lines.append(Line(
-                count=count,
-                matched_words=lb._matched_words(),
-                rhyming_part=rp,
-                rhyme_designator=rd,
-            ))
+            lb.rhyme_designator = rd
+            lines.append(lb)
         else:
             rhymes = {"None": "_"}
             lines.append(None)
