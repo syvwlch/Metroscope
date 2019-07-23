@@ -61,28 +61,3 @@ def test__rhyming_part():
              }
     for line, rhyme in LINES.items():
         assert(LineBuilder(line)._rhyming_part == rhyme)
-
-
-def test_stressed_HTML():
-    """Should give an HTML representation of the line's fit to meter."""
-    LINES = {
-             "Two Owls and a Hen,":
-             "<span>\
-<span style='color:black'>Two</span></span> \
-<span><strong style='color:black'>Owls</strong></span> \
-<span><span style='color:black'>and</span></span> \
-<span><span style='color:black'>a</span></span> \
-<span><strong style='color:black'>Hen,</strong>\
-</span> ",
-             "Two Owls and a Poesy.":
-             "<span>\
-<span style='color:black'>Two</span></span> \
-<span><strong style='color:black'>Owls</strong></span> \
-<span><span style='color:black'>and</span></span> \
-<span><span style='color:black'>a</span></span> \
-<span><small style='color:red'>Poesy.</small></span> \
-<span><small style='color:red'>_</small></span> ",
-             }
-    for line, HTML in LINES.items():
-        METER = "01001"
-        assert(LineBuilder(line).stressed_HTML(METER) == HTML)

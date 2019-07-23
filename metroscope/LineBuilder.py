@@ -74,12 +74,3 @@ class LineBuilder(object):
                     stresses=stress,
                 ))
         return matched_words
-
-    def stressed_HTML(self, stress_pattern):
-        """Mark up the line based on the stress pattern provided."""
-
-        stressed_line = ""
-        for word in self._matched_words(stress_pattern):
-            # use the stress pattern directly for the word stresses
-            stressed_line += word.word.stressed_HTML(word.stresses) + " "
-        return stressed_line
