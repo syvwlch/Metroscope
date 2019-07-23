@@ -53,10 +53,10 @@ class LineBuilder(object):
         Private method in service of stressed_HTML().
         Returns a list of dictionaries:
             - word: WorldBuilder instance for the original word
-            - stresses: slice of the line's stress pattern for that word
+            - pattern: slice of the line's stress pattern for that word
         """
         from collections import namedtuple
-        Word = namedtuple('Word', 'word stresses')
+        Word = namedtuple('Word', 'word pattern')
         matched_words = []
         for word in self._word_list:
             number_stresses = len(word.stress_list)
@@ -65,12 +65,12 @@ class LineBuilder(object):
             # use the stress pattern directly for the word stresses
             matched_words.append(Word(
                 word=word,
-                stresses=word_meter,
+                pattern=word_meter,
             ))
         if stress_pattern != []:
             for stress in stress_pattern:
                 matched_words.append(Word(
                     word=WordBuilder('_'),
-                    stresses=stress,
+                    pattern=stress,
                 ))
         return matched_words

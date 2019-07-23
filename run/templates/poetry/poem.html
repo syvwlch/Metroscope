@@ -25,7 +25,7 @@
                 </td>
                 <td>
                 {% for word in line.matched_words %}
-                    {{ word.word.stressed_HTML(word.stresses)|safe }}
+                    {{ word.word.stressed_HTML(word.pattern)|safe }}
                 {% endfor %}
                 </td>
                 <td class="text-center text-muted">
