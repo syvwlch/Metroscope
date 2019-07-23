@@ -88,7 +88,7 @@ def rhyme_designator(index):
     return letter + modifier
 
 
-def scanned_poem(poem, meter_pattern):
+def scanned_poem(poem, pattern):
     """
     Create a list of lines from the poem.
 
@@ -108,7 +108,11 @@ def scanned_poem(poem, meter_pattern):
     for line in poem.split("\n"):
         if line != "":
             count += 1
-            lb = LineBuilder(line, custom_dict=CUSTOM_DICT)
+            lb = LineBuilder(
+                line=line,
+                pattern=pattern,
+                custom_dict=CUSTOM_DICT,
+            )
             rp = str(lb._rhyming_part)
             try:
                 rd = rhymes[rp]
@@ -118,7 +122,7 @@ def scanned_poem(poem, meter_pattern):
 
             lines.append(Line(
                 count=count,
-                matched_words=lb._matched_words(meter_pattern),
+                matched_words=lb._matched_words(),
                 rhyming_part=rp,
                 rhyme_designator=rd,
             ))

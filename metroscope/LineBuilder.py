@@ -12,9 +12,10 @@ class LineBuilder(object):
     on the website.
     """
 
-    def __init__(self, line, custom_dict={}):
+    def __init__(self, line, pattern='', custom_dict={}):
         """Initialize from original line."""
         self.line = line
+        self.pattern = pattern
         self.custom_dict = custom_dict
 
     def __str__(self):
@@ -46,31 +47,24 @@ class LineBuilder(object):
         """Return the rhyming part of the line's last word."""
         return self._word_list[-1]._rhyming_part
 
-    def _matched_words(self, stress_pattern):
+    def _matched_words(self):
         """
-        Match each word's syllables against the given pattern.
+        Match each word's syllables against the pattern.
 
         Private method in service of stressed_HTML().
         Returns a list of dictionaries:
             - word: WorldBuilder instance for the original word
             - pattern: slice of the line's stress pattern for that word
         """
-        from collections import namedtuple
-        Word = namedtuple('Word', 'word pattern')
         matched_words = []
+        # Make a mutable copy of the pattern
+        pattern = self.pattern[:]
         for word in self._word_list:
             number_stresses = len(word.stress_list)
-            word_meter = stress_pattern[0:number_stresses]
-            stress_pattern = stress_pattern[number_stresses:]
-            # use the stress pattern directly for the word stresses
-            matched_words.append(Word(
-                word=word,
-                pattern=word_meter,
-            ))
-        if stress_pattern != []:
-            for stress in stress_pattern:
-                matched_words.append(Word(
-                    word=WordBuilder('_'),
-                    pattern=stress,
-                ))
+            word.pattern = pattern[0:number_stresses]
+            pattern = pattern[number_stresses:]
+            matched_words.append(word)
+        if pattern != []:
+            for stress in pattern:
+                matched_words.append(WordBuilder(word='_', pattern=stress))
         return matched_words

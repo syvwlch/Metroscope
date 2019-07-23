@@ -15,9 +15,10 @@ class WordBuilder(object):
     syllable objects with various properties.
     """
 
-    def __init__(self, word, custom_dict={}, index=0):
+    def __init__(self, word, pattern='', custom_dict={}, index=0):
         """Initialize from original word."""
         self.word = word
+        self.pattern = pattern
         self.custom_dict = custom_dict
         self._phones_index = index
 
@@ -135,9 +136,9 @@ class WordBuilder(object):
         closing_tag = "</" + tag + ">"
         return opening_tag + snippet + closing_tag
 
-    def _matched_syllables(self, pattern):
+    def _matched_syllables(self):
         """
-        Match the pronounced stresses against the given pattern.
+        Match the pronounced stresses against the pattern.
 
         Private method in service of stressed_HTML().
         Returns a list of namedtuples:
@@ -155,6 +156,8 @@ class WordBuilder(object):
                 match=False,
             )]
         result = []
+        # Create a copy of pattern you can mutate safely
+        pattern = self.pattern[:]
         for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
                 if pattern[0] == '1':
@@ -189,9 +192,9 @@ class WordBuilder(object):
             result = result.replace(stress, "")
         return result
 
-    def stressed_HTML(self, pattern):
+    def stressed_HTML(self):
         """
-        Mark up the original word based on the stress pattern provided.
+        Mark up the original word based on the stress pattern.
 
         Return the word with the syllables wrapped with HTML tags and style
         attributes based on stress, provided meter, and whether they match.
@@ -204,7 +207,7 @@ class WordBuilder(object):
                 None: "small"}
 
         result = ""
-        for syllable in self._matched_syllables(pattern):
+        for syllable in self._matched_syllables():
             result += self._tag_string(
                 syllable.text,
                 TAGS[syllable.stress],

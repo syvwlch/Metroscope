@@ -233,9 +233,12 @@ def test__matched_syllables():
              [Syllable(text='Poesy.', stress=None, match=False)],
              }
     for word, matches in WORDS.items():
-        METER = "010"
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb._matched_syllables(METER) == matches
+        wb = WordBuilder(
+            word=word,
+            pattern="010",
+            custom_dict=CUSTOM_DICT,
+        )
+        assert wb._matched_syllables() == matches
 
 
 def test__rhyming_part():
@@ -288,6 +291,9 @@ def test_stressed_HTML():
 </span>",
              }
     for word, HTML in WORDS.items():
-        METER = "010"
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb.stressed_HTML(METER) == HTML
+        wb = WordBuilder(
+            word=word,
+            pattern="010",
+            custom_dict=CUSTOM_DICT,
+        )
+        assert wb.stressed_HTML() == HTML
