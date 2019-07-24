@@ -196,9 +196,8 @@ class WordBuilder(object):
         """
         Mark up the original word based on the stress pattern.
 
-        Return the word with the syllables wrapped with HTML tags and style
-        attributes based on stress, provided meter, and whether they match.
-        Finally, wrap a <span> tag around the entire word.
+        Return the word with the syllables wrapped with a span tag and CSS
+        classes based on stress, and whether it matches the meter.
         """
         MATCH_CLASSES = {
             True: "match",
@@ -221,4 +220,4 @@ class WordBuilder(object):
                     + STRESS_CLASSES[syllable.stress]
                 )
             )
-        return self._tag_string(result, "span")
+        return result

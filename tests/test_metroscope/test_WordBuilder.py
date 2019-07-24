@@ -260,35 +260,27 @@ def test__rhyming_part():
 def test_stressed_HTML():
     """Should give an HTML representation of the word's fit to meter."""
     CUSTOM_DICT = {
-                   "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
-                   }
+        "phidian": {
+            "syllables": ["phi", "dian"],
+            "phones": ["F IH1 D IY0 N"]
+        },
+    }
     WORDS = {
-             "automatic":
-             "<span>\
-<span class='match unstressed'>au</span>\
+        "automatic":
+            "<span class='match unstressed'>au</span>\
 <span class='mismatch stressed'>to</span>\
 <span class='mismatch unstressed'>ma</span>\
-<span class='mismatch missing'>tic</span>\
-</span>",
-             "Shadows":
-             "<span>\
-<span class='mismatch unstressed'>Sha</span>\
-<span class='match stressed'>dows</span>\
-</span>",
-             "One":
-             "<span>\
-<span class='match unstressed'>One</span>\
-</span>",
-             "Phidian":
-             "<span>\
-<span class='mismatch unstressed'>Phi</span>\
-<span class='mismatch stressed'>dian</span>\
-</span>",
-             "Poesy.":
-             "<span>\
-<span class='mismatch missing'>Poesy.</span>\
-</span>",
+<span class='mismatch missing'>tic</span>",
+        "Shadows":
+            "<span class='mismatch unstressed'>Sha</span>\
+<span class='match stressed'>dows</span>",
+        "One":
+            "<span class='match unstressed'>One</span>",
+        "Phidian":
+            "<span class='mismatch unstressed'>Phi</span>\
+<span class='mismatch stressed'>dian</span>",
+        "Poesy.":
+            "<span class='mismatch missing'>Poesy.</span>",
              }
     for word, HTML in WORDS.items():
         wb = WordBuilder(
