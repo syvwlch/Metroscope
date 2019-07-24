@@ -37,11 +37,7 @@
                 </td>
                 <td>
                 {% for word in line._matched_words() %}
-                    {% for syllable in word._matched_syllables() %}
-                        <span class='{% if syllable.match %}match{% else %}mismatch{% endif %} {% if syllable.stress is none %}missing{% elif syllable.stress %}stressed{% else %}unstressed{% endif %}'>
-                            {{syllable.text}}
-                        </span>
-                    {% endfor %}
+                    {% for syllable in word._matched_syllables() %}<span class='{% if syllable.match %}match{% else %}mismatch{% endif %} {% if syllable.stress is none %}missing{% elif syllable.stress %}stressed{% else %}unstressed{% endif %}'>{{syllable.text}}</span>{% endfor %}
                 {% endfor %}
                 </td>
                 <td class="text-center text-muted">

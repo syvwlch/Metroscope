@@ -191,33 +191,3 @@ class WordBuilder(object):
         for stress in "012":
             result = result.replace(stress, "")
         return result
-
-    def stressed_HTML(self):
-        """
-        Mark up the original word based on the stress pattern.
-
-        Return the word with the syllables wrapped with a span tag and CSS
-        classes based on stress, and whether it matches the meter.
-        """
-        MATCH_CLASSES = {
-            True: "match",
-            False: "mismatch"
-        }
-        STRESS_CLASSES = {
-            True: "stressed",
-            False: "unstressed",
-            None: "missing"
-        }
-
-        result = ""
-        for syllable in self._matched_syllables():
-            result += self._tag_string(
-                snippet=syllable.text,
-                tag='span',
-                css_class=(
-                    MATCH_CLASSES[syllable.match]
-                    + " "
-                    + STRESS_CLASSES[syllable.stress]
-                )
-            )
-        return result
