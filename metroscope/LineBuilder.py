@@ -16,13 +16,11 @@ class LineBuilder(object):
         self,
         line,
         pattern='',
-        rhyme_designator='',
         custom_dict={},
     ):
         """Initialize from original line."""
         self.line = line
         self.pattern = pattern
-        self.rhyme_designator = rhyme_designator
         self.custom_dict = custom_dict
 
     def __str__(self):

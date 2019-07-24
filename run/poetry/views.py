@@ -29,7 +29,9 @@ def scanned_poem(poem, pattern):
     """
     Create a list of stanzas from the poem.
 
-    Each stanza will be a list of LineBuilder instances.
+    Each stanza will include:
+        - a list of LineBuilder instances, and
+        - a dictionary of the rhymes.
     """
     stanzas = []
     for stanza in poem.split("\n\n"):
@@ -43,14 +45,12 @@ def scanned_poem(poem, pattern):
                     custom_dict=CUSTOM_DICT,
                 )
                 rp = str(lb._rhyming_part)
+                lines.append(lb)
                 try:
-                    rd = rhymes[rp]
+                    rhymes[rp]
                 except KeyError:
                     rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
-                    rd = rhymes[rp]
-                lb.rhyme_designator = rd
-                lines.append(lb)
-        stanzas.append(lines)
+        stanzas.append([lines, rhymes])
     return stanzas
 
 

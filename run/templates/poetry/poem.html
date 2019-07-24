@@ -25,9 +25,9 @@
 <p>- by {{ poet }}, scanned in {{ meter }}.</p>
 <div class='container'>
     <table>
-{% for stanza in stanzas %}
+{% for lines, rhymes in stanzas %}
 {% set stanza_loop = loop %}
-    {% for line in stanza %}
+    {% for line in lines %}
         <tr>
             <td class="text-center text-muted annotation">
                 {% if stanza_loop.length == 1 %}
@@ -43,8 +43,9 @@
             {%- endfor %}
         {% endfor %}
             </td>
+            {% set rp = line._rhyming_part|string %}
             <td class="text-center text-muted annotation">
-                <small data-toggle='tooltip' title='{{ line._rhyming_part }}'>{{ line.rhyme_designator }}</small>
+                <small data-toggle='tooltip' title='{{ rp }}'>{{ rhymes[rp] }}</small>
             </td>
         </tr>
         {% if loop.last and not stanza_loop.last %}
