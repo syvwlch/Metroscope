@@ -84,7 +84,7 @@ class Poem(db.Model):
     keyword = db.Column(db.String(64), unique=True, nullable=False)
     title = db.Column(db.String(64), nullable=False)
     raw_text = db.Column(db.Text, nullable=False)
-    HTML = db.Column(db.Text)
+    HTML = db.Column(db.Text)  # Deprecated for now, not using
     poet_id = db.Column(db.Integer, db.ForeignKey('poets.id'))
     meter_id = db.Column(db.Integer, db.ForeignKey('meters.id'))
 
@@ -99,7 +99,6 @@ class Poem(db.Model):
 
         Idempotent.
         """
-        from metroscope import scanned_poem
         POEMS = [
             {
                 'title': 'Ode on Indolence',
@@ -145,7 +144,6 @@ class Poem(db.Model):
                             title=title,
                             keyword=keyword,
                             raw_text=raw_text,
-                            # HTML=scanned_poem(raw_text, meter.pattern),
                             poet_id=poet.id,
                             meter_id=meter.id,
                         )

@@ -4,7 +4,57 @@ from flask import render_template, redirect, url_for
 from run import db
 from . import poetry
 from ..models import Meter, Poet, Poem
-from metroscope import scanned_poem
+from metroscope import LineBuilder, CUSTOM_DICT
+
+
+def rhyme_designator(index):
+    """
+    Returns a string with an uppercase letter and a modifier.
+
+    The modifier indicates how many times around the alphabet the index has
+    gone, e.g. for index = 27, the string is A'.
+    """
+    from string import ascii_uppercase
+    num = len(ascii_uppercase)
+    letter = ascii_uppercase[index % num]
+    modifier = index // num
+    if modifier == 0:
+        modifier = ""
+    else:
+        modifier = str(modifier)
+    return letter + modifier
+
+
+def scanned_poem(poem, pattern):
+    """
+    Create a list of lines from the poem.
+
+    Each line will be an instance of the LineBuilder class.
+    """
+    lines = []
+    count = 0
+    rhymes = {"None": "_"}
+    for line in poem.split("\n"):
+        if line != "":
+            count += 1
+            lb = LineBuilder(
+                line=line,
+                pattern=pattern,
+                count=count,
+                custom_dict=CUSTOM_DICT,
+            )
+            rp = str(lb._rhyming_part)
+            try:
+                rd = rhymes[rp]
+            except KeyError:
+                rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
+                rd = rhymes[rp]
+            lb.rhyme_designator = rd
+            lines.append(lb)
+        else:
+            rhymes = {"None": "_"}
+            lines.append(None)
+    return lines
 
 
 @poetry.route("/poem")
