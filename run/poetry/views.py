@@ -27,34 +27,34 @@ def rhyme_designator(index):
 
 def scanned_poem(poem, pattern):
     """
-    Create a list of lines from the poem.
+    Create a list of stanzas from the poem.
 
-    Each line will be an instance of the LineBuilder class.
+    Each stanza will be a list of LineBuilder instances.
     """
-    lines = []
-    count = 0
-    rhymes = {"None": "_"}
-    for line in poem.split("\n"):
-        if line != "":
-            count += 1
-            lb = LineBuilder(
-                line=line,
-                pattern=pattern,
-                count=count,
-                custom_dict=CUSTOM_DICT,
-            )
-            rp = str(lb._rhyming_part)
-            try:
-                rd = rhymes[rp]
-            except KeyError:
-                rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
-                rd = rhymes[rp]
-            lb.rhyme_designator = rd
-            lines.append(lb)
-        else:
-            rhymes = {"None": "_"}
-            lines.append(None)
-    return lines
+    stanzas = []
+    for stanza in poem.split("\n\n"):
+        count = 0
+        rhymes = {"None": "_"}
+        lines = []
+        for line in stanza.split("\n"):
+            if line != "":
+                count += 1
+                lb = LineBuilder(
+                    line=line,
+                    pattern=pattern,
+                    count=count,
+                    custom_dict=CUSTOM_DICT,
+                )
+                rp = str(lb._rhyming_part)
+                try:
+                    rd = rhymes[rp]
+                except KeyError:
+                    rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
+                    rd = rhymes[rp]
+                lb.rhyme_designator = rd
+                lines.append(lb)
+        stanzas.append(lines)
+    return stanzas
 
 
 @poetry.route("/poem")
@@ -81,7 +81,7 @@ def poem(keyword):
         title=poem.title,
         poet=poem.author.name,
         meter=poem.meter.name,
-        lines=scanned_poem(poem.raw_text, poem.meter.pattern),
+        stanzas=scanned_poem(poem.raw_text, poem.meter.pattern),
     )
 
 
