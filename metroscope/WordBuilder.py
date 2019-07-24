@@ -127,20 +127,10 @@ class WordBuilder(object):
         clean = clean.replace("’d", "ed")
         return clean
 
-    def _tag_string(self, snippet, tag, css_class=""):
-        """Wrap a text snippet with an html tag."""
-        if css_class == "":
-            opening_tag = "<" + tag + ">"
-        else:
-            opening_tag = "<" + tag + " class='" + css_class + "'>"
-        closing_tag = "</" + tag + ">"
-        return opening_tag + snippet + closing_tag
-
-    def _matched_syllables(self):
+    def matched_syllables(self):
         """
         Match the pronounced stresses against the pattern.
 
-        Private method in service of stressed_HTML().
         Returns a list of namedtuples:
             - Syllable.text: string of the original syllable,
             - Syllable.stress: Boolean for pattern stress,
@@ -182,7 +172,7 @@ class WordBuilder(object):
         return result
 
     @property
-    def _rhyming_part(self):
+    def rhyming_part(self):
         """Return the rhyming part of the original word."""
         phones = self._phones
         if phones is None:

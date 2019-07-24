@@ -46,18 +46,18 @@ def test__clean_line():
         assert(LineBuilder(line)._clean_line() == clean_line)
 
 
-def test__word_list():
+def test_word_list():
     """Should create a list of WordBuilder instances."""
     LINE = "Two Owls and a Hen,"
-    for word in LineBuilder(LINE)._word_list:
+    for word in LineBuilder(LINE).word_list:
         assert(repr(word) == "WordBuilder('" + str(word) + "')")
 
 
-def test__rhyming_part():
+def test_rhyming_part():
     """Should return the rhyming part of the last word of the line."""
     LINES = {
              "Two Owls and a Hen,": "EH N",
              "I knew to be my demon Poesy.": None
              }
     for line, rhyme in LINES.items():
-        assert(LineBuilder(line)._rhyming_part == rhyme)
+        assert(LineBuilder(line).rhyming_part == rhyme)

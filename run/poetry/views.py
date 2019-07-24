@@ -44,7 +44,7 @@ def scanned_poem(poem, pattern):
                     pattern=pattern,
                     custom_dict=CUSTOM_DICT,
                 )
-                rp = str(lb._rhyming_part)
+                rp = str(lb.rhyming_part)
                 lines.append(lb)
                 try:
                     rhymes[rp]

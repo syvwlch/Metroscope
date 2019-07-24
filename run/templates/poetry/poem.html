@@ -9,6 +9,7 @@
     .unstressed {}
     .missing {font-size: 80%;}
     .annotation {
+        text-align: center;
         padding-right: 10px;
         padding-left: 10px;
     }
@@ -29,7 +30,7 @@
 {% set stanza_loop = loop %}
     {% for line in lines %}
         <tr>
-            <td class="text-center text-muted annotation">
+            <td class="annotation text-muted">
                 {% if stanza_loop.length == 1 %}
                 <small>{{ loop.index }}</small>
                 {% else %}
@@ -37,19 +38,23 @@
                 {% endif %}
             </td>
             <td>
-        {% for word in line._matched_words() %}
-            {% for syllable in word._matched_syllables() -%}
+        {% for word in line.matched_words() %}
+            {% for syllable in word.matched_syllables() -%}
                 <span class='{% if syllable.match %}match{% else %}mismatch{% endif %} {% if syllable.stress is none %}missing{% elif syllable.stress %}stressed{% else %}unstressed{% endif %}'>{{syllable.text}}</span>
             {%- endfor %}
         {% endfor %}
             </td>
-            {% set rp = line._rhyming_part|string %}
-            <td class="text-center text-muted annotation">
+            {% set rp = line.rhyming_part|string %}
+            <td class="annotation text-muted">
                 <small data-toggle='tooltip' title='{{ rp }}'>{{ rhymes[rp] }}</small>
             </td>
         </tr>
         {% if loop.last and not stanza_loop.last %}
-        <tr><td></td><td class="text-center text-muted">*</td></tr>
+        <tr>
+            <td></td>
+            <td class="annotation text-muted">~</td>
+            <td></td>
+        </tr>
         {% endif %}
     {% endfor %}
 {% endfor %}

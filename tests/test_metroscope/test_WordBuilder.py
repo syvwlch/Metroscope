@@ -198,16 +198,7 @@ def test_word_has_punctuation():
         assert WordBuilder(word)._clean_word == cleaned_word
 
 
-def test__tag_string():
-    """Should wrap a string with an HTML tag and optional class attr."""
-    wb = WordBuilder("Irrelevant")
-    assert(wb._tag_string("Without a style passed", "span")
-           == "<span>Without a style passed</span>")
-    assert(wb._tag_string("With a class passed", "strong", "stressed")
-           == "<strong class='stressed'>With a class passed</strong>")
-
-
-def test__matched_syllables():
+def test_matched_syllables():
     """Should give a list of list with the word's fit to meter."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -238,10 +229,10 @@ def test__matched_syllables():
             pattern="010",
             custom_dict=CUSTOM_DICT,
         )
-        assert wb._matched_syllables() == matches
+        assert wb.matched_syllables() == matches
 
 
-def test__rhyming_part():
+def test_rhyming_part():
     """Should return the rhyming part of the word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -254,4 +245,4 @@ def test__rhyming_part():
              }
     for line, rhyme in LINES.items():
         wb = WordBuilder(line, custom_dict=CUSTOM_DICT)
-        assert wb._rhyming_part == rhyme
+        assert wb.rhyming_part == rhyme

@@ -39,7 +39,7 @@ class LineBuilder(object):
         return clean
 
     @property
-    def _word_list(self):
+    def word_list(self):
         """Create the list of WordBuilder instances."""
         word_list = []
         for word in self._clean_line().split():
@@ -48,14 +48,14 @@ class LineBuilder(object):
         return word_list
 
     @property
-    def _rhyming_part(self):
+    def rhyming_part(self):
         """Return the rhyming part of the line's last word."""
-        if self._word_list == []:
+        if self.word_list == []:
             return None
         else:
-            return self._word_list[-1]._rhyming_part
+            return self.word_list[-1].rhyming_part
 
-    def _matched_words(self):
+    def matched_words(self):
         """
         Match each word's syllables against the pattern.
 
@@ -67,7 +67,7 @@ class LineBuilder(object):
         matched_words = []
         # Make a mutable copy of the pattern
         pattern = self.pattern[:]
-        for word in self._word_list:
+        for word in self.word_list:
             number_stresses = len(word.stress_list)
             word.pattern = pattern[0:number_stresses]
             pattern = pattern[number_stresses:]
