@@ -54,7 +54,10 @@ class LineBuilder(object):
     @property
     def _rhyming_part(self):
         """Return the rhyming part of the line's last word."""
-        return self._word_list[-1]._rhyming_part
+        if self._word_list == []:
+            return None
+        else:
+            return self._word_list[-1]._rhyming_part
 
     def _matched_words(self):
         """
