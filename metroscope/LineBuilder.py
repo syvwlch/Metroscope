@@ -16,14 +16,12 @@ class LineBuilder(object):
         self,
         line,
         pattern='',
-        count=0,
         rhyme_designator='',
         custom_dict={},
     ):
         """Initialize from original line."""
         self.line = line
         self.pattern = pattern
-        self.count = count
         self.rhyme_designator = rhyme_designator
         self.custom_dict = custom_dict
 

@@ -33,16 +33,13 @@ def scanned_poem(poem, pattern):
     """
     stanzas = []
     for stanza in poem.split("\n\n"):
-        count = 0
         rhymes = {"None": "_"}
         lines = []
         for line in stanza.split("\n"):
             if line != "":
-                count += 1
                 lb = LineBuilder(
                     line=line,
                     pattern=pattern,
-                    count=count,
                     custom_dict=CUSTOM_DICT,
                 )
                 rp = str(lb._rhyming_part)
