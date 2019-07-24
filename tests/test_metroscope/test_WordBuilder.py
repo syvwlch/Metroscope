@@ -199,12 +199,12 @@ def test_word_has_punctuation():
 
 
 def test__tag_string():
-    """Should wrap a string with an HTML tag and optional style attr."""
+    """Should wrap a string with an HTML tag and optional class attr."""
     wb = WordBuilder("Irrelevant")
     assert(wb._tag_string("Without a style passed", "span")
            == "<span>Without a style passed</span>")
-    assert(wb._tag_string("With a style passed", "strong", "color:red")
-           == "<strong style='color:red'>With a style passed</strong>")
+    assert(wb._tag_string("With a class passed", "strong", "stressed")
+           == "<strong class='stressed'>With a class passed</strong>")
 
 
 def test__matched_syllables():
@@ -266,28 +266,28 @@ def test_stressed_HTML():
     WORDS = {
              "automatic":
              "<span>\
-<span style='color:black'>au</span>\
-<strong style='color:red'>to</strong>\
-<span style='color:red'>ma</span>\
-<small style='color:red'>tic</small>\
+<span class='match unstressed'>au</span>\
+<span class='mismatch stressed'>to</span>\
+<span class='mismatch unstressed'>ma</span>\
+<span class='mismatch missing'>tic</span>\
 </span>",
              "Shadows":
              "<span>\
-<span style='color:red'>Sha</span>\
-<strong style='color:black'>dows</strong>\
+<span class='mismatch unstressed'>Sha</span>\
+<span class='match stressed'>dows</span>\
 </span>",
              "One":
              "<span>\
-<span style='color:black'>One</span>\
+<span class='match unstressed'>One</span>\
 </span>",
              "Phidian":
              "<span>\
-<span style='color:red'>Phi</span>\
-<strong style='color:red'>dian</strong>\
+<span class='mismatch unstressed'>Phi</span>\
+<span class='mismatch stressed'>dian</span>\
 </span>",
              "Poesy.":
              "<span>\
-<small style='color:red'>Poesy.</small>\
+<span class='mismatch missing'>Poesy.</span>\
 </span>",
              }
     for word, HTML in WORDS.items():

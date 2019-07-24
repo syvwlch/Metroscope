@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
+{% block head %}
+{{ super() }}
+<style>
+    .match {color: black;}
+    .mismatch {color: red;}
+    .stressed {font-weight: bold;}
+    .unstressed {}
+    .missing {font-size: 80%;}
+</style>
+{% endblock %}
+
+
 {% block title %}
 {{ title }} - Metroscope
 {% endblock title %}

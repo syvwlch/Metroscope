@@ -127,12 +127,12 @@ class WordBuilder(object):
         clean = clean.replace("’d", "ed")
         return clean
 
-    def _tag_string(self, snippet, tag, style=""):
+    def _tag_string(self, snippet, tag, css_class=""):
         """Wrap a text snippet with an html tag."""
-        if style == "":
+        if css_class == "":
             opening_tag = "<" + tag + ">"
         else:
-            opening_tag = "<" + tag + " style='" + style + "'>"
+            opening_tag = "<" + tag + " class='" + css_class + "'>"
         closing_tag = "</" + tag + ">"
         return opening_tag + snippet + closing_tag
 
@@ -200,17 +200,25 @@ class WordBuilder(object):
         attributes based on stress, provided meter, and whether they match.
         Finally, wrap a <span> tag around the entire word.
         """
-        STYLES = {True: "color:black",
-                  False: "color:red"}
-        TAGS = {True: "strong",
-                False: "span",
-                None: "small"}
+        MATCH_CLASSES = {
+            True: "match",
+            False: "mismatch"
+        }
+        STRESS_CLASSES = {
+            True: "stressed",
+            False: "unstressed",
+            None: "missing"
+        }
 
         result = ""
         for syllable in self._matched_syllables():
             result += self._tag_string(
-                syllable.text,
-                TAGS[syllable.stress],
-                STYLES[syllable.match],
+                snippet=syllable.text,
+                tag='span',
+                css_class=(
+                    MATCH_CLASSES[syllable.match]
+                    + " "
+                    + STRESS_CLASSES[syllable.stress]
                 )
+            )
         return self._tag_string(result, "span")
