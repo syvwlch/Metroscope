@@ -1,7 +1,7 @@
 """Route definitions for the main blueprint."""
 
 import os
-from flask import render_template
+from flask import render_template, redirect, url_for
 from . import main
 import markdown
 
@@ -9,7 +9,8 @@ import markdown
 @main.route("/")
 def home():
     """Define the home route."""
-    return render_template("main/home.html")
+    # return render_template("main/home.html")
+    return redirect(url_for('poetry.poem_list'))
 
 
 @main.route("/about")
