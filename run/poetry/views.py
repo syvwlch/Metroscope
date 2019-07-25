@@ -25,6 +25,18 @@ def rhyme_designator(index):
     return letter + modifier
 
 
+def rhymes(lines):
+    """Create a dict with the rhymes in the lines."""
+    rhymes = {"None": "_"}
+    for line in lines:
+        rp = str(line.rhyming_part)
+        try:
+            rhymes[rp]
+        except KeyError:
+            rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
+    return rhymes
+
+
 def stanzas(poem, pattern):
     """
     Create a list of stanzas from the poem.
@@ -44,14 +56,7 @@ def stanzas(poem, pattern):
                     custom_dict=CUSTOM_DICT,
                 )
                 lines.append(lb)
-        rhymes = {"None": "_"}
-        for line in lines:
-            rp = str(lb.rhyming_part)
-            try:
-                rhymes[rp]
-            except KeyError:
-                rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
-        stanzas.append([lines, rhymes])
+        stanzas.append([lines, rhymes(lines)])
     return stanzas
 
 
