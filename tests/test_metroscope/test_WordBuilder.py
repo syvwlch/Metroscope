@@ -37,7 +37,7 @@ def test_repr_magic_method():
                == "WordBuilder('" + word + "')")
 
 
-def test__phones():
+def test_phones():
     """Should set the phones from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -51,7 +51,7 @@ def test__phones():
              }
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb._phones == phones
+        assert wb.phones == phones
 
 
 def test__raw_syllables():

@@ -20,6 +20,18 @@ class WordBuilder(object):
         self.word = word
         self.pattern = pattern
         self.custom_dict = custom_dict
+
+        word_phones = []
+        try:
+            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
+        except KeyError:
+            pass
+        word_phones.extend(phones_for_word(self._clean_word))
+        if word_phones == []:
+            self._phones_list = None
+        else:
+            self._phones_list = word_phones
+
         if self._phones_list is None:
             self._phones = None
         else:
@@ -34,18 +46,9 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
-    def _phones_list(self):
+    def phones_list(self):
         """Return the list of possible phones for the original word."""
-        word_phones = []
-        try:
-            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
-        except KeyError:
-            pass
-        word_phones.extend(phones_for_word(self._clean_word))
-        if word_phones == []:
-            return None
-        else:
-            return word_phones
+        return self._phones_list
 
     @property
     def phones(self):
@@ -55,7 +58,7 @@ class WordBuilder(object):
     @phones.setter
     def phones(self, proposed_value):
         """Set the current phones to be used for stress & rhyming_part."""
-        if proposed_value in self._phones_list:
+        if proposed_value in self.phones_list:
             self._phones = proposed_value
         else:
             raise ValueError('These phones are not valid for this word.')
@@ -79,9 +82,9 @@ class WordBuilder(object):
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        if self._phones is None:
+        if self.phones is None:
             return ""
-        word_stresses = stresses(self._phones)
+        word_stresses = stresses(self.phones)
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
@@ -173,7 +176,7 @@ class WordBuilder(object):
     @property
     def rhyming_part(self):
         """Return the rhyming part of the original word."""
-        phones = self._phones
+        phones = self.phones
         if phones is None:
             return None
         result = rhyming_part(phones)
