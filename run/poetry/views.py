@@ -25,7 +25,7 @@ def rhyme_designator(index):
     return letter + modifier
 
 
-def scanned_poem(poem, pattern):
+def stanzas(poem, pattern):
     """
     Create a list of stanzas from the poem.
 
@@ -35,7 +35,6 @@ def scanned_poem(poem, pattern):
     """
     stanzas = []
     for stanza in poem.split("\n\n"):
-        rhymes = {"None": "_"}
         lines = []
         for line in stanza.split("\n"):
             if line != "":
@@ -44,12 +43,14 @@ def scanned_poem(poem, pattern):
                     pattern=pattern,
                     custom_dict=CUSTOM_DICT,
                 )
-                rp = str(lb.rhyming_part)
                 lines.append(lb)
-                try:
-                    rhymes[rp]
-                except KeyError:
-                    rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
+        rhymes = {"None": "_"}
+        for line in lines:
+            rp = str(lb.rhyming_part)
+            try:
+                rhymes[rp]
+            except KeyError:
+                rhymes.update({rp: rhyme_designator(len(rhymes)-1)})
         stanzas.append([lines, rhymes])
     return stanzas
 
@@ -78,7 +79,7 @@ def poem(keyword):
         title=poem.title,
         poet=poem.author.name,
         meter=poem.meter.name,
-        stanzas=scanned_poem(poem.raw_text, poem.meter.pattern),
+        stanzas=stanzas(poem.raw_text, poem.meter.pattern),
     )
 
 
