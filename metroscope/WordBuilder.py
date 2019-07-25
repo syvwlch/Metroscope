@@ -20,6 +20,10 @@ class WordBuilder(object):
         self.word = word
         self.pattern = pattern
         self.custom_dict = custom_dict
+        if self._phones_list is None:
+            self._phones = None
+        else:
+            self._phones = self._phones_list[0]
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -31,7 +35,7 @@ class WordBuilder(object):
 
     @property
     def _phones_list(self):
-        """Return the list of phones of the original word."""
+        """Return the list of possible phones for the original word."""
         word_phones = []
         try:
             word_phones.extend(self.custom_dict[self._clean_word]["phones"])
@@ -44,11 +48,17 @@ class WordBuilder(object):
             return word_phones
 
     @property
-    def _phones(self):
-        """Return the current phones (as per index into phones list)."""
-        if self._phones_list is None:
-            return None
-        return self._phones_list[0]
+    def phones(self):
+        """Return the current phones being used for stress & rhyming_part."""
+        return self._phones
+
+    @phones.setter
+    def phones(self, proposed_value):
+        """Set the current phones to be used for stress & rhyming_part."""
+        if proposed_value in self._phones_list:
+            self._phones = proposed_value
+        else:
+            raise ValueError('These phones are not valid for this word.')
 
     @property
     def _raw_syllables(self):
