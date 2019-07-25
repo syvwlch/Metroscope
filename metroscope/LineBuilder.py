@@ -66,5 +66,7 @@ class LineBuilder(object):
         """Return the rhyming part of the line's last word."""
         if self.words == []:
             return None
-        else:
-            return self.words[-1].rhyming_part
+        for word in reversed(self.words):
+            if word.word != '_':
+                return word.rhyming_part
+        return None
