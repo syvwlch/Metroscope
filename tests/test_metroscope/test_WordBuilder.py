@@ -1,6 +1,5 @@
 """Unit test the WordBuilder Class."""
 
-import pytest
 from metroscope import WordBuilder
 
 
@@ -13,7 +12,6 @@ def test_init():
     for word in WORDS:
         wb = WordBuilder(word)
         assert wb.word == word
-        assert wb._phones_index == 0
 
 
 def test_str_magic_method():
@@ -39,7 +37,7 @@ def test_repr_magic_method():
                == "WordBuilder('" + word + "')")
 
 
-def test__phones():
+def test_phones():
     """Should set the phones from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -53,35 +51,10 @@ def test__phones():
              }
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb._phones == phones
+        assert wb.phones == phones
 
 
-def test_index():
-    """Should set the index to use with the _phones list."""
-    CUSTOM_DICT = {
-                   "blarghe": {"syllables": ["blarghe"],
-                               "phones": ["B L AE1 R G AE0",
-                                          "B L AE1 R G E2"]},
-                   }
-    WORDS = {
-             "blarghe": ["B L AE1 R G AE0",
-                         "B L AE1 R G E2"]
-             }
-    for word, phones_list in WORDS.items():
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        wb.index = 0
-        assert wb._phones_index == 0
-        assert wb.index == 0
-        assert wb._phones == phones_list[0]
-        wb.index = 1
-        assert wb._phones_index == 1
-        assert wb.index == 1
-        assert wb._phones == phones_list[1]
-        with pytest.raises(IndexError):
-            wb.index = 2
-
-
-def test_syllables():
+def test__raw_syllables():
     """Should set the syllables from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -95,7 +68,7 @@ def test_syllables():
              }
     for word, syllables in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb.syllables == syllables
+        assert wb._raw_syllables == syllables
 
 
 def test_stress_list():
@@ -198,45 +171,41 @@ def test_word_has_punctuation():
         assert WordBuilder(word)._clean_word == cleaned_word
 
 
-def test__tag_string():
-    """Should wrap a string with an HTML tag and optional style attr."""
-    wb = WordBuilder("Irrelevant")
-    assert(wb._tag_string("Without a style passed", "span")
-           == "<span>Without a style passed</span>")
-    assert(wb._tag_string("With a style passed", "strong", "color:red")
-           == "<strong style='color:red'>With a style passed</strong>")
-
-
-def test__matched_syllables():
+def test_syllables():
     """Should give a list of list with the word's fit to meter."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
                                "phones": ["F IH1 D IY0 N"]},
                    }
+    from collections import namedtuple
+    Syllable = namedtuple('Syllable', 'text stress match')
     WORDS = {
              "automatic":
-             [['au', False, True],
-              ['to', True, False],
-              ['ma', False, False],
-              ['tic', None, False]],
+             [Syllable(text='au', stress=False, match=True),
+              Syllable(text='to', stress=True, match=False),
+              Syllable(text='ma', stress=False, match=False),
+              Syllable(text='tic', stress=None, match=False)],
              "Shadows":
-             [['Sha', False, False],
-              ['dows', True, True]],
+             [Syllable(text='Sha', stress=False, match=False),
+              Syllable(text='dows', stress=True, match=True)],
              "One":
-             [['One', False, True]],
+             [Syllable(text='One', stress=False, match=True)],
              "Phidian":
-             [['Phi', False, False],
-              ['dian', True, False]],
+             [Syllable(text='Phi', stress=False, match=False),
+              Syllable(text='dian', stress=True, match=False)],
              "Poesy.":
-             [['Poesy.', None, False]],
+             [Syllable(text='Poesy.', stress=None, match=False)],
              }
     for word, matches in WORDS.items():
-        METER = "010"
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb._matched_syllables(METER) == matches
+        wb = WordBuilder(
+            word=word,
+            pattern="010",
+            custom_dict=CUSTOM_DICT,
+        )
+        assert wb.syllables == matches
 
 
-def test__rhyming_part():
+def test_rhyming_part():
     """Should return the rhyming part of the word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -249,43 +218,4 @@ def test__rhyming_part():
              }
     for line, rhyme in LINES.items():
         wb = WordBuilder(line, custom_dict=CUSTOM_DICT)
-        assert wb._rhyming_part == rhyme
-
-
-def test_stressed_HTML():
-    """Should give an HTML representation of the word's fit to meter."""
-    CUSTOM_DICT = {
-                   "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
-                   }
-    WORDS = {
-             "automatic":
-             "<span>\
-<span style='color:black'>au</span>\
-<strong style='color:red'>to</strong>\
-<span style='color:red'>ma</span>\
-<small style='color:red'>tic</small>\
-</span>",
-             "Shadows":
-             "<span>\
-<span style='color:red'>Sha</span>\
-<strong style='color:black'>dows</strong>\
-</span>",
-             "One":
-             "<span>\
-<span style='color:black'>One</span>\
-</span>",
-             "Phidian":
-             "<span>\
-<span style='color:red'>Phi</span>\
-<strong style='color:red'>dian</strong>\
-</span>",
-             "Poesy.":
-             "<span>\
-<small style='color:red'>Poesy.</small>\
-</span>",
-             }
-    for word, HTML in WORDS.items():
-        METER = "010"
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb.stressed_HTML(METER) == HTML
+        assert wb.rhyming_part == rhyme

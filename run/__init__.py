@@ -34,4 +34,7 @@ def create_app(config_name):
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
+    from .poetry import poetry as poetry_blueprint
+    app.register_blueprint(poetry_blueprint, url_prefix='/poetry')
+
     return app

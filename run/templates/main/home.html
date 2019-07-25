@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Index - Metroscope
+{% endblock title %}
+
+{% block page_content %}
+    <h1>
+    Hello
+    {% if current_user.is_authenticated %}
+        {{ current_user.display_name }}!
+    {% else %}
+        lover of Poësy!
+    {% endif %}
+    </h1>
+    <p>This little website is an experiment in computer-assisted poetry appreciation.</p>
+    <p>It doesn't aim to read the poems for you, but rather to help you see the structure, meter, and rhyme scheme while you read. See the <a href="{{ url_for('main.about') }}">about page</a> for more details on implementation.</p>
+    <p>Click <a href="{{ url_for('poetry.poem_list') }}">here</a> to see a list of available poems!</p>
+{% endblock page_content %}

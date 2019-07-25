@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Index - Metroscope
+    Poem List - Metroscope
 {% endblock title %}
 
 {% block page_content %}
@@ -15,11 +15,11 @@
     </h1>
     {% if poems == [] %}
         <h2>Sorry, no poems in the database!</h2>
-        <p>Click <a href="{{ url_for('main.add_samples') }}">here</a> to load some samples!</p>
+        <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
     {% else %}
         <h2>Choose a poem from the list below:</h2>
         {% for poem in poems %}
-            <li><a href="{{ url_for('main.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
+            <li><a href="{{ url_for('poetry.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
         {% endfor %}
     {% endif %}
 {% endblock page_content %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .match {color: black;}
+    .mismatch {color: red;}
+    .stressed {font-weight: bold;}
+    .unstressed {}
+    .missing {font-size: 80%;}
+    .annotation {
+        text-align: center;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+</style>
+{% endblock %}
+
+
+{% block title %}
+{{ title }} - Metroscope
+{% endblock title %}
+
+{% block page_content %}
+<h1>{{ title }}</h1>
+<p>- by {{ poet }}, scanned in {{ meter }}.</p>
+<div class='container'>
+    <table>
+{% for lines, rhymes in stanzas %}
+{% set stanza_loop = loop %}
+    {% for line in lines %}
+        <tr>
+            <td class="annotation text-muted">
+                {% if stanza_loop.length == 1 %}
+                <small>{{ loop.index }}</small>
+                {% else %}
+                <small>{{ stanza_loop.index }}.{{ loop.index }}</small>
+                {% endif %}
+            </td>
+            <td>
+        {% for word in line.words %}
+            {% for syllable in word.syllables -%}
+                {%- if syllable.match -%}
+                    {%- set match_class = 'match' -%}
+                {%- else -%}
+                    {%- set match_class = 'mismatch' -%}
+                {%- endif -%}
+                {%- if syllable.stress is none -%}
+                    {%- set stress_class = 'missing' -%}
+                {%- elif syllable.stress -%}
+                    {%- set stress_class = 'stressed' -%}
+                {%- else -%}
+                    {%- set stress_class = 'unstressed' -%}
+                {%- endif -%}
+                <span class='{{ match_class }} {{ stress_class }}'>{{syllable.text}}</span>
+            {%- endfor %}
+        {% endfor %}
+            </td>
+            {% set rp = line.rhyming_part|string %}
+            <td class="annotation text-muted">
+                <small data-toggle='tooltip' title='{{ rp }}'>{{ rhymes[rp] }}</small>
+            </td>
+        </tr>
+        {% if loop.last and not stanza_loop.last %}
+        <tr>
+            <td></td>
+            <td class="annotation text-muted">~</td>
+            <td></td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+    </table>
+</div>
+{% endblock page_content %}
+
+{% block scripts %}
+{{super()}}
+<script>
+    $(document).ready(function(){
+      $("[data-toggle='tooltip']").tooltip();
+    });
+</script>
+{% endblock scripts %}

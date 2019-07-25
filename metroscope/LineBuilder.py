@@ -12,9 +12,15 @@ class LineBuilder(object):
     on the website.
     """
 
-    def __init__(self, line, custom_dict={}):
+    def __init__(
+        self,
+        line,
+        pattern='',
+        custom_dict={},
+    ):
         """Initialize from original line."""
         self.line = line
+        self.pattern = pattern
         self.custom_dict = custom_dict
 
     def __str__(self):
@@ -33,30 +39,34 @@ class LineBuilder(object):
         return clean
 
     @property
-    def _word_list(self):
-        """Create the list of WordBuilder instances."""
-        word_list = []
+    def words(self):
+        """
+        Create the list of WordBuilder instances.
+
+        Distributes the stress pattern of the line across the words, based on
+        how many syllables they have. Any left over beats in the pattern get a
+        dummy word representation with the text '_'.
+        """
+        words = []
+        # Make a mutable copy of the pattern
+        pattern = self.pattern[:]
         for word in self._clean_line().split():
             wb = WordBuilder(word, custom_dict=self.custom_dict)
-            word_list.append(wb)
-        return word_list
+            number_stresses = len(wb.stress_list)
+            wb.pattern = pattern[0:number_stresses]
+            pattern = pattern[number_stresses:]
+            words.append(wb)
+        if pattern != []:
+            for stress in pattern:
+                words.append(WordBuilder(word='_', pattern=stress))
+        return words
 
     @property
-    def _rhyming_part(self):
+    def rhyming_part(self):
         """Return the rhyming part of the line's last word."""
-        return self._word_list[-1]._rhyming_part
-
-    def stressed_HTML(self, stress_pattern):
-        """Mark up the line based on the stress pattern provided."""
-        MISSING = "<b style='color:red'> _ </b>"
-
-        stressed_line = ""
-        for word in self._word_list:
-            number_stresses = len(word.stress_list)
-            word_meter = stress_pattern[0:number_stresses]
-            stress_pattern = stress_pattern[number_stresses:]
-            # use the stress pattern directly for the word stresses
-            stressed_line += word.stressed_HTML(word_meter) + " "
-        for stress in stress_pattern:
-            stressed_line += MISSING
-        return stressed_line
+        if self.words == []:
+            return None
+        for word in reversed(self.words):
+            if word.word != '_':
+                return word.rhyming_part
+        return None

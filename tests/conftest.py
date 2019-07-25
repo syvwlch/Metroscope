@@ -26,8 +26,25 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Set up and tear down a test client without sample poems in the db."""
+    """Set up and tear down a test client with an empty db."""
     yield app.test_client()
+
+
+@pytest.fixture
+def client_poems(app):
+    """Set up and tear down a test client with sample poems in the db."""
+    from run import db
+    from run.models import Meter, Poet, Poem
+    Meter.insert_samples()
+    Poet.insert_samples()
+    Poem.insert_samples()
+
+    yield app.test_client()
+
+    Meter.query.delete()
+    Poet.query.delete()
+    Poem.query.delete()
+    db.session.commit()
 
 
 @pytest.fixture

@@ -15,11 +15,27 @@ class WordBuilder(object):
     syllable objects with various properties.
     """
 
-    def __init__(self, word, custom_dict={}, index=0):
+    def __init__(self, word, pattern='', custom_dict={}):
         """Initialize from original word."""
         self.word = word
+        self.pattern = pattern
         self.custom_dict = custom_dict
-        self._phones_index = index
+
+        word_phones = []
+        try:
+            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
+        except KeyError:
+            pass
+        word_phones.extend(phones_for_word(self._clean_word))
+        if word_phones == []:
+            self._phones_list = None
+        else:
+            self._phones_list = word_phones
+
+        if self._phones_list is None:
+            self._phones = None
+        else:
+            self._phones = self._phones_list[0]
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -30,39 +46,25 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
-    def index(self):
-        """Return the current index for the _phones list."""
-        return self._phones_index
-
-    @index.setter
-    def index(self, index):
-        """Set the current index for the _phones_list."""
-        self._phones_index = index
-        self._phones
+    def phones_list(self):
+        """Return the list of possible phones for the original word."""
+        return self._phones_list
 
     @property
-    def _phones_list(self):
-        """Return the list of phones of the original word."""
-        word_phones = []
-        try:
-            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
-        except KeyError:
-            pass
-        word_phones.extend(phones_for_word(self._clean_word))
-        if word_phones == []:
-            return None
+    def phones(self):
+        """Return the current phones being used for stress & rhyming_part."""
+        return self._phones
+
+    @phones.setter
+    def phones(self, proposed_value):
+        """Set the current phones to be used for stress & rhyming_part."""
+        if proposed_value in self.phones_list:
+            self._phones = proposed_value
         else:
-            return word_phones
+            raise ValueError('These phones are not valid for this word.')
 
     @property
-    def _phones(self):
-        """Return the current phones (as per index into phones list)."""
-        if self._phones_list is None:
-            return None
-        return self._phones_list[self._phones_index]
-
-    @property
-    def syllables(self):
+    def _raw_syllables(self):
         """Return the syllables of the original word."""
         try:
             word_syllables = self.custom_dict[self._clean_word]["syllables"]
@@ -80,9 +82,9 @@ class WordBuilder(object):
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        if self._phones is None:
+        if self.phones is None:
             return ""
-        word_stresses = stresses(self._phones)
+        word_stresses = stresses(self.phones)
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
@@ -95,7 +97,7 @@ class WordBuilder(object):
     def _stressed_syllables(self):
         """Combine the syllables and stresses of the original word."""
         word = self.word
-        syllables = self.syllables
+        syllables = self._raw_syllables
         stresses = self.stress_list
         if stresses == "":
             return None
@@ -126,74 +128,58 @@ class WordBuilder(object):
         clean = clean.replace("’d", "ed")
         return clean
 
-    def _tag_string(self, snippet, tag, style=""):
-        """Wrap a text snippet with an html tag."""
-        if style == "":
-            opening_tag = "<" + tag + ">"
-        else:
-            opening_tag = "<" + tag + " style='" + style + "'>"
-        closing_tag = "</" + tag + ">"
-        return opening_tag + snippet + closing_tag
-
-    def _matched_syllables(self, pattern):
+    @property
+    def syllables(self):
         """
-        Match the pronounced stresses against the given pattern.
+        Build the syllable objects from the word.
 
-        Private method in service of stressed_HTML().
-        Returns a list of lists:
-            - syllable string,
-            - Boolean for pattern stress,
-            - Boolean for match between pattern & pronunciation
+        Returns a list of namedtuples:
+            - Syllable.text: string of the original syllable,
+            - Syllable.stress: Boolean for pattern stress,
+            - Syllable.match: Boolean for match between pattern & pronunciation
         """
+        from collections import namedtuple
+        Syllable = namedtuple('Syllable', 'text stress match')
         stressed_syllables = self._stressed_syllables
         if stressed_syllables is None:
-            return [[self.word, None, False]]
+            return [Syllable(
+                text=self.word,
+                stress=None,
+                match=False,
+            )]
         result = []
+        # Create a copy of pattern you can mutate safely
+        pattern = self.pattern[:]
         for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
                 if pattern[0] == '1':
-                    result.append([syllable,
-                                   True,
-                                   pronunciation_stress != '0'])
+                    result.append(Syllable(
+                        text=syllable,
+                        stress=True,
+                        match=pronunciation_stress != '0',
+                    ))
                 else:
-                    result.append([syllable,
-                                   False,
-                                   pronunciation_stress != '1'])
+                    result.append(Syllable(
+                        text=syllable,
+                        stress=False,
+                        match=pronunciation_stress != '1',
+                    ))
                 pattern = pattern[1:]
             else:
-                result.append([syllable,
-                               None,
-                               False])
+                result.append(Syllable(
+                    text=syllable,
+                    stress=None,
+                    match=False,
+                    ))
         return result
 
     @property
-    def _rhyming_part(self):
+    def rhyming_part(self):
         """Return the rhyming part of the original word."""
-        phones = self._phones
+        phones = self.phones
         if phones is None:
             return None
         result = rhyming_part(phones)
         for stress in "012":
             result = result.replace(stress, "")
         return result
-
-    def stressed_HTML(self, pattern):
-        """
-        Mark up the original word based on the stress pattern provided.
-
-        Return the word with the syllables wrapped with HTML tags and style
-        attributes based on stress, provided meter, and whether they match.
-        Finally, wrap a <span> tag around the entire word.
-        """
-        STYLES = {True: "color:black",
-                  False: "color:red"}
-        TAGS = {True: "strong",
-                False: "span",
-                None: "small"}
-
-        result = ""
-        for syllable, stress, match in self._matched_syllables(pattern):
-            result += self._tag_string(syllable,
-                                       TAGS[stress],
-                                       STYLES[match])
-        return self._tag_string(result, "span")

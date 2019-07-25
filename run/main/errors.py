@@ -7,22 +7,22 @@ from . import main
 
 @main.app_errorhandler(CSRFError)
 def handle_csrf_error(e):
-    return render_template('csrf_error.html', reason=e.description), 400
+    return render_template('main/csrf_error.html', reason=e.description), 400
 
 
 @main.app_errorhandler(404)
 def page_not_found(e):
     """Define the route for the 404 error page."""
-    return render_template('404.html'), 404
+    return render_template('main/404.html'), 404
 
 
 @main.app_errorhandler(403)
 def access_forbidden(e):
     """Define the route for the 403 error page."""
-    return render_template('403.html'), 403
+    return render_template('main/403.html'), 403
 
 
 @main.app_errorhandler(500)
 def internal_server_error(e):
     """Define the route for the 500 error page."""
-    return render_template('500.html'), 500
+    return render_template('main/500.html'), 500

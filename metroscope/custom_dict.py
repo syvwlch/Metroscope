@@ -1,6 +1,4 @@
-"""The module that generates the HTML for a poem."""
-
-from metroscope import LineBuilder
+"""The module that contains the custom dict."""
 
 
 CUSTOM_DICT = {
@@ -68,59 +66,3 @@ CUSTOM_DICT = {
                 "pallor": {"syllables": ["pa", "llor"],
                            "phones": ["P AE1 L ER0"]},
               }
-
-
-def rhyme_designator(index):
-    """
-    Returns a string with an uppercase letter and a modifier.
-
-    The modifier indicates how many times around the alphabet the index has
-    gone, e.g. for index = 27, the string is A'.
-    """
-    from string import ascii_uppercase
-    num = len(ascii_uppercase)
-    letter = ascii_uppercase[index % num]
-    modifier = index // num
-    if modifier == 0:
-        modifier = ""
-    else:
-        modifier = str(modifier)
-    return letter + modifier
-
-
-def scanned_poem(poem, meter_pattern):
-    """
-    Create HTML with the scanned poem.
-
-    Wrap the poem in a <table> tag, each line in a <tr> tag,
-    and the stressed line & its rhyme each in their own <td>.
-    """
-
-    lines = []
-    for line in poem.split("\n"):
-        if line != "":
-            lines.append(LineBuilder(line, custom_dict=CUSTOM_DICT))
-        else:
-            lines.append(None)
-
-    rhymes = {"None": "_"}
-    result = "<table>\n<tr>\n"
-    for line in lines:
-        if line is None:
-            result += "<td><br></td>\n</tr>\n<tr>"
-            rhymes = {"None": "_"}
-        else:
-            result += "<td>"
-            result += line.stressed_HTML(meter_pattern)
-            rp = str(line._rhyming_part)
-            result += "</td>\n<td data-toggle='tooltip' title='"
-            result += rp + "'>"
-            try:
-                result += rhymes[rp] + "</td>\n"
-            except KeyError:
-                index = len(rhymes)-1
-                rhymes.update({rp: rhyme_designator(index)})
-                result += rhymes[rp] + "</td>\n"
-            result += "</tr>\n<tr>"
-    result += "</tr>\n</table>"
-    return result

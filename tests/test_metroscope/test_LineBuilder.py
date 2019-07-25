@@ -46,43 +46,18 @@ def test__clean_line():
         assert(LineBuilder(line)._clean_line() == clean_line)
 
 
-def test__word_list():
+def test_words():
     """Should create a list of WordBuilder instances."""
     LINE = "Two Owls and a Hen,"
-    for word in LineBuilder(LINE)._word_list:
+    for word in LineBuilder(LINE).words:
         assert(repr(word) == "WordBuilder('" + str(word) + "')")
 
 
-def test__rhyming_part():
+def test_rhyming_part():
     """Should return the rhyming part of the last word of the line."""
     LINES = {
              "Two Owls and a Hen,": "EH N",
              "I knew to be my demon Poesy.": None
              }
     for line, rhyme in LINES.items():
-        assert(LineBuilder(line)._rhyming_part == rhyme)
-
-
-def test_stressed_HTML():
-    """Should give an HTML representation of the line's fit to meter."""
-    LINES = {
-             "Two Owls and a Hen,":
-             "<span>\
-<span style='color:black'>Two</span></span> \
-<span><strong style='color:black'>Owls</strong></span> \
-<span><span style='color:black'>and</span></span> \
-<span><span style='color:black'>a</span></span> \
-<span><strong style='color:black'>Hen,</strong>\
-</span> ",
-             "Two Owls and a Poesy.":
-             "<span>\
-<span style='color:black'>Two</span></span> \
-<span><strong style='color:black'>Owls</strong></span> \
-<span><span style='color:black'>and</span></span> \
-<span><span style='color:black'>a</span></span> \
-<span><small style='color:red'>Poesy.</small></span> \
-<b style='color:red'> _ </b>",
-             }
-    for line, HTML in LINES.items():
-        METER = "01001"
-        assert(LineBuilder(line).stressed_HTML(METER) == HTML)
+        assert(LineBuilder(line).rhyming_part == rhyme)
