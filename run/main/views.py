@@ -1,7 +1,7 @@
 """Route definitions for the main blueprint."""
 
 import os
-from flask import render_template, redirect, url_for
+from flask import render_template
 from . import main
 import markdown
 
