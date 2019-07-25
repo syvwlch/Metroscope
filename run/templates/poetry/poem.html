@@ -40,7 +40,19 @@
             <td>
         {% for word in line.words %}
             {% for syllable in word.syllables -%}
-                <span class='{% if syllable.match %}match{% else %}mismatch{% endif %} {% if syllable.stress is none %}missing{% elif syllable.stress %}stressed{% else %}unstressed{% endif %}'>{{syllable.text}}</span>
+                {%- if syllable.match -%}
+                    {%- set match_class = 'match' -%}
+                {%- else -%}
+                    {%- set match_class = 'mismatch' -%}
+                {%- endif -%}
+                {%- if syllable.stress is none -%}
+                    {%- set stress_class = 'missing' -%}
+                {%- elif syllable.stress -%}
+                    {%- set stress_class = 'stressed' -%}
+                {%- else -%}
+                    {%- set stress_class = 'unstressed' -%}
+                {%- endif -%}
+                <span class='{{ match_class }} {{ stress_class }}'>{{syllable.text}}</span>
             {%- endfor %}
         {% endfor %}
             </td>
