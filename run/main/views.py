@@ -9,8 +9,7 @@ import markdown
 @main.route("/")
 def home():
     """Define the home route."""
-    # return render_template("main/home.html")
-    return redirect(url_for('poetry.poem_list'))
+    return render_template("main/home.html")
 
 
 @main.route("/about")
