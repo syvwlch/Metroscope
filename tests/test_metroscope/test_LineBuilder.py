@@ -46,10 +46,10 @@ def test__clean_line():
         assert(LineBuilder(line)._clean_line() == clean_line)
 
 
-def test_word_list():
+def test_words():
     """Should create a list of WordBuilder instances."""
     LINE = "Two Owls and a Hen,"
-    for word in LineBuilder(LINE).word_list:
+    for word in LineBuilder(LINE).words:
         assert(repr(word) == "WordBuilder('" + str(word) + "')")
 
 

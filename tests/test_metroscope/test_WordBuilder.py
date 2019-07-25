@@ -81,7 +81,7 @@ def test_index():
             wb.index = 2
 
 
-def test_syllables():
+def test__raw_syllables():
     """Should set the syllables from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -95,7 +95,7 @@ def test_syllables():
              }
     for word, syllables in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb.syllables == syllables
+        assert wb._raw_syllables == syllables
 
 
 def test_stress_list():
@@ -198,7 +198,7 @@ def test_word_has_punctuation():
         assert WordBuilder(word)._clean_word == cleaned_word
 
 
-def test_matched_syllables():
+def test_syllables():
     """Should give a list of list with the word's fit to meter."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -229,7 +229,7 @@ def test_matched_syllables():
             pattern="010",
             custom_dict=CUSTOM_DICT,
         )
-        assert wb.matched_syllables() == matches
+        assert wb.syllables == matches
 
 
 def test_rhyming_part():

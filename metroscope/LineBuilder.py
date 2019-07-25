@@ -39,40 +39,32 @@ class LineBuilder(object):
         return clean
 
     @property
-    def word_list(self):
-        """Create the list of WordBuilder instances."""
-        word_list = []
+    def words(self):
+        """
+        Create the list of WordBuilder instances.
+
+        Distributes the stress pattern of the line across the words, based on
+        how many syllables they have. Any left over beats in the pattern get a
+        dummy word representation with the text '_'.
+        """
+        words = []
+        # Make a mutable copy of the pattern
+        pattern = self.pattern[:]
         for word in self._clean_line().split():
             wb = WordBuilder(word, custom_dict=self.custom_dict)
-            word_list.append(wb)
-        return word_list
+            number_stresses = len(wb.stress_list)
+            wb.pattern = pattern[0:number_stresses]
+            pattern = pattern[number_stresses:]
+            words.append(wb)
+        if pattern != []:
+            for stress in pattern:
+                words.append(WordBuilder(word='_', pattern=stress))
+        return words
 
     @property
     def rhyming_part(self):
         """Return the rhyming part of the line's last word."""
-        if self.word_list == []:
+        if self.words == []:
             return None
         else:
-            return self.word_list[-1].rhyming_part
-
-    def matched_words(self):
-        """
-        Match each word's syllables against the pattern.
-
-        Private method in service of stressed_HTML().
-        Returns a list of dictionaries:
-            - word: WorldBuilder instance for the original word
-            - pattern: slice of the line's stress pattern for that word
-        """
-        matched_words = []
-        # Make a mutable copy of the pattern
-        pattern = self.pattern[:]
-        for word in self.word_list:
-            number_stresses = len(word.stress_list)
-            word.pattern = pattern[0:number_stresses]
-            pattern = pattern[number_stresses:]
-            matched_words.append(word)
-        if pattern != []:
-            for stress in pattern:
-                matched_words.append(WordBuilder(word='_', pattern=stress))
-        return matched_words
+            return self.words[-1].rhyming_part

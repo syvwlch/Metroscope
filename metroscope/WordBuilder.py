@@ -63,7 +63,7 @@ class WordBuilder(object):
         return self._phones_list[self._phones_index]
 
     @property
-    def syllables(self):
+    def _raw_syllables(self):
         """Return the syllables of the original word."""
         try:
             word_syllables = self.custom_dict[self._clean_word]["syllables"]
@@ -96,7 +96,7 @@ class WordBuilder(object):
     def _stressed_syllables(self):
         """Combine the syllables and stresses of the original word."""
         word = self.word
-        syllables = self.syllables
+        syllables = self._raw_syllables
         stresses = self.stress_list
         if stresses == "":
             return None
@@ -127,9 +127,10 @@ class WordBuilder(object):
         clean = clean.replace("’d", "ed")
         return clean
 
-    def matched_syllables(self):
+    @property
+    def syllables(self):
         """
-        Match the pronounced stresses against the pattern.
+        Build the syllable objects from the word.
 
         Returns a list of namedtuples:
             - Syllable.text: string of the original syllable,

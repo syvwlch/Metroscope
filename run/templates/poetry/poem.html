@@ -38,8 +38,8 @@
                 {% endif %}
             </td>
             <td>
-        {% for word in line.matched_words() %}
-            {% for syllable in word.matched_syllables() -%}
+        {% for word in line.words %}
+            {% for syllable in word.syllables -%}
                 <span class='{% if syllable.match %}match{% else %}mismatch{% endif %} {% if syllable.stress is none %}missing{% elif syllable.stress %}stressed{% else %}unstressed{% endif %}'>{{syllable.text}}</span>
             {%- endfor %}
         {% endfor %}
