@@ -1,6 +1,5 @@
 """Unit test the WordBuilder Class."""
 
-import pytest
 from metroscope import WordBuilder
 
 
@@ -13,7 +12,6 @@ def test_init():
     for word in WORDS:
         wb = WordBuilder(word)
         assert wb.word == word
-        assert wb._phones_index == 0
 
 
 def test_str_magic_method():
@@ -54,31 +52,6 @@ def test__phones():
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
         assert wb._phones == phones
-
-
-def test_index():
-    """Should set the index to use with the _phones list."""
-    CUSTOM_DICT = {
-                   "blarghe": {"syllables": ["blarghe"],
-                               "phones": ["B L AE1 R G AE0",
-                                          "B L AE1 R G E2"]},
-                   }
-    WORDS = {
-             "blarghe": ["B L AE1 R G AE0",
-                         "B L AE1 R G E2"]
-             }
-    for word, phones_list in WORDS.items():
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        wb.index = 0
-        assert wb._phones_index == 0
-        assert wb.index == 0
-        assert wb._phones == phones_list[0]
-        wb.index = 1
-        assert wb._phones_index == 1
-        assert wb.index == 1
-        assert wb._phones == phones_list[1]
-        with pytest.raises(IndexError):
-            wb.index = 2
 
 
 def test__raw_syllables():

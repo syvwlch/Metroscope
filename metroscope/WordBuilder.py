@@ -15,12 +15,11 @@ class WordBuilder(object):
     syllable objects with various properties.
     """
 
-    def __init__(self, word, pattern='', custom_dict={}, index=0):
+    def __init__(self, word, pattern='', custom_dict={}):
         """Initialize from original word."""
         self.word = word
         self.pattern = pattern
         self.custom_dict = custom_dict
-        self._phones_index = index
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -29,17 +28,6 @@ class WordBuilder(object):
     def __repr__(self):
         """Create the formal string representation of the class."""
         return "WordBuilder('" + self.word + "')"
-
-    @property
-    def index(self):
-        """Return the current index for the _phones list."""
-        return self._phones_index
-
-    @index.setter
-    def index(self, index):
-        """Set the current index for the _phones_list."""
-        self._phones_index = index
-        self._phones
 
     @property
     def _phones_list(self):
@@ -60,7 +48,7 @@ class WordBuilder(object):
         """Return the current phones (as per index into phones list)."""
         if self._phones_list is None:
             return None
-        return self._phones_list[self._phones_index]
+        return self._phones_list[0]
 
     @property
     def _raw_syllables(self):
