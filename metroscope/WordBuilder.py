@@ -21,7 +21,7 @@ class WordBuilder(object):
         self.pattern = pattern
         self.custom_dict = custom_dict
 
-        clean_word = self._clean_word
+        clean_word = self.clean_word(word)
 
         valid_phones = []
         try:
@@ -29,18 +29,25 @@ class WordBuilder(object):
         except KeyError:
             pass
         valid_phones.extend(phones_for_word(clean_word))
-        if valid_phones == []:
-            self._valid_phones = None
-            self._phones = None
-        else:
-            self._valid_phones = valid_phones
-            self._phones = self._valid_phones[0]
+        self._valid_phones = valid_phones
 
         try:
-            raw_syllables = self.custom_dict[clean_word]["syllables"]
+            self._phones = valid_phones[0]
+        except IndexError:
+            self._phones = ''
+
+        valid_syllables = []
+        try:
+            valid_syllables.append(self.custom_dict[clean_word]["syllables"])
         except KeyError:
-            raw_syllables = SSP.tokenize(self.word)
-        self._raw_syllables = raw_syllables
+            pass
+        valid_syllables.append(SSP.tokenize(self.word))
+        self._valid_syllables = valid_syllables
+
+        try:
+            self._raw_syllables = valid_syllables[0]
+        except IndexError:
+            self._raw_syllables = word
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -78,9 +85,8 @@ class WordBuilder(object):
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        if self.phones is None:
-            return ""
-        word_stresses = stresses(self.phones)
+        phones = self.phones
+        word_stresses = stresses(phones)
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
             word_stresses += "2"
@@ -89,31 +95,11 @@ class WordBuilder(object):
             word_stresses = "2"
         return word_stresses
 
-    @property
-    def _stressed_syllables(self):
-        """Combine the syllables and stresses of the original word."""
-        word = self.word
-        syllables = self._raw_syllables
-        stresses = self.stresses
-        if stresses == "":
-            return None
-        result = []
-        for syllable in syllables:
-            if len(stresses) > 1:
-                result.append([word[0:len(syllable)], stresses[0]])
-                word = word[len(syllable):]
-                stresses = stresses[1:]
-            elif len(stresses) == 1:
-                result.append([word, stresses[0]])
-                stresses = ""
-        return result
-
-    @property
-    def _clean_word(self):
+    @staticmethod
+    def clean_word(word):
         """Prepare a word for CMU lookup."""
-        clean = self.word
         # First, force lowercase and strip punctuation
-        clean = clean.lower()
+        clean = word.lower()
         for punct in ".,;:!?—'\"":
             clean = clean.replace(punct, "")
         # Many poets mark added stress on a silent e with an è
@@ -136,13 +122,28 @@ class WordBuilder(object):
         """
         from collections import namedtuple
         Syllable = namedtuple('Syllable', 'text stress match')
-        stressed_syllables = self._stressed_syllables
-        if stressed_syllables is None:
+
+        word = self.word
+        syllables = self._raw_syllables
+        stresses = self.stresses
+
+        if stresses == "":
             return [Syllable(
                 text=self.word,
                 stress=None,
                 match=False,
             )]
+
+        stressed_syllables = []
+        for syllable in syllables:
+            if len(stresses) > 1:
+                stressed_syllables.append([word[0:len(syllable)], stresses[0]])
+                word = word[len(syllable):]
+                stresses = stresses[1:]
+            elif len(stresses) == 1:
+                stressed_syllables.append([word, stresses[0]])
+                stresses = ""
+
         result = []
         # Create a copy of pattern you can mutate safely
         pattern = self.pattern[:]
@@ -173,7 +174,7 @@ class WordBuilder(object):
     def rhyming_part(self):
         """Return the rhyming part of the original word."""
         phones = self.phones
-        if phones is None:
+        if phones == '':
             return None
         result = rhyming_part(phones)
         for stress in "012":

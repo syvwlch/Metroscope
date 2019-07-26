@@ -47,7 +47,7 @@ def test_phones():
              "Automatic": 'AO2 T AH0 M AE1 T IH0 K',
              "hen": 'HH EH1 N',
              "Phidian": "F IH1 D IY0 N",
-             "Poesy.": None,
+             "Poesy.": '',
              }
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
@@ -89,32 +89,13 @@ def test_stresses():
         assert wb.stresses == stresses
 
 
-def test__stressed_syllables():
-    """Should be a list of the original word's syllables with stress."""
-    CUSTOM_DICT = {
-                   "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
-                   }
-    WORDS = {
-             "automatic":
-             [['au', '2'], ['to', '0'], ['ma', '1'], ['tic', '0']],
-             "serene": [['se', '0'], ['rene', '1']],
-             "phidian": [['phi', '1'], ['dian', '0']],
-             "Poesy.": None
-             }
-    for word, stressed_syllables in WORDS.items():
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb._stressed_syllables
-               == stressed_syllables)
-
-
 def test_word_already_clean():
     """Should return an already clean word unchanged."""
     WORDS = ("automatic",
              "serene",
              )
     for word in WORDS:
-        assert WordBuilder(word)._clean_word == word
+        assert WordBuilder.clean_word(word) == word
 
 
 def test_word_has_grave_over_e():
@@ -125,7 +106,7 @@ def test_word_has_grave_over_e():
              "joinèd": "joined",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert WordBuilder.clean_word(word) == cleaned_word
 
 
 def test_word_has_elision():
@@ -135,7 +116,7 @@ def test_word_has_elision():
              "pass’d": "passed",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert WordBuilder.clean_word(word) == cleaned_word
 
 
 def test_word_has_possessive():
@@ -146,7 +127,7 @@ def test_word_has_possessive():
              "know’st": "know’st",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert WordBuilder.clean_word(word) == cleaned_word
 
 
 def test_word_has_uppercase():
@@ -157,7 +138,7 @@ def test_word_has_uppercase():
              "One": "one",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert WordBuilder.clean_word(word) == cleaned_word
 
 
 def test_word_has_punctuation():
@@ -168,7 +149,7 @@ def test_word_has_punctuation():
              ".,;:!?—'\"": "",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert WordBuilder.clean_word(word) == cleaned_word
 
 
 def test_syllables():
