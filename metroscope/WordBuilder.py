@@ -46,24 +46,20 @@ class WordBuilder(object):
         self.word = word
         self.pattern = pattern
         self.custom_dict = custom_dict
-
-        self._valid_phones = self.custom_dict_before_source(
+        self._valid_phones = self._custom_dict_before_source(
             key="phones",
             source=pronouncing_phones,
             default='',
         )
-
         self._phones = self.valid_phones[0]
-
-        self._valid_syllables = self.custom_dict_before_source(
+        self._valid_syllables = self._custom_dict_before_source(
             key="syllables",
             source=nltk_syllables,
             default=self.word,
         )
-
         self._raw_syllables = self._valid_syllables[0]
 
-    def custom_dict_before_source(self, key, source, default=''):
+    def _custom_dict_before_source(self, key, source, default=''):
         """
         Try the custom dict first, then the source, then the default.
 
