@@ -49,6 +49,21 @@ class WordBuilder(object):
         except IndexError:
             self._raw_syllables = word
 
+    @staticmethod
+    def clean_word(word):
+        """Prepare a word for CMU lookup."""
+        # First, force lowercase and strip punctuation
+        clean = word.lower()
+        for punct in ".,;:!?—'\"":
+            clean = clean.replace(punct, "")
+        # Many poets mark added stress on a silent e with an è
+        clean = clean.replace("è", "e")
+        # Many poets mark elided vowels with a ’ at the end of a wor
+        if clean[-2:] == "’s":
+            clean = clean.replace("’s", "")
+        clean = clean.replace("’d", "ed")
+        return clean
+
     def __str__(self):
         """Create the informal string representation of the class."""
         return self.word
@@ -94,21 +109,6 @@ class WordBuilder(object):
         if word_stresses in ("1", "0"):
             word_stresses = "2"
         return word_stresses
-
-    @staticmethod
-    def clean_word(word):
-        """Prepare a word for CMU lookup."""
-        # First, force lowercase and strip punctuation
-        clean = word.lower()
-        for punct in ".,;:!?—'\"":
-            clean = clean.replace(punct, "")
-        # Many poets mark added stress on a silent e with an è
-        clean = clean.replace("è", "e")
-        # Many poets mark elided vowels with a ’ at the end of a wor
-        if clean[-2:] == "’s":
-            clean = clean.replace("’s", "")
-        clean = clean.replace("’d", "ed")
-        return clean
 
     @property
     def syllables(self):
