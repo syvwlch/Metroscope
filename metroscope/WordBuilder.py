@@ -29,12 +29,9 @@ class WordBuilder(object):
         word_phones.extend(phones_for_word(self._clean_word))
         if word_phones == []:
             self._phones_list = None
-        else:
-            self._phones_list = word_phones
-
-        if self._phones_list is None:
             self._phones = None
         else:
+            self._phones_list = word_phones
             self._phones = self._phones_list[0]
 
     def __str__(self):
