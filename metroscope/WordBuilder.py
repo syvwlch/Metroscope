@@ -29,25 +29,23 @@ class WordBuilder(object):
         except KeyError:
             pass
         valid_phones.extend(phones_for_word(clean_word))
+        if valid_phones == []:
+            valid_phones = ['']
         self._valid_phones = valid_phones
 
-        try:
-            self._phones = valid_phones[0]
-        except IndexError:
-            self._phones = ''
+        self._phones = valid_phones[0]
 
         valid_syllables = []
         try:
-            valid_syllables.append(self.custom_dict[clean_word]["syllables"])
+            valid_syllables.extend([self.custom_dict[clean_word]["syllables"]])
         except KeyError:
             pass
-        valid_syllables.append(SSP.tokenize(self.word))
+        valid_syllables.extend([SSP.tokenize(self.word)])
+        if valid_syllables == []:
+            valid_syllables = [word]
         self._valid_syllables = valid_syllables
 
-        try:
-            self._raw_syllables = valid_syllables[0]
-        except IndexError:
-            self._raw_syllables = word
+        self._raw_syllables = valid_syllables[0]
 
     @staticmethod
     def clean_word(word):
