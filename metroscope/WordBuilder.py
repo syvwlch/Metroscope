@@ -3,7 +3,33 @@
 from pronouncing import stresses, phones_for_word, rhyming_part
 from nltk import SyllableTokenizer
 
+
+def clean_word(word):
+    """Prepare a word for CMU lookup."""
+    # First, force lowercase and strip punctuation
+    clean = word.lower()
+    for punct in ".,;:!?—'\"":
+        clean = clean.replace(punct, "")
+    # Many poets mark added stress on a silent e with an è
+    clean = clean.replace("è", "e")
+    # Many poets mark elided vowels with a ’ at the end of a wor
+    if clean[-2:] == "’s":
+        clean = clean.replace("’s", "")
+    clean = clean.replace("’d", "ed")
+    return clean
+
+
 SSP = SyllableTokenizer()
+
+
+def nltk_syllables(word):
+    """Return syllables from nltk's SyllableTokenizer."""
+    return [SSP.tokenize(word)]
+
+
+def pronouncing_phones(word):
+    """Return the phones list from the prounouncing package."""
+    return phones_for_word(clean_word(word))
 
 
 class WordBuilder(object):
@@ -21,46 +47,45 @@ class WordBuilder(object):
         self.pattern = pattern
         self.custom_dict = custom_dict
 
-        clean_word = self.clean_word(word)
+        self._valid_phones = self.custom_dict_before_source(
+            key="phones",
+            source=pronouncing_phones,
+            default='',
+        )
 
-        valid_phones = []
+        self._phones = self.valid_phones[0]
+
+        self._valid_syllables = self.custom_dict_before_source(
+            key="syllables",
+            source=nltk_syllables,
+            default=self.word,
+        )
+
+        self._raw_syllables = self._valid_syllables[0]
+
+    def custom_dict_before_source(self, key, source, default=''):
+        """
+        Try the custom dict first, then the source, then the default.
+
+        Assumes that custom dict returns a single valid item and source returns
+        a list of valid items.
+        Use `source=lambda x: [source(x)]` if the source returns a single item.
+        """
+        valid_items = []
+
         try:
-            valid_phones.extend(self.custom_dict[clean_word]["phones"])
+            valid_items.append(
+                self.custom_dict[clean_word(self.word)][key]
+            )
         except KeyError:
             pass
-        valid_phones.extend(phones_for_word(clean_word))
-        if valid_phones == []:
-            valid_phones = ['']
-        self._valid_phones = valid_phones
 
-        self._phones = valid_phones[0]
+        valid_items.extend(source(self.word))
 
-        valid_syllables = []
-        try:
-            valid_syllables.extend([self.custom_dict[clean_word]["syllables"]])
-        except KeyError:
-            pass
-        valid_syllables.extend([SSP.tokenize(self.word)])
-        if valid_syllables == []:
-            valid_syllables = [word]
-        self._valid_syllables = valid_syllables
+        if valid_items == []:
+            valid_items = [default]
 
-        self._raw_syllables = valid_syllables[0]
-
-    @staticmethod
-    def clean_word(word):
-        """Prepare a word for CMU lookup."""
-        # First, force lowercase and strip punctuation
-        clean = word.lower()
-        for punct in ".,;:!?—'\"":
-            clean = clean.replace(punct, "")
-        # Many poets mark added stress on a silent e with an è
-        clean = clean.replace("è", "e")
-        # Many poets mark elided vowels with a ’ at the end of a wor
-        if clean[-2:] == "’s":
-            clean = clean.replace("’s", "")
-        clean = clean.replace("’d", "ed")
-        return clean
+        return valid_items
 
     def __str__(self):
         """Create the informal string representation of the class."""
