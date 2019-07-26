@@ -140,7 +140,10 @@ class WordBuilder(object):
             - Syllable.match: Boolean for match between pattern & pronunciation
         """
         from collections import namedtuple
-        Syllable = namedtuple('Syllable', 'text stress match')
+        Syllable = namedtuple(
+            'Syllable',
+            'text stress match',
+        )
 
         word = self.word
         syllables = self._raw_syllables
@@ -153,19 +156,24 @@ class WordBuilder(object):
                 match=False,
             )]
 
-        stressed_syllables = []
+        dirty_syllables = []
         for syllable in syllables:
+            dirty_syllables.append(word[0:len(syllable)])
+            word = word[len(syllable):]
+
+        stressed_syllables = []
+        for syllable in dirty_syllables:
             if len(stresses) > 1:
-                stressed_syllables.append([word[0:len(syllable)], stresses[0]])
-                word = word[len(syllable):]
+                stressed_syllables.append([syllable, stresses[0]])
                 stresses = stresses[1:]
             elif len(stresses) == 1:
-                stressed_syllables.append([word, stresses[0]])
+                stressed_syllables.append([syllable, stresses[0]])
                 stresses = ""
+            else:
+                stressed_syllables[-1][0] += syllable
 
         result = []
-        # Create a copy of pattern you can mutate safely
-        pattern = self.pattern[:]
+        pattern = self.pattern
         for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
                 if pattern[0] == '1':
