@@ -21,18 +21,26 @@ class WordBuilder(object):
         self.pattern = pattern
         self.custom_dict = custom_dict
 
-        word_phones = []
+        clean_word = self._clean_word
+
+        valid_phones = []
         try:
-            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
+            valid_phones.extend(self.custom_dict[clean_word]["phones"])
         except KeyError:
             pass
-        word_phones.extend(phones_for_word(self._clean_word))
-        if word_phones == []:
-            self._phones_list = None
+        valid_phones.extend(phones_for_word(clean_word))
+        if valid_phones == []:
+            self._valid_phones = None
             self._phones = None
         else:
-            self._phones_list = word_phones
-            self._phones = self._phones_list[0]
+            self._valid_phones = valid_phones
+            self._phones = self._valid_phones[0]
+
+        try:
+            raw_syllables = self.custom_dict[clean_word]["syllables"]
+        except KeyError:
+            raw_syllables = SSP.tokenize(self.word)
+        self._raw_syllables = raw_syllables
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -43,9 +51,9 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
-    def phones_list(self):
+    def valid_phones(self):
         """Return the list of possible phones for the original word."""
-        return self._phones_list
+        return self._valid_phones
 
     @property
     def phones(self):
@@ -55,26 +63,17 @@ class WordBuilder(object):
     @phones.setter
     def phones(self, proposed_value):
         """Set the current phones to be used for stress & rhyming_part."""
-        if proposed_value in self.phones_list:
+        if proposed_value in self.valid_phones:
             self._phones = proposed_value
         else:
             raise ValueError('These phones are not valid for this word.')
 
     @property
-    def _raw_syllables(self):
-        """Return the syllables of the original word."""
-        try:
-            word_syllables = self.custom_dict[self._clean_word]["syllables"]
-        except KeyError:
-            word_syllables = SSP.tokenize(self.word)
-        return word_syllables
-
-    @property
-    def stress_list(self):
+    def stresses(self):
         """
         Return a string of the stresses for the given word.
 
-        Consumers of this list make the following assumptions:
+        Consumers of this string make the following assumptions:
          - syllables with a "1" should be stressed by the meter
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
@@ -95,7 +94,7 @@ class WordBuilder(object):
         """Combine the syllables and stresses of the original word."""
         word = self.word
         syllables = self._raw_syllables
-        stresses = self.stress_list
+        stresses = self.stresses
         if stresses == "":
             return None
         result = []

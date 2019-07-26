@@ -52,7 +52,7 @@ class LineBuilder(object):
         pattern = self.pattern[:]
         for word in self._clean_line().split():
             wb = WordBuilder(word, custom_dict=self.custom_dict)
-            number_stresses = len(wb.stress_list)
+            number_stresses = len(wb.stresses)
             wb.pattern = pattern[0:number_stresses]
             pattern = pattern[number_stresses:]
             words.append(wb)

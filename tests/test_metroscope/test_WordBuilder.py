@@ -71,7 +71,7 @@ def test__raw_syllables():
         assert wb._raw_syllables == syllables
 
 
-def test_stress_list():
+def test_stresses():
     """Should set the stresses from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
@@ -86,7 +86,7 @@ def test_stress_list():
              }
     for word, stresses in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb.stress_list == stresses
+        assert wb.stresses == stresses
 
 
 def test__stressed_syllables():
