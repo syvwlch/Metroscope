@@ -63,7 +63,7 @@ def test__raw_syllables():
                    }
     WORDS = {
              "Automatic": ['Au', 'to', 'ma', 'tic'],
-             "serene": ['se', 're', 'ne'],
+             "serene": ['se', 'rene'],
              "phidian": ["phi", "dian"],
              "Poesy.": ["Poe", "sy."],
              }
