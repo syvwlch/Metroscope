@@ -57,7 +57,11 @@ class WordBuilder(object):
             source=nltk_syllables,
             default=self.word,
         )
-        self._raw_syllables = self._valid_syllables[0]
+        raw_syllables = []
+        for syllable in self._valid_syllables[0]:
+            raw_syllables.append(word[0:len(syllable)])
+            word = word[len(syllable):]
+        self._raw_syllables = raw_syllables
 
     def _custom_dict_before_source(self, key, source, default=''):
         """
@@ -145,9 +149,9 @@ class WordBuilder(object):
             'text stress match',
         )
 
-        word = self.word
         syllables = self._raw_syllables
         stresses = self.stresses
+        pattern = self.pattern
 
         if stresses == "":
             return [Syllable(
@@ -156,13 +160,8 @@ class WordBuilder(object):
                 match=False,
             )]
 
-        dirty_syllables = []
-        for syllable in syllables:
-            dirty_syllables.append(word[0:len(syllable)])
-            word = word[len(syllable):]
-
         stressed_syllables = []
-        for syllable in dirty_syllables:
+        for syllable in syllables:
             if len(stresses) > 1:
                 stressed_syllables.append([syllable, stresses[0]])
                 stresses = stresses[1:]
@@ -173,7 +172,6 @@ class WordBuilder(object):
                 stressed_syllables[-1][0] += syllable
 
         result = []
-        pattern = self.pattern
         for syllable, pronunciation_stress in stressed_syllables:
             if pattern:
                 if pattern[0] == '1':
