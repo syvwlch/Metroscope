@@ -28,9 +28,11 @@ def poem(keyword):
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
 
     form = PoemForm()
-    meters = Meter.query.order_by('name')
+    meters = Meter.query.order_by('name').all()
+    # move the poem's default meter to the top of the drop-down
+    meters.insert(0, meters.pop(meters.index(poem.meter)))
     form.pattern.choices = [(m.pattern, m.name) for m in meters]
-    form.pattern.default = poem.meter.pattern
+
     if form.validate_on_submit():
         pattern = form.pattern.data
     else:
