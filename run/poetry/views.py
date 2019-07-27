@@ -5,6 +5,7 @@ from run import db
 from . import poetry
 from ..models import Meter, Poet, Poem
 from .helpers import stanzas
+from .forms import PoemForm
 
 
 @poetry.route("/poem")
@@ -16,7 +17,7 @@ def poem_list():
     return render_template("poetry/poem_list.html", poems=poems)
 
 
-@poetry.route("/poem/<keyword>")
+@poetry.route("/poem/<keyword>", methods=['GET', 'POST'])
 def poem(keyword):
     """Define the poem route."""
     # if the poems table does not exist, 404 the route
@@ -26,12 +27,22 @@ def poem(keyword):
     # retrieve the requested poem if it exists
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
 
+    form = PoemForm()
+    meters = Meter.query.order_by('name')
+    form.pattern.choices = [(m.pattern, m.name) for m in meters]
+    form.pattern.default = poem.meter.pattern
+    if form.validate_on_submit():
+        pattern = form.pattern.data
+    else:
+        pattern = poem.meter.pattern
+
     return render_template(
         "poetry/poem.html",
+        form=form,
         title=poem.title,
         poet=poem.author.name,
         meter=poem.meter.name,
-        stanzas=stanzas(poem.raw_text, poem.meter.pattern),
+        stanzas=stanzas(poem.raw_text, pattern),
     )
 
 

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block head %}
 {{ super() }}
@@ -23,8 +24,9 @@
 
 {% block page_content %}
 <h1>{{ title }}</h1>
-<p>- by {{ poet }}, scanned in {{ meter }}.</p>
+<p>- by {{ poet }}</p>
 <div class='container'>
+    {{ wtf.quick_form(form) }}
     <table>
 {% for lines, rhymes in stanzas %}
 {% set stanza_loop = loop %}
