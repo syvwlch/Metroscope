@@ -149,7 +149,6 @@ class WordBuilder(object):
             'text stress match',
         )
 
-        syllables = self._raw_syllables
         stresses = self.stresses
         pattern = self.pattern
 
@@ -160,39 +159,31 @@ class WordBuilder(object):
                 match=False,
             )]
 
-        stressed_syllables = []
-        for syllable in syllables:
-            if len(stresses) > 1:
-                stressed_syllables.append([syllable, stresses[0]])
-                stresses = stresses[1:]
-            elif len(stresses) == 1:
-                stressed_syllables.append([syllable, stresses[0]])
-                stresses = ""
-            else:
-                stressed_syllables[-1][0] += syllable
+        voiced_syllables = []
+        for index, syllable in enumerate(self._raw_syllables):
+            try:
+                stresses[index]
+                voiced_syllables.append(syllable)
+            except IndexError:
+                voiced_syllables[-1] += syllable
 
         result = []
-        for syllable, pronunciation_stress in stressed_syllables:
-            if pattern:
-                if pattern[0] == '1':
-                    result.append(Syllable(
-                        text=syllable,
-                        stress=True,
-                        match=pronunciation_stress != '0',
-                    ))
+        for index, syllable in enumerate(voiced_syllables):
+            try:
+                stress = (pattern[index] == '1')
+                if stresses[index] == '2':
+                    match = True
                 else:
-                    result.append(Syllable(
-                        text=syllable,
-                        stress=False,
-                        match=pronunciation_stress != '1',
-                    ))
-                pattern = pattern[1:]
-            else:
-                result.append(Syllable(
-                    text=syllable,
-                    stress=None,
-                    match=False,
-                    ))
+                    match = pattern[index] == stresses[index]
+            except IndexError:
+                stress = None
+                match = False
+            text = syllable
+            result.append(Syllable(
+                text=text,
+                stress=stress,
+                match=match,
+            ))
         return result
 
     @property
