@@ -1,6 +1,6 @@
 """Test the poem view using flask's test_client()."""
 
-from run.poetry.views import rhyme_designator
+from run.poetry.helpers import rhyme_designator
 
 
 def test_rhyme_designator():

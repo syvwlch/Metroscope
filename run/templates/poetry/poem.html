@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block head %}
 {{ super() }}
@@ -8,10 +9,22 @@
     .stressed {font-weight: bold;}
     .unstressed {}
     .missing {font-size: 80%;}
-    .annotation {
+    .verse-number {
+        text-align: right;
+        padding-right: 5;
+        padding-left: 0;
+    }
+    .verse {
+        padding-right: 0;
+        padding-left: 0;
+    }
+    .rhyme {
+        text-align: left;
+        padding-right: 0;
+        padding-left: 5;
+    }
+    .stanza-separator {
         text-align: center;
-        padding-right: 10px;
-        padding-left: 10px;
     }
 </style>
 {% endblock %}
@@ -22,55 +35,68 @@
 {% endblock title %}
 
 {% block page_content %}
-<h1>{{ title }}</h1>
-<p>- by {{ poet }}, scanned in {{ meter }}.</p>
 <div class='container'>
-    <table>
+    <div class="row">
+        <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
+            <h1>{{ title }}</h1>
+            <h3 style="text-align:right">by {{ poet }}</h3>
+        </div>
+    </div>
+    <form class="form-horizontal" method="POST" role="form" action="">
+        <div class='form-group'>
+            <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
+                {{ form.hidden_tag() }}
+                {{ wtf.form_field(form.pattern, class="form-control") }}
+                {{ wtf.form_field(form.submit, class="btn btn-primary btn-block") }}
+            </div>
+        </div>
+    </form>
 {% for lines, rhymes in stanzas %}
 {% set stanza_loop = loop %}
     {% for line in lines %}
-        <tr>
-            <td class="annotation text-muted">
-                {% if stanza_loop.length == 1 %}
-                <small>{{ loop.index }}</small>
-                {% else %}
-                <small>{{ stanza_loop.index }}.{{ loop.index }}</small>
-                {% endif %}
-            </td>
-            <td>
-        {% for word in line.words %}
-            {% for syllable in word.syllables -%}
-                {%- if syllable.match -%}
-                    {%- set match_class = 'match' -%}
-                {%- else -%}
-                    {%- set match_class = 'mismatch' -%}
-                {%- endif -%}
-                {%- if syllable.stress is none -%}
-                    {%- set stress_class = 'missing' -%}
-                {%- elif syllable.stress -%}
-                    {%- set stress_class = 'stressed' -%}
-                {%- else -%}
-                    {%- set stress_class = 'unstressed' -%}
-                {%- endif -%}
-                <span class='{{ match_class }} {{ stress_class }}'>{{syllable.text}}</span>
-            {%- endfor %}
-        {% endfor %}
-            </td>
-            {% set rp = line.rhyming_part|string %}
-            <td class="annotation text-muted">
-                <small data-toggle='tooltip' title='{{ rp }}'>{{ rhymes[rp] }}</small>
-            </td>
-        </tr>
-        {% if loop.last and not stanza_loop.last %}
-        <tr>
-            <td></td>
-            <td class="annotation text-muted">~</td>
-            <td></td>
-        </tr>
+    <div class="row">
+        <div class="verse-number col-xs-1">
+            <small class="text-muted">
+        {%- if stanza_loop.length == 1 %}
+            {{ loop.index }}
+        {% else %}
+            {{ stanza_loop.index }}.{{ loop.index }}
         {% endif %}
+            </small>
+        </div>
+        <div class="verse col-xs-10 col-sm-6 col-md-5 col-lg-4">
+    {% for word in line.words %}
+        {% for syllable in word.syllables -%}
+            {%- if syllable.match -%}
+                {%- set match_class = 'match' -%}
+            {%- else -%}
+                {%- set match_class = 'mismatch' -%}
+            {%- endif -%}
+            {%- if syllable.stress is none -%}
+                {%- set stress_class = 'missing' -%}
+            {%- elif syllable.stress -%}
+                {%- set stress_class = 'stressed' -%}
+            {%- else -%}
+                {%- set stress_class = 'unstressed' -%}
+            {%- endif -%}
+            <span class='{{ match_class }} {{ stress_class }}'>{{syllable.text}}</span>
+        {%- endfor %}
+    {% endfor %}
+        {% if loop.last and not stanza_loop.last %}
+            <div class="stanza-separator text-muted">
+                <br>
+            </div>
+        {% endif %}
+        </div>
+        {% set rp = line.rhyming_part|string %}
+        <div class="rhyme col-xs-1">
+            <small class="text-muted" data-toggle='tooltip' title='{{ rp }}'>
+                {{ rhymes[rp] }}
+            </small>
+        </div>
+    </div>
     {% endfor %}
 {% endfor %}
-    </table>
 </div>
 {% endblock page_content %}
 

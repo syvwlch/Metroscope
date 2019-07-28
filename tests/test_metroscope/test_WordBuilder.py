@@ -1,6 +1,7 @@
 """Unit test the WordBuilder Class."""
 
 from metroscope import WordBuilder
+from metroscope.WordBuilder import clean_word
 
 
 def test_init():
@@ -41,13 +42,13 @@ def test_phones():
     """Should set the phones from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
+                               "phones": "F IH1 D IY0 N"},
                    }
     WORDS = {
              "Automatic": 'AO2 T AH0 M AE1 T IH0 K',
              "hen": 'HH EH1 N',
              "Phidian": "F IH1 D IY0 N",
-             "Poesy.": None,
+             "Poesy.": '',
              }
     for word, phones in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
@@ -58,11 +59,11 @@ def test__raw_syllables():
     """Should set the syllables from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
+                               "phones": "F IH1 D IY0 N"},
                    }
     WORDS = {
              "Automatic": ['Au', 'to', 'ma', 'tic'],
-             "serene": ['se', 're', 'ne'],
+             "serene": ['se', 'rene'],
              "phidian": ["phi", "dian"],
              "Poesy.": ["Poe", "sy."],
              }
@@ -71,11 +72,11 @@ def test__raw_syllables():
         assert wb._raw_syllables == syllables
 
 
-def test_stress_list():
+def test_stresses():
     """Should set the stresses from the original word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
+                               "phones": "F IH1 D IY0 N"},
                    }
     WORDS = {
              "Automatic": "2010",
@@ -86,26 +87,7 @@ def test_stress_list():
              }
     for word, stresses in WORDS.items():
         wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert wb.stress_list == stresses
-
-
-def test__stressed_syllables():
-    """Should be a list of the original word's syllables with stress."""
-    CUSTOM_DICT = {
-                   "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
-                   }
-    WORDS = {
-             "automatic":
-             [['au', '2'], ['to', '0'], ['ma', '1'], ['tic', '0']],
-             "serene": [['se', '0'], ['rene', '1']],
-             "phidian": [['phi', '1'], ['dian', '0']],
-             "Poesy.": None
-             }
-    for word, stressed_syllables in WORDS.items():
-        wb = WordBuilder(word, custom_dict=CUSTOM_DICT)
-        assert(wb._stressed_syllables
-               == stressed_syllables)
+        assert wb.stresses == stresses
 
 
 def test_word_already_clean():
@@ -114,7 +96,7 @@ def test_word_already_clean():
              "serene",
              )
     for word in WORDS:
-        assert WordBuilder(word)._clean_word == word
+        assert clean_word(word) == word
 
 
 def test_word_has_grave_over_e():
@@ -125,7 +107,7 @@ def test_word_has_grave_over_e():
              "joinèd": "joined",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert clean_word(word) == cleaned_word
 
 
 def test_word_has_elision():
@@ -135,7 +117,7 @@ def test_word_has_elision():
              "pass’d": "passed",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert clean_word(word) == cleaned_word
 
 
 def test_word_has_possessive():
@@ -146,7 +128,7 @@ def test_word_has_possessive():
              "know’st": "know’st",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert clean_word(word) == cleaned_word
 
 
 def test_word_has_uppercase():
@@ -157,7 +139,7 @@ def test_word_has_uppercase():
              "One": "one",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert clean_word(word) == cleaned_word
 
 
 def test_word_has_punctuation():
@@ -168,14 +150,14 @@ def test_word_has_punctuation():
              ".,;:!?—'\"": "",
              }
     for word, cleaned_word in WORDS.items():
-        assert WordBuilder(word)._clean_word == cleaned_word
+        assert clean_word(word) == cleaned_word
 
 
 def test_syllables():
     """Should give a list of list with the word's fit to meter."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
+                               "phones": "F IH1 D IY0 N"},
                    }
     from collections import namedtuple
     Syllable = namedtuple('Syllable', 'text stress match')
@@ -209,7 +191,7 @@ def test_rhyming_part():
     """Should return the rhyming part of the word."""
     CUSTOM_DICT = {
                    "phidian": {"syllables": ["phi", "dian"],
-                               "phones": ["F IH1 D IY0 N"]},
+                               "phones": "F IH1 D IY0 N"},
                    }
     LINES = {
              "Hen,": "EH N",

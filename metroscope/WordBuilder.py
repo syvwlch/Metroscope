@@ -3,7 +3,23 @@
 from pronouncing import stresses, phones_for_word, rhyming_part
 from nltk import SyllableTokenizer
 
+
 SSP = SyllableTokenizer()
+
+
+def clean_word(word):
+    """Prepare a word for CMU lookup."""
+    # First, force lowercase and strip punctuation
+    clean = word.lower()
+    for punct in ".,;:!?—'\"":
+        clean = clean.replace(punct, "")
+    # Many poets mark added stress on a silent e with an è
+    clean = clean.replace("è", "e")
+    # Many poets mark elided vowels with a ’ at the end of a wor
+    if clean[-2:] == "’s":
+        clean = clean.replace("’s", "")
+    clean = clean.replace("’d", "ed")
+    return clean
 
 
 class WordBuilder(object):
@@ -20,22 +36,42 @@ class WordBuilder(object):
         self.word = word
         self.pattern = pattern
         self.custom_dict = custom_dict
+        self._valid_phones = self._custom_dict_before_source(
+            key="phones",
+            source=phones_for_word,
+            default='',
+        )
+        self._phones = self._valid_phones[0]
 
-        word_phones = []
+        self._valid_syllables = self._custom_dict_before_source(
+            key="syllables",
+            source=lambda x: [SSP.tokenize(x)],
+            default=self.word,
+        )
+
+    def _custom_dict_before_source(self, key, source, default=''):
+        """
+        Try the custom dict first, then the source, then the default.
+
+        Assumes that custom dict returns a single valid item and source returns
+        a list of valid items.
+        Use `source=lambda x: [source(x)]` if the source returns a single item.
+        """
+        valid_items = []
+
         try:
-            word_phones.extend(self.custom_dict[self._clean_word]["phones"])
+            valid_items.append(
+                self.custom_dict[clean_word(self.word)][key]
+            )
         except KeyError:
             pass
-        word_phones.extend(phones_for_word(self._clean_word))
-        if word_phones == []:
-            self._phones_list = None
-        else:
-            self._phones_list = word_phones
 
-        if self._phones_list is None:
-            self._phones = None
-        else:
-            self._phones = self._phones_list[0]
+        valid_items.extend(source(clean_word(self.word)))
+
+        if valid_items == []:
+            valid_items = [default]
+
+        return valid_items
 
     def __str__(self):
         """Create the informal string representation of the class."""
@@ -46,11 +82,6 @@ class WordBuilder(object):
         return "WordBuilder('" + self.word + "')"
 
     @property
-    def phones_list(self):
-        """Return the list of possible phones for the original word."""
-        return self._phones_list
-
-    @property
     def phones(self):
         """Return the current phones being used for stress & rhyming_part."""
         return self._phones
@@ -58,32 +89,32 @@ class WordBuilder(object):
     @phones.setter
     def phones(self, proposed_value):
         """Set the current phones to be used for stress & rhyming_part."""
-        if proposed_value in self.phones_list:
+        if proposed_value in self._valid_phones:
             self._phones = proposed_value
         else:
             raise ValueError('These phones are not valid for this word.')
 
     @property
-    def _raw_syllables(self):
-        """Return the syllables of the original word."""
-        try:
-            word_syllables = self.custom_dict[self._clean_word]["syllables"]
-        except KeyError:
-            word_syllables = SSP.tokenize(self.word)
-        return word_syllables
+    def rhyming_part(self):
+        """Return the rhyming part of the original word."""
+        phones = self.phones
+        if phones == '':
+            return None
+        result = rhyming_part(phones)
+        for stress in "012":
+            result = result.replace(stress, "")
+        return result
 
     @property
-    def stress_list(self):
+    def stresses(self):
         """
         Return a string of the stresses for the given word.
 
-        Consumers of this list make the following assumptions:
+        Consumers of this string make the following assumptions:
          - syllables with a "1" should be stressed by the meter
          - syllables with a "2" can be stressed or unstressed by the meter
          - syllables with a "0" should be unstressed by the meter
         """
-        if self.phones is None:
-            return ""
         word_stresses = stresses(self.phones)
         # Poets often signal syllables that would normally be silent this way.
         if "è" in self.word:
@@ -94,39 +125,36 @@ class WordBuilder(object):
         return word_stresses
 
     @property
-    def _stressed_syllables(self):
-        """Combine the syllables and stresses of the original word."""
+    def _raw_syllables(self):
+        """Return the raw syllables to be evaluated for stress and match."""
         word = self.word
-        syllables = self._raw_syllables
-        stresses = self.stress_list
-        if stresses == "":
-            return None
-        result = []
-        for syllable in syllables:
-            if len(stresses) > 1:
-                result.append([word[0:len(syllable)], stresses[0]])
-                word = word[len(syllable):]
-                stresses = stresses[1:]
-            elif len(stresses) == 1:
-                result.append([word, stresses[0]])
-                stresses = ""
-        return result
+        stresses = self.stresses
 
-    @property
-    def _clean_word(self):
-        """Prepare a word for CMU lookup."""
-        clean = self.word
-        # First, force lowercase and strip punctuation
-        clean = clean.lower()
-        for punct in ".,;:!?—'\"":
-            clean = clean.replace(punct, "")
-        # Many poets mark added stress on a silent e with an è
-        clean = clean.replace("è", "e")
-        # Many poets mark elided vowels with a ’ at the end of a wor
-        if clean[-2:] == "’s":
-            clean = clean.replace("’s", "")
-        clean = clean.replace("’d", "ed")
-        return clean
+        # First rebuild the syllables using the original word
+        # Because _valid_syllables used clean_word()
+        syllables = []
+        for syllable in self._valid_syllables[0]:
+            syllables.append(word[0:len(syllable)])
+            word = word[len(syllable):]
+        if word != '':
+            syllables[-1] += word
+
+        # If there are no stresses, the pronounciation is unknown
+        # In that case, just return the unprocessed syllables
+        if stresses == "":
+            return syllables
+
+        # Otherwise, make sure you have as many syllables as stresses
+        # in the pronunciation, otherwise metrical scanning won't work.
+        raw_syllables = []
+        for index, syllable in enumerate(syllables):
+            try:
+                stresses[index]
+                raw_syllables.append(syllable)
+            except IndexError:
+                raw_syllables[-1] += syllable
+
+        return raw_syllables
 
     @property
     def syllables(self):
@@ -140,46 +168,32 @@ class WordBuilder(object):
         """
         from collections import namedtuple
         Syllable = namedtuple('Syllable', 'text stress match')
-        stressed_syllables = self._stressed_syllables
-        if stressed_syllables is None:
+
+        stresses = self.stresses
+        pattern = self.pattern
+
+        if stresses == "":
             return [Syllable(
                 text=self.word,
                 stress=None,
                 match=False,
             )]
-        result = []
-        # Create a copy of pattern you can mutate safely
-        pattern = self.pattern[:]
-        for syllable, pronunciation_stress in stressed_syllables:
-            if pattern:
-                if pattern[0] == '1':
-                    result.append(Syllable(
-                        text=syllable,
-                        stress=True,
-                        match=pronunciation_stress != '0',
-                    ))
-                else:
-                    result.append(Syllable(
-                        text=syllable,
-                        stress=False,
-                        match=pronunciation_stress != '1',
-                    ))
-                pattern = pattern[1:]
-            else:
-                result.append(Syllable(
-                    text=syllable,
-                    stress=None,
-                    match=False,
-                    ))
-        return result
 
-    @property
-    def rhyming_part(self):
-        """Return the rhyming part of the original word."""
-        phones = self.phones
-        if phones is None:
-            return None
-        result = rhyming_part(phones)
-        for stress in "012":
-            result = result.replace(stress, "")
+        result = []
+        for index, syllable in enumerate(self._raw_syllables):
+            try:
+                stress = (pattern[index] == '1')
+                if stresses[index] == '2':
+                    match = True
+                else:
+                    match = pattern[index] == stresses[index]
+            except IndexError:
+                stress = None
+                match = False
+            text = syllable
+            result.append(Syllable(
+                text=text,
+                stress=stress,
+                match=match,
+            ))
         return result
