@@ -24,9 +24,13 @@
 
 {% block page_content %}
 <h1>{{ title }}</h1>
-<p>- by {{ poet }}</p>
+<p>- by {{ poet }}, scanned in {{ meter }}.</p>
+
+{% if form is not none %}
+{{ wtf.quick_form(form) }}
+{% endif %}
+
 <div class='container'>
-    {{ wtf.quick_form(form) }}
     <table>
 {% for lines, rhymes in stanzas %}
 {% set stanza_loop = loop %}
