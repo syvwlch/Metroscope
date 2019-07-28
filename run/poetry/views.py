@@ -33,7 +33,12 @@ def poem(keyword):
         meters = Meter.query.order_by('name').all()
         # move the poem's default meter to the top of the drop-down
         meters.insert(0, meters.pop(meters.index(poem.meter)))
-        form.pattern.choices = [(m.pattern, m.name) for m in meters]
+        form.pattern.choices = [
+            (
+                m.pattern,
+                f'Scanned in {m.name}',
+            ) for m in meters
+        ]
 
         if form.validate_on_submit():
             pattern = form.pattern.data

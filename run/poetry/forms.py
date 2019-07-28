@@ -6,5 +6,5 @@ from wtforms import SelectField, SubmitField
 
 class ChangeMeterForm(FlaskForm):
     """Define the poem form."""
-    pattern = SelectField('Meter')
-    submit = SubmitField('Scan Poem')
+    pattern = SelectField('')
+    submit = SubmitField('Scan')
