@@ -37,17 +37,20 @@
 {% block page_content %}
 <div class='container'>
     <div class="row">
-        <div class="col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
+        <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
             <h1>{{ title }}</h1>
             <h3 style="text-align:right">by {{ poet }}</h3>
+            {% if form is none %}
+            <br>
+            <p>Scanned in {{ meter }}.</p>
+            <br>
+            {% endif %}
         </div>
     </div>
-{% if form is none %}
-    <p>Scanned in {{ meter }}.</p>
-{% else %}
+{% if form is not none %}
     <form class="form-horizontal" method="POST" role="form" action="">
         <div class='form-group'>
-            <div class="col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
+            <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
                 {{ form.hidden_tag() }}
                 {{ wtf.form_field(form.pattern, class="form-control") }}
                 {{ wtf.form_field(form.submit, class="btn btn-primary btn-block") }}
@@ -55,7 +58,6 @@
         </div>
     </form>
 {% endif %}
-    <br>
 
 {% for lines, rhymes in stanzas %}
 {% set stanza_loop = loop %}
