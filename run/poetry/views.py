@@ -1,11 +1,12 @@
 """Route definitions for the poetry blueprint."""
 
 from flask import render_template, redirect, url_for
+from flask_login import current_user
 from run import db
 from . import poetry
-from ..models import Meter, Poet, Poem
+from ..models import Meter, Poet, Poem, Permission
 from .helpers import stanzas
-from .forms import ChangeMeterForm
+from .forms import ChangeMeterForm, SetDefaultMeterForm
 
 
 @poetry.route("/poem")
@@ -27,7 +28,11 @@ def poem(keyword):
     # retrieve the requested poem if it exists
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
 
-    form = ChangeMeterForm()
+    if current_user.can(Permission.CHANGE_METER):
+        form = SetDefaultMeterForm()
+    else:
+        form = ChangeMeterForm()
+
     meters = Meter.query.order_by('name').all()
     # move the poem's default meter to the top of the drop-down
     meters.insert(0, meters.pop(meters.index(poem.meter)))
@@ -39,19 +44,22 @@ def poem(keyword):
     ]
 
     if form.validate_on_submit():
-        pattern = form.pattern.data
-        meter = Meter.query.filter_by(pattern=pattern).first().name
+        meter = Meter.query.filter_by(pattern=form.pattern.data).first()
+        if (current_user.can(Permission.CHANGE_METER)
+                and form.set_as_default.data is True):
+            poem.meter = meter
+            db.session.commit()
+            form.set_as_default.data = False
     else:
-        pattern = poem.meter.pattern
-        meter = poem.meter.name
+        meter = poem.meter
 
     return render_template(
         "poetry/poem.html",
         form=form,
         title=poem.title,
         poet=poem.author.name,
-        meter=meter,
-        stanzas=stanzas(poem.raw_text, pattern),
+        meter=meter.name,
+        stanzas=stanzas(poem.raw_text, meter.pattern),
     )
 
 
