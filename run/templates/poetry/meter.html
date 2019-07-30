@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+{{ title }} - Metroscope
+{% endblock title %}
+
+{% block page_content %}
+<h1>{{ meter.name }}</h1>
+<br>
+<p>
+<b>Number of Beats: </b>
+{{ meter.pattern|length }}
+</p>
+<p>
+<b>Pattern: </b>
+{%- for beat in meter.pattern -%}
+    {%- if beat == '1' -%}
+        <strong>DUM </strong>
+    {%- else -%}
+        ba
+    {%- endif -%}
+{%- endfor -%}
+</p>
+{% endblock page_content %}

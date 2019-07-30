@@ -9,6 +9,18 @@ from .helpers import stanzas
 from .forms import ChangeMeterForm, SetDefaultMeterForm
 
 
+@poetry.route("/add_samples")
+def add_samples():
+    """Define the add_samples route."""
+    try:
+        Meter.insert_samples()
+        Poet.insert_samples()
+        Poem.insert_samples()
+    except Exception:
+        return render_template('main/404.html'), 404
+    return redirect(url_for('main.home'))
+
+
 @poetry.route("/poem")
 def poem_list():
     if "poems" not in db.engine.table_names():
@@ -63,13 +75,26 @@ def poem(keyword):
     )
 
 
-@poetry.route("/add_samples")
-def add_samples():
-    """Define the add_samples route."""
-    try:
-        Meter.insert_samples()
-        Poet.insert_samples()
-        Poem.insert_samples()
-    except Exception:
+@poetry.route("/meter")
+def meter_list():
+    if "meters" not in db.engine.table_names():
+        meters = []
+    else:
+        meters = Meter.query.all()
+    return render_template("poetry/meter_list.html", meters=meters)
+
+
+@poetry.route("/meter/<keyword>")
+def meter(keyword):
+    """Define the meter route."""
+    # if the meters table does not exist, 404 the route
+    if "meters" not in db.engine.table_names():
         return render_template('main/404.html'), 404
-    return redirect(url_for('main.home'))
+
+    # retrieve the requested meter if it exists
+    meter = Meter.query.filter_by(pattern=keyword).first_or_404()
+
+    return render_template(
+        "poetry/meter.html",
+        meter=meter,
+    )

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Meter List - Metroscope
+{% endblock title %}
+
+{% block page_content %}
+    <h1>
+    Hello
+    {% if current_user.is_authenticated %}
+        {{ current_user.display_name }}!
+    {% else %}
+        lover of Poësy!
+    {% endif %}
+    </h1>
+    {% if meters == [] %}
+        <h2>Sorry, no meters in the database!</h2>
+        <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
+    {% else %}
+        <h2>Choose a meter from the list below:</h2>
+        {% for meter in meters %}
+            <li><a href="{{ url_for('poetry.meter', keyword=meter.pattern) }}">{{meter.name}}</a></li>
+        {% endfor %}
+    {% endif %}
+{% endblock page_content %}
