@@ -44,13 +44,15 @@
         <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
             <h1>{{ title }}</h1>
             <h3 style="text-align:right">by {{ poet }}</h3>
+            <br>
+            <p>Scanned in <a href={{ url_for('poetry.meter', keyword=meter.pattern) }}>{{ meter.name }}</a></p>
         </div>
     </div>
     <form class="form-horizontal" method="POST" role="form" action="">
         <div class='form-group'>
             <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
                 {{ form.hidden_tag() }}
-                {{ wtf.form_field(form.pattern, class="form-control") }}
+                {{ wtf.form_field(form.pattern) }}
                 {% if form.set_as_default is defined %}
                     {{ wtf.form_field(form.set_as_default) }}
                     <br>
