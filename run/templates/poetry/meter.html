@@ -6,7 +6,10 @@
 {% endblock title %}
 
 {% block page_content %}
-<a href="{{ url_for('poetry.meter_list') }}">Back to available meters</a>
+<a href="{{ url_for('poetry.meter_list') }}">
+    <span class="glyphicon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    Available Meters
+</a>
 <h1>{{ meter.name }}</h1>
 <br>
 <b>Number of Beats: </b>

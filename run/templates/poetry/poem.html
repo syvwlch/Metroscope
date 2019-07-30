@@ -35,7 +35,10 @@
 {% endblock title %}
 
 {% block page_content %}
-<a href="{{ url_for('poetry.poem_list') }}">Back to available poems</a>
+<a href="{{ url_for('poetry.poem_list') }}">
+    <span class="glyphicon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    Available Poems
+</a>
 <div class='container'>
     <div class="row">
         <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
