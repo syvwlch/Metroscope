@@ -9,7 +9,7 @@
     <h1>Sorry, no poems in the database!</h1>
     <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
 {% else %}
-    <h1>Choose a poem from the list below:</h1>
+    <h1>Available Poems:</h1>
     {% for poem in poems %}
         <li><a href="{{ url_for('poetry.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
     {% endfor %}
