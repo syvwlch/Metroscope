@@ -6,8 +6,8 @@ from wtforms import SelectField, SubmitField, BooleanField
 
 class ChangeMeterForm(FlaskForm):
     """Allow user to choose the meter to scan the poem."""
-    pattern = SelectField('')
-    scan = SubmitField('Scan')
+    pattern = SelectField('Switch to')
+    scan = SubmitField('Refresh')
 
 
 class SetDefaultMeterForm(ChangeMeterForm):
