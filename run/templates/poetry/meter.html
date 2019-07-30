@@ -6,9 +6,9 @@
 {% endblock title %}
 
 {% block page_content %}
+<a href="{{ url_for('poetry.meter_list') }}">Back to available meters</a>
 <h1>{{ meter.name }}</h1>
 <br>
-<p>
 <b>Number of Beats: </b>
 {{ meter.pattern|length }}
 </p>
@@ -22,4 +22,12 @@
     {%- endif -%}
 {%- endfor -%}
 </p>
+<h2>Poems which use this meter:</h2>
+{% if poems == [] %}
+    <p>None of the available poems use this meter.</p>
+{% else %}
+    {% for poem in poems %}
+        <li><a href="{{ url_for('poetry.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
+    {% endfor %}
+{% endif %}
 {% endblock page_content %}

@@ -94,7 +94,13 @@ def meter(keyword):
     # retrieve the requested meter if it exists
     meter = Meter.query.filter_by(pattern=keyword).first_or_404()
 
+    # retrieve the poems which use this meter, if any
+    poems = Poem.query.filter_by(meter=meter).all()
+    if poems is None:
+        poems = []
+
     return render_template(
         "poetry/meter.html",
         meter=meter,
+        poems=poems,
     )

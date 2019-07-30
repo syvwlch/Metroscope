@@ -5,21 +5,14 @@
 {% endblock title %}
 
 {% block page_content %}
-    <h1>
-    Hello
-    {% if current_user.is_authenticated %}
-        {{ current_user.display_name }}!
-    {% else %}
-        lover of Poësy!
-    {% endif %}
-    </h1>
-    {% if poems == [] %}
-        <h2>Sorry, no poems in the database!</h2>
-        <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
-    {% else %}
-        <h2>Choose a poem from the list below:</h2>
-        {% for poem in poems %}
-            <li><a href="{{ url_for('poetry.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
-        {% endfor %}
-    {% endif %}
+<a href="{{ url_for('main.home') }}">Back to home page</a>
+{% if poems == [] %}
+    <h1>Sorry, no poems in the database!</h1>
+    <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
+{% else %}
+    <h1>Choose a poem from the list below:</h1>
+    {% for poem in poems %}
+        <li><a href="{{ url_for('poetry.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
+    {% endfor %}
+{% endif %}
 {% endblock page_content %}
