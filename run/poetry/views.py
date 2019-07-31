@@ -6,7 +6,11 @@ from run import db
 from . import poetry
 from ..models import Meter, Poet, Poem, Permission
 from .helpers import stanzas
-from .forms import ChangeMeterForm, SetDefaultMeterForm
+from .forms import (
+    PoemChangeMeterForm,
+    PoemSetDefaultMeterForm,
+    MeterUpdateForm,
+    )
 
 
 @poetry.route("/add_samples")
@@ -41,9 +45,9 @@ def poem(keyword):
     poem = Poem.query.filter_by(keyword=keyword).first_or_404()
 
     if current_user.can(Permission.CHANGE_METER):
-        form = SetDefaultMeterForm()
+        form = PoemSetDefaultMeterForm()
     else:
-        form = ChangeMeterForm()
+        form = PoemChangeMeterForm()
 
     meters = Meter.query.order_by('name').all()
     # move the poem's default meter to the top of the drop-down
@@ -80,7 +84,7 @@ def meter_list():
     return render_template("poetry/meter_list.html", meters=meters)
 
 
-@poetry.route("/meter/<keyword>")
+@poetry.route("/meter/<keyword>", methods=['GET', 'POST'])
 def meter(keyword):
     """Define the meter route."""
     # if the meters table does not exist, 404 the route
@@ -88,15 +92,30 @@ def meter(keyword):
         return render_template('main/404.html'), 404
 
     # retrieve the requested meter if it exists
-    meter = Meter.query.filter_by(pattern=keyword).first_or_404()
+    meter = Meter.query.get_or_404(keyword)
 
     # retrieve the poems which use this meter, if any
     poems = Poem.query.filter_by(meter=meter).all()
     if poems is None:
         poems = []
 
+    if current_user.can(Permission.ADD_METER):
+        form = MeterUpdateForm()
+    else:
+        form = None
+
+    if form.validate_on_submit():
+        if current_user.can(Permission.CHANGE_METER):
+            meter.name = form.name.data
+            meter.pattern = form.pattern.data
+            db.session.commit()
+    else:
+        form.name.data = meter.name
+        form.pattern.data = meter.pattern
+
     return render_template(
         "poetry/meter.html",
+        form=form,
         meter=meter,
         poems=poems,
     )

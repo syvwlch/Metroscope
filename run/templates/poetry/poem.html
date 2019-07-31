@@ -45,7 +45,7 @@
             <h1>{{ title }}</h1>
             <h3 style="text-align:right">by {{ poet }}</h3>
             <br>
-            <p>Scanned in <a href={{ url_for('poetry.meter', keyword=meter.pattern) }}>{{ meter.name }}</a></p>
+            <p>Scanned in <a href={{ url_for('poetry.meter', keyword=meter.id) }}>{{ meter.name }}</a></p>
         </div>
     </div>
     <form class="form-horizontal" method="POST" role="form" action="">
@@ -57,7 +57,7 @@
                     {{ wtf.form_field(form.set_as_default) }}
                     <br>
                 {% endif %}
-                {{ wtf.form_field(form.scan, class="btn btn-primary btn-block") }}
+                {{ wtf.form_field(form.submit, class="btn btn-primary btn-block") }}
             </div>
         </div>
     </form>

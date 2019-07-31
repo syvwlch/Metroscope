@@ -11,7 +11,7 @@
 {% else %}
     <h1>Available Meters:</h1>
     {% for meter in meters %}
-        <li><a href="{{ url_for('poetry.meter', keyword=meter.pattern) }}">{{meter.name}}</a></li>
+        <li><a href="{{ url_for('poetry.meter', keyword=meter.id) }}">{{meter.name}}</a></li>
     {% endfor %}
 {% endif %}
 {% endblock page_content %}

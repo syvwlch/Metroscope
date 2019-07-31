@@ -14,9 +14,9 @@
 <br>
 <b>Number of Beats: </b>
 {{ meter.pattern|length }}
-</p>
 <p>
-<b>Pattern: </b>
+<br>
+<p>
 {%- for beat in meter.pattern -%}
     {%- if beat == '1' -%}
         <strong>DUM </strong>
@@ -25,6 +25,11 @@
     {%- endif -%}
 {%- endfor -%}
 </p>
+<br>
+{% if current_user.can(Permission.ADD_METER) %}
+    {{ wtf.quick_form(form) }}
+    <br>
+{% endif %}
 <b>Used in these Poems:</b>
 {% if poems == [] %}
     <p>None of the available poems use this meter.</p>
