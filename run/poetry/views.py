@@ -10,7 +10,7 @@ from .forms import (
     PoemChangeMeterForm,
     PoemSetDefaultMeterForm,
     MeterUpdateForm,
-    )
+)
 
 
 @poetry.route("/add_samples")
