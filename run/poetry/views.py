@@ -10,6 +10,7 @@ from .forms import (
     PoemChangeMeterForm,
     PoemSetDefaultMeterForm,
     MeterUpdateForm,
+    MeterAddForm,
 )
 
 
@@ -91,28 +92,46 @@ def meter(keyword):
     if "meters" not in db.engine.table_names():
         return render_template('main/404.html'), 404
 
-    # retrieve the requested meter if it exists
-    meter = Meter.query.get_or_404(keyword)
-
-    # retrieve the poems which use this meter, if any
-    poems = Poem.query.filter_by(meter=meter).all()
-    if poems is None:
+    if keyword == 'new':
+        meter = None
         poems = []
+        form = MeterAddForm()
 
-    if current_user.can(Permission.ADD_METER):
-        form = MeterUpdateForm()
-        form.id.data = str(meter.id)
-    else:
-        form = None
+        if form.validate_on_submit():
+            if current_user.can(Permission.ADD_METER):
+                meter = Meter(
+                    name=form.name.data,
+                    pattern=form.pattern.data,
+                )
+                db.session.add(meter)
+                db.session.commit()
+                keyword = Meter.query.filter_by(
+                    pattern=form.pattern.data
+                ).first().id
 
-    if form.validate_on_submit():
-        if current_user.can(Permission.CHANGE_METER):
-            meter.name = form.name.data
-            meter.pattern = form.pattern.data
-            db.session.commit()
     else:
-        form.name.data = meter.name
-        form.pattern.data = meter.pattern
+        # retrieve the requested meter if it exists
+        meter = Meter.query.get_or_404(keyword)
+
+        # retrieve the poems which use this meter, if any
+        poems = Poem.query.filter_by(meter=meter).all()
+        if poems is None:
+            poems = []
+
+        if current_user.can(Permission.ADD_METER):
+            form = MeterUpdateForm()
+            form.id.data = str(meter.id)
+        else:
+            form = None
+
+        if form.validate_on_submit():
+            if current_user.can(Permission.ADD_METER):
+                meter.name = form.name.data
+                meter.pattern = form.pattern.data
+                db.session.commit()
+        else:
+            form.name.data = meter.name
+            form.pattern.data = meter.pattern
 
     return render_template(
         "poetry/meter.html",

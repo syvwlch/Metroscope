@@ -15,5 +15,7 @@
     {% endfor %}
 {% endif %}
 <br>
-<a class="btn btn-default" href="#" role="button">Add New Meter</a>
+{% if current_user.can(Permission.ADD_METER) %}
+<a class="btn btn-default" href={{ url_for('poetry.meter', keyword='new') }} role="button">Add New Meter</a>
+{% endif %}
 {% endblock page_content %}
