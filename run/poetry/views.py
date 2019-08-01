@@ -127,10 +127,12 @@ def meter(keyword):
                 if form.submit.data:
                     meter.name = form.name.data
                     meter.pattern = form.pattern.data
+                    db.session.commit()
+                    return redirect(url_for('poetry.meter', keyword=keyword))
                 if form.delete.data:
                     db.session.delete(meter)
-                db.session.commit()
-                return redirect(url_for('poetry.meter_list'))
+                    db.session.commit()
+                    return redirect(url_for('poetry.meter_list'))
             else:
                 form.name.data = meter.name
                 form.pattern.data = meter.pattern
