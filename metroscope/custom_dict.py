@@ -141,4 +141,8 @@ CUSTOM_DICT = {
                     "syllables": ["pa", "llor"],
                     "phones": "P AE1 L ER0",
                 },
+                "pall": {
+                    "syllables": ["pall"],
+                    "phones": "P AO1 L",
+                },
               }

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Meter List - Metroscope
+{% endblock title %}
+
+{% block page_content %}
+{% if meters == [] %}
+    <h1>Sorry, no meters in the database!</h1>
+    <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
+{% else %}
+    <h1>Available Meters:</h1>
+    {% for meter in meters %}
+        <li><a href="{{ url_for('poetry.meter', keyword=meter.id) }}">{{meter.name}}</a></li>
+    {% endfor %}
+{% endif %}
+<br>
+{% if current_user.can(Permission.ADD_METER) %}
+<a class="btn btn-default" href={{ url_for('poetry.meter', keyword='new') }} role="button">Add New Meter</a>
+{% endif %}
+{% endblock page_content %}
