@@ -64,6 +64,7 @@ def poem(keyword):
             poem.meter = meter
             db.session.commit()
             form.set_as_default.data = False
+            return redirect(url_for('poetry.poem', keyword=keyword))
     else:
         meter = poem.meter
 
