@@ -12,10 +12,6 @@
 </a>
 <h1>{{ meter.name }}</h1>
 <br>
-<b>Number of Beats: </b>
-{{ meter.pattern|length }}
-<p>
-<br>
 <p>
 {%- for beat in meter.pattern -%}
     {%- if beat == '1' -%}
@@ -24,8 +20,9 @@
         ba
     {%- endif -%}
 {%- endfor -%}
-</p>
 <br>
+({{ meter.pattern|length }} beats)
+</p>
 {% if current_user.can(Permission.ADD_METER) %}
     {{ wtf.quick_form(form) }}
     <br>
