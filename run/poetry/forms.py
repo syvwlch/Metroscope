@@ -42,6 +42,7 @@ class MeterUpdateForm(FlaskForm):
             Regexp('^[0-1]*$', message="Only 1's and 0's, please.")
         ]
     )
+    delete = SubmitField('Delete Meter')
     submit = SubmitField('Update Meter')
 
     def validate_name(self, field):

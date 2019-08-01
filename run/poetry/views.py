@@ -122,11 +122,15 @@ def meter(keyword):
 
         if current_user.can(Permission.ADD_METER):
             form = MeterUpdateForm()
-            form.id.data = str(meter.id)
+            form.id.data = keyword
             if form.validate_on_submit():
-                meter.name = form.name.data
-                meter.pattern = form.pattern.data
+                if form.submit.data:
+                    meter.name = form.name.data
+                    meter.pattern = form.pattern.data
+                if form.delete.data:
+                    db.session.delete(meter)
                 db.session.commit()
+                return redirect(url_for('poetry.meter_list'))
             else:
                 form.name.data = meter.name
                 form.pattern.data = meter.pattern
