@@ -53,8 +53,9 @@ def poem(keyword):
     meters = Meter.query.order_by('name').all()
     # move the poem's default meter to the top of the drop-down
     meters.insert(0, meters.pop(meters.index(poem.meter)))
-    meters[0].name += ' (default)'
     form.pattern.choices = [(m.pattern, m.name) for m in meters]
+    default_pattern, default_name = form.pattern.choices[0]
+    form.pattern.choices[0] = (default_pattern, default_name + ' (default)')
 
     if form.validate_on_submit():
         meter = Meter.query.filter_by(pattern=form.pattern.data).first()
