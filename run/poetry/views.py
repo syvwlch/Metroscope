@@ -123,17 +123,15 @@ def meter(keyword):
         if current_user.can(Permission.ADD_METER):
             form = MeterUpdateForm()
             form.id.data = str(meter.id)
-        else:
-            form = None
-
-        if form.validate_on_submit():
-            if current_user.can(Permission.ADD_METER):
+            if form.validate_on_submit():
                 meter.name = form.name.data
                 meter.pattern = form.pattern.data
                 db.session.commit()
+            else:
+                form.name.data = meter.name
+                form.pattern.data = meter.pattern
         else:
-            form.name.data = meter.name
-            form.pattern.data = meter.pattern
+            form = None
 
     return render_template(
         "poetry/meter.html",
