@@ -110,7 +110,7 @@ def meter(keyword):
                 keyword = Meter.query.filter_by(
                     pattern=form.pattern.data
                 ).first().id
-
+                return redirect(url_for('poetry.meter', keyword=keyword))
     else:
         # retrieve the requested meter if it exists
         meter = Meter.query.get_or_404(keyword)
