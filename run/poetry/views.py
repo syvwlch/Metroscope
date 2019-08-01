@@ -31,7 +31,7 @@ def poem_list():
     if "poems" not in db.engine.table_names():
         poems = []
     else:
-        poems = Poem.query.all()
+        poems = Poem.query.order_by('title').all()
     return render_template("poetry/poem_list.html", poems=poems)
 
 
@@ -83,7 +83,7 @@ def meter_list():
     if "meters" not in db.engine.table_names():
         meters = []
     else:
-        meters = Meter.query.all()
+        meters = Meter.query.order_by('name').all()
     return render_template("poetry/meter_list.html", meters=meters)
 
 
