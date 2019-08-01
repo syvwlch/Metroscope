@@ -101,6 +101,7 @@ def meter(keyword):
 
     if current_user.can(Permission.ADD_METER):
         form = MeterUpdateForm()
+        form.id.data = meter.id
     else:
         form = None
 
