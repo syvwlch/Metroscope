@@ -76,7 +76,7 @@ def poem(keyword):
         "poetry/poem.html",
         form=form,
         title=poem.title,
-        poet=poem.author.name,
+        poet=poem.author,
         meter=meter,
         stanzas=stanzas(poem.raw_text, meter.pattern),
     )
