@@ -28,9 +28,12 @@
     <h1>Add a New Meter</h1>
     <br>
 {% endif %}
-{% if current_user.can(Permission.ADD_METER) %}
+{% if form is not none %}
     {{ wtf.quick_form(form) }}
     <br>
+{% endif %}
+{% if delete_form is not none %}
+    {{ wtf.quick_form(delete_form) }}
 {% endif %}
 {% if poems != [] %}
 <b>Used in these Poems:</b>

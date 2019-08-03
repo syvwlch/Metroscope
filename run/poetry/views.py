@@ -11,8 +11,10 @@ from .forms import (
     PoemSetDefaultMeterForm,
     MeterUpdateForm,
     MeterAddForm,
+    MeterDeleteForm,
     PoetUpdateForm,
     PoetAddForm,
+    PoetDeleteForm,
 )
 
 
@@ -100,6 +102,7 @@ def meter(keyword):
         meter = None
         poems = []
         form = MeterAddForm()
+        delete_form = None
 
         if form.validate_on_submit():
             if current_user.can(Permission.ADD_METER):
@@ -126,24 +129,31 @@ def meter(keyword):
             form = MeterUpdateForm()
             form.id.data = keyword
             if form.validate_on_submit():
-                if form.submit.data:
-                    meter.name = form.name.data
-                    meter.pattern = form.pattern.data
-                    db.session.commit()
-                    return redirect(url_for('poetry.meter', keyword=keyword))
-                if form.delete.data:
-                    db.session.delete(meter)
-                    db.session.commit()
-                    return redirect(url_for('poetry.meter_list'))
+                meter.name = form.name.data
+                meter.pattern = form.pattern.data
+                db.session.commit()
+                return redirect(url_for('poetry.meter', keyword=keyword))
             else:
                 form.name.data = meter.name
                 form.pattern.data = meter.pattern
         else:
             form = None
 
+        if current_user.can(Permission.ADD_METER) and poems == []:
+            delete_form = MeterDeleteForm()
+            delete_form.id.data = keyword
+            if delete_form.validate_on_submit():
+                db.session.delete(meter)
+                db.session.commit()
+                return redirect(url_for('poetry.meter_list'))
+            form.name.data = meter.name
+        else:
+            delete_form = None
+
     return render_template(
         "poetry/meter.html",
         form=form,
+        delete_form=delete_form,
         meter=meter,
         poems=poems,
     )
@@ -169,6 +179,7 @@ def poet(keyword):
         poet = None
         poems = []
         form = PoetAddForm()
+        delete_form = None
 
         if form.validate_on_submit():
             if current_user.can(Permission.ADD_POEM):
@@ -194,22 +205,27 @@ def poet(keyword):
             form = PoetUpdateForm()
             form.id.data = keyword
             if form.validate_on_submit():
-                if form.submit.data:
-                    poet.name = form.name.data
-                    db.session.commit()
-                    return redirect(url_for('poetry.poet', keyword=keyword))
-                if form.delete.data:
-                    db.session.delete(poet)
-                    db.session.commit()
-                    return redirect(url_for('poetry.poet_list'))
-            else:
-                form.name.data = poet.name
+                poet.name = form.name.data
+                db.session.commit()
+                return redirect(url_for('poetry.poet', keyword=keyword))
         else:
             form = None
+
+        if current_user.can(Permission.ADD_POEM) and poems == []:
+            delete_form = PoetDeleteForm()
+            delete_form.id.data = keyword
+            if delete_form.validate_on_submit():
+                db.session.delete(poet)
+                db.session.commit()
+                return redirect(url_for('poetry.poet_list'))
+            form.name.data = poet.name
+        else:
+            delete_form = None
 
     return render_template(
         "poetry/poet.html",
         form=form,
+        delete_form=delete_form,
         poet=poet,
         poems=poems,
     )
