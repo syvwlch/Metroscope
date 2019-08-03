@@ -133,9 +133,8 @@ def meter(keyword):
                 meter.pattern = form.pattern.data
                 db.session.commit()
                 return redirect(url_for('poetry.meter', keyword=keyword))
-            else:
-                form.name.data = meter.name
-                form.pattern.data = meter.pattern
+            form.name.data = meter.name
+            form.pattern.data = meter.pattern
         else:
             form = None
 
@@ -208,6 +207,7 @@ def poet(keyword):
                 poet.name = form.name.data
                 db.session.commit()
                 return redirect(url_for('poetry.poet', keyword=keyword))
+            form.name.data = poet.name
         else:
             form = None
 
