@@ -1,6 +1,6 @@
 """Define the forms for the poetry blueprint."""
 
-from ..models import Meter
+from ..models import Meter, Poet
 from flask_wtf import FlaskForm
 from wtforms import (
     SelectField, SubmitField, BooleanField, StringField, HiddenField,
@@ -97,4 +97,53 @@ class MeterAddForm(FlaskForm):
         if m:  # There is already a meter with this pattern
             raise ValidationError(
                 f"'{field.data}' already used by {m.name}."
+            )
+
+
+class PoetUpdateForm(FlaskForm):
+    """Allow user to update an existing poet."""
+    id = HiddenField()
+    name = StringField(
+        label='Name',
+        validators=[
+            DataRequired(),
+            Length(min=4, max=40),
+            Regexp(
+                '^[a-z,A-Z,  ]*$',
+                message="Only letters and spaces, please."
+            )
+        ]
+    )
+    delete = SubmitField('Delete Poet')
+    submit = SubmitField('Update Poet')
+
+    def validate_name(self, field):
+        p = Poet.query.filter_by(name=field.data).first()
+        if p:  # There is already a poet with this name
+            if str(p.id) != self.id.data:  # and it is not the current poet
+                raise ValidationError(
+                    f"'{field.data}' already in use."
+                )
+
+
+class PoetAddForm(FlaskForm):
+    """Allow user to add a new poet."""
+    name = StringField(
+        label='Name',
+        validators=[
+            DataRequired(),
+            Length(min=4, max=40),
+            Regexp(
+                '^[a-z,A-Z,  ]*$',
+                message="Only letters and spaces, please."
+            )
+        ]
+    )
+    submit = SubmitField('Add Poet')
+
+    def validate_name(self, field):
+        p = Poet.query.filter_by(name=field.data).first()
+        if p:  # There is already a poet with this name
+            raise ValidationError(
+                f"'{field.data}' already in use."
             )

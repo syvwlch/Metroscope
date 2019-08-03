@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+{{ title }} - Metroscope
+{% endblock title %}
+
+{% block page_content %}
+<a href="{{ url_for('poetry.poet_list') }}">
+    <span class="glyphicon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    Available Poets
+</a>
+{% if poet is not none %}
+    <h1>{{ poet.name }}</h1>
+    <br>
+{% else %}
+    <h1>Add a New Poet</h1>
+    <br>
+{% endif %}
+{% if current_user.can(Permission.ADD_POEM) %}
+    {{ wtf.quick_form(form) }}
+    <br>
+{% endif %}
+{% if poems != [] %}
+<b>Used in these Poems:</b>
+    {% for poem in poems %}
+        <li><a href="{{ url_for('poetry.poem', keyword=poem.keyword) }}">{{poem.title}}</a></li>
+    {% endfor %}
+{% endif %}
+{% endblock page_content %}
