@@ -43,7 +43,11 @@
     <div class="row">
         <div class="verse col-xs-offset-1 col-xs-10 col-sm-6 col-md-5 col-lg-4">
             <h1>{{ title }}</h1>
-            <h3 style="text-align:right">by {{ poet }}</h3>
+            <h3 style="text-align:right">
+                by <a href={{ url_for('poetry.poet', keyword=poet.id) }}>
+                    {{ poet.name }}
+                </a>
+            </h3>
             <br>
             <p>Scanned in <a href={{ url_for('poetry.meter', keyword=meter.id) }}>{{ meter.name }}</a></p>
         </div>

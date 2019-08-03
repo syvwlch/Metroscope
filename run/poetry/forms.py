@@ -1,6 +1,6 @@
 """Define the forms for the poetry blueprint."""
 
-from ..models import Meter
+from ..models import Meter, Poet, Poem
 from flask_wtf import FlaskForm
 from wtforms import (
     SelectField, SubmitField, BooleanField, StringField, HiddenField,
@@ -42,8 +42,12 @@ class MeterUpdateForm(FlaskForm):
             Regexp('^[0-1]*$', message="Only 1's and 0's, please.")
         ]
     )
-    delete = SubmitField('Delete Meter')
     submit = SubmitField('Update Meter')
+
+    def validate_id(self, field):
+        meter = Meter.query.get(field.data)
+        if meter is None:
+            raise ValidationError('This meter does not exist.')
 
     def validate_name(self, field):
         m = Meter.query.filter_by(name=field.data).first()
@@ -97,4 +101,89 @@ class MeterAddForm(FlaskForm):
         if m:  # There is already a meter with this pattern
             raise ValidationError(
                 f"'{field.data}' already used by {m.name}."
+            )
+
+
+class MeterDeleteForm(FlaskForm):
+    """Allow user to delete an existing meter."""
+    id = HiddenField()
+    delete = SubmitField('Delete Meter')
+
+    def validate_id(self, field):
+        meter = Meter.query.get(field.data)
+        if meter is None:
+            raise ValidationError('This meter does not exist.')
+        poems = Poem.query.filter_by(meter=meter).first()
+        if poems is not None:
+            raise ValidationError(
+                f"'{meter.name}' is in used and cannot be deleted."
+            )
+
+
+class PoetUpdateForm(FlaskForm):
+    """Allow user to update an existing poet."""
+    id = HiddenField()
+    name = StringField(
+        label='Name',
+        validators=[
+            DataRequired(),
+            Length(min=4, max=40),
+            Regexp(
+                '^[a-z,A-Z,  ]*$',
+                message="Only letters and spaces, please."
+            )
+        ]
+    )
+    submit = SubmitField('Update Poet')
+
+    def validate_id(self, field):
+        poet = Poet.query.get(field.data)
+        if poet is None:
+            raise ValidationError('This poet does not exist.')
+
+    def validate_name(self, field):
+        p = Poet.query.filter_by(name=field.data).first()
+        if p:  # There is already a poet with this name
+            if str(p.id) != self.id.data:  # and it is not the current poet
+                raise ValidationError(
+                    f"'{field.data}' already in use."
+                )
+
+
+class PoetAddForm(FlaskForm):
+    """Allow user to add a new poet."""
+    name = StringField(
+        label='Name',
+        validators=[
+            DataRequired(),
+            Length(min=4, max=40),
+            Regexp(
+                '^[a-z,A-Z,  ]*$',
+                message="Only letters and spaces, please."
+            )
+        ]
+    )
+    submit = SubmitField('Add Poet')
+
+    def validate_name(self, field):
+        p = Poet.query.filter_by(name=field.data).first()
+        if p:  # There is already a poet with this name
+            raise ValidationError(
+                f"'{field.data}' already in use."
+            )
+
+
+class PoetDeleteForm(FlaskForm):
+    """Allow user to delete an existing poet."""
+    id = HiddenField()
+    delete = SubmitField('Delete Poet')
+
+    def validate_id(self, field):
+        poet = Poet.query.get(field.data)
+        if poet is None:
+            raise ValidationError('This poet does not exist.')
+        poems = Poem.query.filter_by(author=poet).first()
+        if poems is not None:
+            raise ValidationError(
+                f"'{poet.name}' has poems and cannot be deleted."
             )

@@ -6,26 +6,15 @@
 {% endblock title %}
 
 {% block page_content %}
-<a href="{{ url_for('poetry.meter_list') }}">
+<a href="{{ url_for('poetry.poet_list') }}">
     <span class="glyphicon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-    Available Meters
+    Available Poets
 </a>
-{% if meter is not none %}
-    <h1>{{ meter.name }}</h1>
+{% if poet is not none %}
+    <h1>{{ poet.name }}</h1>
     <br>
-    <p>
-    {%- for beat in meter.pattern -%}
-        {%- if beat == '1' -%}
-            <strong>DUM </strong>
-        {%- else -%}
-            ba
-        {%- endif -%}
-    {%- endfor -%}
-    <br>
-    ({{ meter.pattern|length }} beats)
-    </p>
 {% else %}
-    <h1>Add a New Meter</h1>
+    <h1>Add a New Poet</h1>
     <br>
 {% endif %}
 {% if form is not none %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Poet List - Metroscope
+{% endblock title %}
+
+{% block page_content %}
+{% if poets == [] %}
+    <h1>Sorry, no poets in the database!</h1>
+    <p>Click <a href="{{ url_for('poetry.add_samples') }}">here</a> to load some samples!</p>
+{% else %}
+    <h1>Available Poets:</h1>
+    {% for poet in poets %}
+        <li><a href="{{ url_for('poetry.poet', keyword=poet.id) }}">{{poet.name}}</a></li>
+    {% endfor %}
+{% endif %}
+<br>
+{% if current_user.can(Permission.ADD_POEM) %}
+<a class="btn btn-default" href={{ url_for('poetry.poet', keyword='new') }} role="button">Add New Poet</a>
+{% endif %}
+{% endblock page_content %}
