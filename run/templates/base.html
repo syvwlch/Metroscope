@@ -26,6 +26,8 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('poetry.poem_list') }}">Poems</a></li>
+                <li><a href="{{ url_for('poetry.poet_list') }}">Poets</a></li>
+                <li><a href="{{ url_for('poetry.meter_list') }}">Meters</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
