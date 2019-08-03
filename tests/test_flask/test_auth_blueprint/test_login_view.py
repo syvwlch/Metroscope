@@ -47,8 +47,8 @@ def test_login_with_next(client, auth):
     """Check that login obeys the next parameter."""
     with client:
         auth.register(follow_redirects=True)
-        response = auth.login(next="%2Fabout")
+        response = auth.login(next="%2Fpoetry%2Fpoem")
         assert current_user.is_authenticated
         assert "302" in response.status
-        assert url_for('main.about', _external=True) == response.location
+        assert url_for('poetry.poem_list', _external=True) == response.location
         assert get_flashed_messages() == []
