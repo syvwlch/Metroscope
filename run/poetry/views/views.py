@@ -3,10 +3,10 @@
 from flask import render_template, redirect, url_for
 from flask_login import current_user
 from run import db
-from . import poetry
-from ..models import Meter, Poet, Poem, Permission
-from .helpers import stanzas
-from .forms import (
+from .. import poetry
+from ...models import Meter, Poet, Poem, Permission
+from ..helpers import stanzas
+from ..forms import (
     PoemChangeMeterForm,
     PoemSetDefaultMeterForm,
     MeterUpdateForm,
