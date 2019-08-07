@@ -1,7 +1,7 @@
-from .views import add_samples
-from .views import poem_list, poem
-from .views import meter_list, meter
-from .views import poet_list, poet
+from .samples import add_samples
+from .poems import poem_list, poem
+from .meters import meter_list, meter
+from .poets import poet_list, poet
 
 
 __all__ = [
