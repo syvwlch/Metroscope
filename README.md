@@ -29,3 +29,6 @@ Currently the main dependencies are on Flask and Bootstrap, plus:
 The lyre favicon design is by [Andrejs Kirma](https://thenounproject.com/andrejs/) from the Noun Project.
 
 Check the pipfile for the full list of dependencies.
+
+Note that I use PostgreSQL for the production DB which creates a dependency on psycopg2. When you run pipenv install on a new cloned repository, you may run into an issue with psycopg2 not installing. It gets built from source, and that requires that pg_config be on your path. Since I use [postgresapp.com](http://postgresapp.com/), that meant:
+export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin
