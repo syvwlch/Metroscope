@@ -2,9 +2,7 @@
 
 My day job is writing requirements, which someone else then magically transforms into a website people can use to do things. There is a lot more than just writing code to make that magic happen, and I wanted to get a feel for the major tasks involved.
 
-Why?
-
-Because seeing the world thru the eyes of the people who make that magic happen will make my requirements better.
+Why? Because seeing the world thru the eyes of the people who make that magic happen will make my requirements better.
 
 ## Domain Matter
 
@@ -54,7 +52,7 @@ Not refactoring would have built up tech debt that would eventually have destroy
 
 I had to switch machines mid-project, and if I had not followed best practices for setting up and maintaining that dev environment, that would have been a painful roadblock.
 
-As it is, I can work on this project on any machine after:
+As it is, to work on this project on a new machine, I can just:
 
 1. Install Python
 
@@ -64,9 +62,11 @@ As it is, I can work on this project on any machine after:
 
 4. Run one command in terminal to set up virtual environment, install all dependencies with correct version
 
-5. Run another command in terminal to run test suite to make sure everything Frameworks
+5. Run another command in terminal to run test suite to make sure everything works
 
-Done! A prime example of treating your future self as a colleague to onboard as easily as possible.
+6. Done, start coding!
+
+A prime example of treating your future self as a colleague to onboard as easily as possible.
 
 ## Third Party Libraries & Frameworks
 
@@ -82,9 +82,9 @@ While this was a single-coder project, I still learned some valuable lessons in 
 
 1. Choose and follow a code branching strategy
 
-2. Use Pull Requests to organize functional chunks of work
+2. Use Issues to organize bugs and feature requests
 
-3. Use Issues to organize bugs and feature requests
+3. Use Pull Requests to organize functional chunks of work
 
 ## Continuous Integration / Continuous Delivery
 
@@ -114,3 +114,11 @@ code running on it
 8. Production updated, vulnerability fixed.
 
 So yeah, now I get what all the CI/CD fuss is about!
+
+## Conclusion
+
+This is just the tip of the iceberg. I am still in no way a professional developer, but I have a renewed and much deeper appreciation for some of the work they do which is not actually writing code.
+
+Now I can take all this with me the next time I write some requirements.
+
+## Resources:
