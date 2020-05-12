@@ -122,3 +122,32 @@ This is just the tip of the iceberg. I am still in no way a professional develop
 Now I can take all this with me the next time I write some requirements.
 
 ## Resources:
+
+We get a free subscription to [O'Reilly ebooks](https://www.oreilly.com/) thru work, just use the SSO option to sign in. Some of these are excellent, fully able to walk you thru your newb-to-journeyman adventures. Some favorites of mine:
+
+* [Test Driven Development with Python](https://www.goodreads.com/book/show/17912811-test-driven-web-development-with-python)
+
+* [Flask Web Development: Developing Web Applications with Python](https://www.goodreads.com/book/show/18774655-flask-web-development)
+
+* [Mastering Flask Web Development: Build enterprise-grade, scalable Python web applications](https://www.goodreads.com/book/show/42855654-mastering-flask-web-development)
+
+There are some excellent YouTube channels covering the same territory, if books are not your favorite learning medium:
+
+* Corey Schafer's [Python tutorials for beginners](https://www.youtube.com/playlist?list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU) are a great place to start with the language
+
+* He does a great job [explaining what git is](https://www.youtube.com/playlist?list=PL-osiE80TeTuRUfjRe54Eea17-YfnOOAx), and why/how you use it
+
+* His [Flask playlist](https://www.youtube.com/playlist?list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH) has you build a blog using Flask
+
+
+[GitHub](https://github.com) is an excellent choice to host your code repository. They have excellent apps/tools, their free accounts are full featured, the community is friendly and very knowledgeable, and they integrate with everyone and their uncle. Hit me up at [/syvwlch](https://github.com/syvwlch) there!
+
+[Travis CI](https://travis-ci.com/) is an excellent choice to automate your testing/integration. It plugs into Github to run your test suite on Pull Requests, branches, etc... and report the results back into your GitHub workflows.
+
+[Heroku](https://www.heroku.com/) is an excellent choice for host your deployment pipeline. It also plays very nicely with Github, and for demos/POCs it is free. If you need a database for your site, they make it very easy.
+
+[Python](https://www.python.org/) is a full-featured, modern, widely adopted programming language that is easy to learn and forces good habits. Give it a try if you don't already have a favorite language.
+
+[Flask](https://palletsprojects.com/p/flask/) is a web framework in the Python language. It takes cares of all the low level stuff for you, but doesn't make assumptions about what your site/project is trying to do, so you only need use what you actually need. People have used to build websites, blogs, or web-APIs. It's great for learning how a website works, because you actually need to build all the plumbing, but it makes it very easy.
+
+Lastly, feel free to reach out to me if you want a hand with any of this!
