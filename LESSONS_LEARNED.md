@@ -96,24 +96,27 @@ The result was everything I could have hoped for!
 
 Here is my favorite example:
 
-1. Email from a Github bot notifying me that a new security vulnerability has been found for one of my dependencies, with a link to a Pull Request automatically created and which fixes the vulnerability
+1. Email from a Github bot, notifying me that:
 
-2. Code with Pull Request applied has already passed the automated test suite
+    * a new security vulnerability has been found for one of my dependencies
 
-3. Having passed the test suite, a temporary website has been stood up with that
-code running on it
+    * a Pull Request was automatically created to fix the vulnerability
 
-4. After a quick UAT on that temporary site, I merged the Pull Request to main code branch with one click
+    * the code with the PR applied has already passed the automated test suite
 
-5. Test suite runs on main branch, and passes again
+    * a temporary website has been deployed with that code for me to check
 
-6. Staging site automatically updated to this latest release of main branch
+2. After a quick review of the new code and the temporary site, I merged the Pull Request to main code branch with one click on GitHub, which triggered:
 
-7. After UAT on staging site, I promoted staging to production with one click.
+    * the test suite on main branch, which passed again
 
-8. Production updated, vulnerability fixed.
+    * deployment of this latest release to the staging site
 
-So yeah, now I get what all the CI/CD fuss is about!
+3. After a quick check of the staging site, I promoted staging to production with one click on GitHub, and:
+
+    * Production updated, vulnerability fixed.
+
+So yeah, now I get what all the CI/CD fuss is about. Total elapsed time, maybe twenty minutes and all it took was two clicks on GitHub and a bit of sanity testing on the temporary site.
 
 ## Conclusion
 
